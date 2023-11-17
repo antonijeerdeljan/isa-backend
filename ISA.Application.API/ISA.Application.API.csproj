@@ -16,7 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ISA.Core.Infrastructure.Identity\ISA.Core.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

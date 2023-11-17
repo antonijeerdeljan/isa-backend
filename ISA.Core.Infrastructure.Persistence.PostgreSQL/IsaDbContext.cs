@@ -11,12 +11,14 @@ public class IsaDbContext : DbContext
 	}
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 
-    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseNpgsql("YourConnectionString");
-        }
-    }*/
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Address)
+            .WithOne()
+            .HasForeignKey<Address>(u => u.Id);
+    }
+
 }
