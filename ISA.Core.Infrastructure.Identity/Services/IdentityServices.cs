@@ -20,7 +20,7 @@ public class IdentityServices : IIdentityServices
         {
             throw new ArgumentException(registrationResult.ToString());
         }
-        await _userManager.AddToRoleAsync(newUser, IdentityRoles.REGISTERED);
+        //await _userManager.AddToRoleAsync(newUser, IdentityRoles.REGISTERED.ToString());
     }
 
 }
