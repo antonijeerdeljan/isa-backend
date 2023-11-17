@@ -2,6 +2,6 @@
 
 public interface IIdentityServices
 {
-    public Task RegisterAsync(Guid id, string email, string password);
+    public Task RegisterUserAsync(Guid id, string email, string password, string userRole);
 
 }

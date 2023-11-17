@@ -6,10 +6,6 @@ using ISA.Core.Infrastructure.Identity.Services;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,14 +26,17 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("ISA.Core.Infrastructure.Identity")));
 
 
-builder.Services.AddTransient<UserService>();
+
+
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
+builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<UserManager<ApplicationUser>>();
+//builder.Services.AddTransient<IdentityRole>
+/*builder.Services.AddTransient<RoleManager<IdentityRole>>();*/
 
-builder.Services.AddScoped<UserManager<ApplicationUser>>();
-builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
 
-builder.Services.AddIdentity<ApplicationUser, ISA.Core.Infrastructure.Identity.Entities.IdentityRole>(o =>
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 {
     o.Password.RequiredLength = 8;
     o.Password.RequireDigit = false;
@@ -49,6 +48,7 @@ builder.Services.AddIdentity<ApplicationUser, ISA.Core.Infrastructure.Identity.E
     .AddEntityFrameworkStores<IdentityDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 
 builder.Services.AddAuthentication();
 

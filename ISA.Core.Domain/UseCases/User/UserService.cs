@@ -12,18 +12,13 @@ public class UserService
         _identityService = identityServices;
 	}
 
-    public async Task AddAsync(string email, string password, string firstName, string lastName,Address address, DateTime birthDate, string phoneNumber)
+    public async Task AddAsync(string email, string password, string firstName, string lastName,Address address, DateTime birthDate, string phoneNumber, string userRole)
     {
         Guid newUserId = Guid.NewGuid();
-
-
-        Entities.User.User newUser = new(firstName, lastName, address, email, phoneNumber, birthDate) ;
-
+        Entities.User.User newUser = new(firstName, lastName, address, email, phoneNumber, birthDate); 
         //await _userRepository.AddAsync(newUser);
-        //await UnitOfWork.SaveChangesAsync();
+        //await UnitOfWork.SaveChangesAsync
+        await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
 
-        await _identityService.RegisterAsync(newUserId, email, password);
-
-       
     }
 }

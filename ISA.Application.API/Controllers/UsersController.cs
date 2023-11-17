@@ -1,5 +1,6 @@
 ﻿using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.UseCases.User;
+using ISA.Core.Infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISA.Application.API.Controllers;
@@ -22,9 +23,7 @@ public class UsersController : ControllerBase
                                    registrationRequestModel.Lastname,
                                    registrationRequestModel.Address,
                                    registrationRequestModel.DateOfBirth,
-                                   registrationRequestModel.PhoneNumber);
-
-
-
+                                   registrationRequestModel.PhoneNumber,
+                                   IdentityRoles.CUSTOMER);
 
 };
