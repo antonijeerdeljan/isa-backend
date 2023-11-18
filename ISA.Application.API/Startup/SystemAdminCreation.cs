@@ -33,13 +33,28 @@ public class SystemAdminCreation
         };
 
 
-        await _userService.AddAsync(registrationRequestModel.Email,
-                                    registrationRequestModel.Password,
+        try
+        {
+
+            await _userService.AddAsync(registrationRequestModel.Email,
+                                        registrationRequestModel.Password,
+                                        registrationRequestModel.Firstname,
+                                        registrationRequestModel.Lastname,
+                                        registrationRequestModel.Address,
+                                        registrationRequestModel.DateOfBirth,
+                                        registrationRequestModel.PhoneNumber,
+                                        "Sysadmin");
+            //email, firstName, lastName, address, birthDate, phoneNumber
+
+/*
+            await _userService.CreateUser(registrationRequestModel.Email,
                                     registrationRequestModel.Firstname,
                                     registrationRequestModel.Lastname,
                                     registrationRequestModel.Address,
                                     registrationRequestModel.DateOfBirth,
-                                    registrationRequestModel.PhoneNumber,
-                                    "Sysadmin");
+                                    registrationRequestModel.PhoneNumber);*/
+        }catch(Exception ex) {
+            Console.WriteLine(ex.ToString());
+        }
     }
 }

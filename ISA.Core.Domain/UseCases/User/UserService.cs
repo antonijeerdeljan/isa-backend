@@ -33,8 +33,7 @@ public class UserService
         {
             await _userRepository.AddAsync(newUser);
             await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
-            await _isaUnitOfWork.CommitTransactionAsync();
-
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
         catch (Exception ex) 
         {
@@ -42,6 +41,7 @@ public class UserService
         }
 
     }
+
 
     public async Task<AuthenticationTokens> LoginAsync(string email, string password)
     {

@@ -71,9 +71,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (!result.Succeeded)
                 throw new ArgumentException(result.ToString());
 
-            User user = await _userRepository.GetByIdAsync(userToSignIn.Id);
-
-            return _tokenGenerator.GenerateAccessToken(user.Id.ToString(), userRole[0]);
+            return _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
 
 
         }
