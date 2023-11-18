@@ -9,6 +9,8 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureAuth();
 builder.Services.AddControllers();
+builder.Services.ConfigureSwagger(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("ISADB");
 builder.Services.AddDbContext<IsaDbContext>(options =>
@@ -39,9 +42,6 @@ builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
 
-//builder.Services.AddTransient<IdentityRole>
-/*builder.Services.AddTransient<RoleManager<IdentityRole>>();*/
-
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
@@ -58,12 +58,11 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 
 builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 builder.Services.AddTransient<SignInManager<ApplicationUser>>();
-
 builder.Services.AddAuthentication();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -72,8 +71,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
 
+app.MapControllers();
 app.Run();

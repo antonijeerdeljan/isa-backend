@@ -1,6 +1,7 @@
 ﻿using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISA.Application.API.Controllers;

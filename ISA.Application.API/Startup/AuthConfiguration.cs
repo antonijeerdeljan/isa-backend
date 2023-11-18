@@ -15,9 +15,9 @@ public static class AuthConfiguration
 
     private static void ConfigureAuthentication(IServiceCollection services)
     {
-        var key = Environment.GetEnvironmentVariable("secret") ?? "secret";
-        var issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "validIssuer";
-        var audience = Environment.GetEnvironmentVariable("validAudience") ?? "explorer-front.com";
+        var key = Environment.GetEnvironmentVariable("secret") ?? "secretqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
+        var issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "https://localhost:7109";
+        var audience = Environment.GetEnvironmentVariable("validAudience") ?? "https://localhost:7109";
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -26,11 +26,9 @@ public static class AuthConfiguration
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
                     ValidIssuer = issuer,
                     ValidAudience = audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                 };
 
                 options.Events = new JwtBearerEvents
@@ -52,9 +50,9 @@ public static class AuthConfiguration
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("adminPolicy", policy => policy.RequireRole("Customer"));
-            options.AddPolicy("superAdminPolicy", policy => policy.RequireRole("Corpadmin"));
-            options.AddPolicy("customerPolicy", policy => policy.RequireRole("Sysadmin"));
+            options.AddPolicy("customerPolicy", policy => policy.RequireRole("Customer"));
+            options.AddPolicy("corpAdminPolicy", policy => policy.RequireRole("Corpadmin"));
+            options.AddPolicy("superAdminPolicy", policy => policy.RequireRole("Sysadmin"));
         });
     }
 

@@ -13,8 +13,8 @@ namespace ISA.Core.Infrastructure.Identity.Services;
 public class JwtGenerator : ITokenGenerator
 {
     private readonly string key = Environment.GetEnvironmentVariable("secret") ?? "secretqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
-    private readonly string issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "validIssuer";
-    private readonly string audience = Environment.GetEnvironmentVariable("validAudience") ?? "explorer-front.com";
+    private readonly string issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "https://localhost:7109";
+    private readonly string audience = Environment.GetEnvironmentVariable("validAudience") ?? "https://localhost:7109";
 
     public AuthenticationTokens GenerateAccessToken(string userId, string userRole)
     {

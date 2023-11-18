@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISA.Application.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "corpAdminPolicy")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -29,5 +32,25 @@ namespace ISA.Application.API.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("example")]
+        public IActionResult Example()
+        {
+            // Access the User object which contains claims
+            var userClaims = User.Claims;
+
+            // Find the "role" claim and log its value
+            var roleClaim = userClaims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+            if (roleClaim != null)
+            {
+                var roleValue = roleClaim.Value;
+                // Log or inspect the role value
+                Console.WriteLine($"Role Claim Value: {roleValue}");
+            }
+
+            // Other controller logic
+            return Ok();
+        }
+
     }
 }
