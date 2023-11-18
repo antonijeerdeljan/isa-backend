@@ -2,21 +2,32 @@
 using Microsoft.AspNetCore.Identity;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Exceptions.UserExceptions;
+using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.Entities.User;
+using ISA.Core.Domain.Entities.Token;
 
 namespace ISA.Core.Infrastructure.Identity.Services
 {
     public class IdentityServices : IIdentityServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        //private readonly RoleManager<IdentityRole> _roleManager; // Use IdentityRole here
+        private readonly IUserRepository _userRepository;
+        private readonly ITokenGenerator _tokenGenerator;
 
         public IdentityServices(
             UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager)
+            RoleManager<ApplicationRole> roleManager,
+            SignInManager<ApplicationUser> signInManager,
+            IUserRepository userRepository,
+            ITokenGenerator tokenGenerator)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
+            _userRepository = userRepository;
+            _tokenGenerator = tokenGenerator;
         }
 
         public async Task RegisterUserAsync(Guid id, string email, string password, string roleName)
@@ -40,6 +51,31 @@ namespace ISA.Core.Infrastructure.Identity.Services
             {
                 throw new RegistrationException(ex.Message, ex);
             }
+        }
+
+        public async Task<AuthenticationTokens> LoginAsync(string email, string password, string role)
+        {
+            ApplicationUser? userToSignIn = await _userManager.FindByEmailAsync(email) ??
+                throw new KeyNotFoundException("User with entered email does not exist!");
+
+            var userRole = await _userManager.GetRolesAsync(userToSignIn);
+
+            if (await _userManager.IsInRoleAsync(userToSignIn, userRole[0]) is false)
+                throw new ArgumentException("Not allowed!");
+
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(
+                                                        user: userToSignIn,
+                                                        password,
+                                                        lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+                throw new ArgumentException(result.ToString());
+
+            User user = await _userRepository.GetByIdAsync(userToSignIn.Id);
+
+            return _tokenGenerator.GenerateAccessToken(user.Id.ToString(), userRole[0]);
+
+
         }
 
     }

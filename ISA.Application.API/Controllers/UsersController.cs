@@ -26,4 +26,14 @@ public class UsersController : ControllerBase
                                    registrationRequestModel.PhoneNumber,
                                    IdentityRoles.CUSTOMER);
 
+    [HttpPost("Login")]
+    public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
+    {
+
+        var token = await _userService.LoginAsync(loginRequestModel.Email,
+                                   loginRequestModel.Password,
+                                   IdentityRoles.CUSTOMER);
+        return Ok(token);
+    }
+
 };

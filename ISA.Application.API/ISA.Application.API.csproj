@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
       <PrivateAssets>all</PrivateAssets>
@@ -16,12 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ISA.Core.Domain\ISA.Core.Domain.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Identity\ISA.Core.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Models\Responses\" />
   </ItemGroup>
 
 </Project>

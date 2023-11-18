@@ -12,8 +12,9 @@ public class User : Entity<Guid>
     {
 
     }
-    public User(string firstname, string lastname, Address address, string email, string phoneNumber, DateTime dateOfBirth)
+    public User(Guid id,string firstname, string lastname, Address address, string email, string phoneNumber, DateTime dateOfBirth)
     {
+        Id = id; 
         Firstname = firstname;
         Lastname = lastname;
         Address = address;
