@@ -230,6 +230,29 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>");
 
                     b.HasDiscriminator().HasValue("ApplicationRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
+                            ConcurrencyStamp = "c8665635-d2a2-48e6-a743-8a23e08ff6e0",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
+                            ConcurrencyStamp = "0e1b97fe-9592-4b13-85e2-0f29e83a2e65",
+                            Name = "Corpadmin",
+                            NormalizedName = "CORPADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
+                            ConcurrencyStamp = "85f82108-1855-4628-95a4-5f051f9cde4f",
+                            Name = "Sysadmin",
+                            NormalizedName = "SYSADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

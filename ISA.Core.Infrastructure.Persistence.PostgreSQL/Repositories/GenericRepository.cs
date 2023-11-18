@@ -21,7 +21,7 @@ public class GenericRepository<TEntity, TKey> where TEntity : class
     public async Task AddAsync(TEntity? entity)
     {
         await _dbSet.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        //await _dbContext.SaveChangesAsync();
     }
 
 

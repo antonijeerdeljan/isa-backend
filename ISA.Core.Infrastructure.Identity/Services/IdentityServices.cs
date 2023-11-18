@@ -42,8 +42,8 @@ namespace ISA.Core.Infrastructure.Identity.Services
 
             try
             {
-                if (!await _roleManager.RoleExistsAsync(roleName))
-                    await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });
+                /*if (!await _roleManager.RoleExistsAsync(roleName))
+                    await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });*/
 
                 await _userManager.AddToRoleAsync(newUser, roleName);
             }

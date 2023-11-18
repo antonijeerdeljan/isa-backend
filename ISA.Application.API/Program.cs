@@ -40,7 +40,6 @@ builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
 
 
-
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 {
     o.Password.RequiredLength = 8;
@@ -57,26 +56,19 @@ builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 builder.Services.AddTransient<SignInManager<ApplicationUser>>();
 builder.Services.AddAuthentication();
 
-    /*.AddJwtBearer(configureOptions =>
-    {
-        configureOptions.Events.OnMessageReceived = context =>
-        {
-            context.Token = context.HttpContext.Request.Headers["X-JWT-Assertion"];
-            return Task.CompletedTask;
-        };
-    });*/
-
-
-/*builder.Services.AddAuthorization(options =>
-{
-    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .Build();
-});*/
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    var userService = serviceProvider.GetRequiredService<UserService>();
+
+    var systemAdminCreation = new SystemAdminCreation(userService);
+    systemAdminCreation.CheckForSystemAdmin().Wait();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -85,9 +77,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 
 app.MapControllers();
