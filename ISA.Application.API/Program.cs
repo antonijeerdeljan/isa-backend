@@ -9,25 +9,22 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.ConfigureAuth();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.ConfigureSwagger(builder.Configuration);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+
 
 var connectionString = builder.Configuration.GetConnectionString("ISADB");
 builder.Services.AddDbContext<IsaDbContext>(options =>
     options.UseNpgsql(connectionString,
         npgsqlOptions => npgsqlOptions.MigrationsAssembly("ISA.Application.API"))); // Specify the assembly containing migrations
-
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("ISA.Core.Infrastructure.Identity")));
@@ -59,6 +56,24 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 builder.Services.AddTransient<SignInManager<ApplicationUser>>();
 builder.Services.AddAuthentication();
+
+    /*.AddJwtBearer(configureOptions =>
+    {
+        configureOptions.Events.OnMessageReceived = context =>
+        {
+            context.Token = context.HttpContext.Request.Headers["X-JWT-Assertion"];
+            return Task.CompletedTask;
+        };
+    });*/
+
+
+/*builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .Build();
+});*/
 
 
 var app = builder.Build();

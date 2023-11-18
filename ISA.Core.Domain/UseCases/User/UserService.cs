@@ -43,8 +43,8 @@ public class UserService
 
     }
 
-    public async Task<AuthenticationTokens> LoginAsync(string email, string password, string role)
+    public async Task<AuthenticationTokens> LoginAsync(string email, string password)
     {
-        return await _identityService.LoginAsync(email, password, role);
+        return await _identityService.LoginAsync(email, password);
     }
 }

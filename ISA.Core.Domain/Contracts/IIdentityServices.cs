@@ -6,6 +6,6 @@ public interface IIdentityServices
 {
     public Task RegisterUserAsync(Guid id, string email, string password, string userRole);
 
-    public Task<AuthenticationTokens> LoginAsync(string email, string password, string role);
+    public Task<AuthenticationTokens> LoginAsync(string email, string password);
 
 }

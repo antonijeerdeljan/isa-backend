@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -43,6 +44,13 @@ public static class AuthConfiguration
                         return Task.CompletedTask;
                     }
                 };
+
+                options.Events.OnMessageReceived = context =>
+                {
+                    context.Token = context.HttpContext.Request.Headers["X-JWT-Assertion"];
+                    return Task.CompletedTask;
+                };
+
             });
     }
 

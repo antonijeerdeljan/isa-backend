@@ -53,7 +53,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
             }
         }
 
-        public async Task<AuthenticationTokens> LoginAsync(string email, string password, string role)
+        public async Task<AuthenticationTokens> LoginAsync(string email, string password)
         {
             ApplicationUser? userToSignIn = await _userManager.FindByEmailAsync(email) ??
                 throw new KeyNotFoundException("User with entered email does not exist!");
