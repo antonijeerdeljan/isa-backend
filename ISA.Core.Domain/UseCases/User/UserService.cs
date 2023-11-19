@@ -3,8 +3,6 @@ using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
-using Microsoft.AspNet.Identity;
-using System.Runtime.CompilerServices;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -14,6 +12,15 @@ public class UserService
     private readonly IUserRepository _userRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
+
+
+    public UserService(IIdentityServices identityServices, IUserRepository userRepository, IISAUnitOfWork isaUnitOfWork)
+    {
+        _identityService = identityServices;
+        _userRepository = userRepository;
+        _isaUnitOfWork = isaUnitOfWork;
+    }
+
 
 	public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, IISAUnitOfWork isaUnitOfWork)
 	{
@@ -33,11 +40,15 @@ public class UserService
                                string? profession,
                                string? companyInfo,
                                string userRole)
+
     {
         Guid newUserId = Guid.NewGuid();
 
         await _isaUnitOfWork.StartTransactionAsync();
-        Entities.User.User newUser = new(newUserId,firstName, lastName, address, email, phoneNumber, birthDate);
+
+
+        Entities.User.User newUser = new(newUserId, firstName, lastName, address, email, phoneNumber, birthDate);
+
 
         try
         {
@@ -52,7 +63,7 @@ public class UserService
             await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
 
         }

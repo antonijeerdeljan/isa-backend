@@ -3,6 +3,7 @@ using System;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    partial class IsaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119145657_aa")]
+    partial class aa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,33 +89,19 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ZipCode")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CompanyInfo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Profession")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>
@@ -165,16 +154,15 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
                 });
 
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("ISA.Core.Domain.Entities.User.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("ISA.Core.Domain.Entities.Company.Company", "AddresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>

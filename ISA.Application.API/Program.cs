@@ -1,6 +1,7 @@
 using ISA.Application.API.Startup;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
 using ISA.Core.Infrastructure.Identity.Entities;
@@ -31,13 +32,18 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
+
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
 builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 
 
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
 
 
