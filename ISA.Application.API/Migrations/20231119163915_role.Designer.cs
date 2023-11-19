@@ -3,6 +3,7 @@ using System;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    partial class IsaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119163915_role")]
+    partial class role
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,60 +25,9 @@ namespace ISA.Application.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Appointment");
-                });
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AddresId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("AverageGrade")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddresId")
-                        .IsUnique();
-
-                    b.ToTable("Companies");
-                });
-
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Address", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("City")
@@ -121,12 +73,6 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AddresId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
 
@@ -148,23 +94,17 @@ namespace ISA.Application.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddresId")
-                        .IsUnique();
-
-                    b.HasIndex("CompanyId");
-
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.Address", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
-                        .WithMany("Appointments")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("ISA.Core.Domain.Entities.User.User", null)
+                        .WithOne("Address")
+                        .HasForeignKey("ISA.Core.Domain.Entities.User.Address", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
@@ -179,24 +119,8 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.User.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("ISA.Core.Domain.Entities.User.User", "AddresId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Navigation("Address")
                         .IsRequired();
-
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
-                        .WithMany("Admins")
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
-                {
-                    b.Navigation("Admins");
-
-                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

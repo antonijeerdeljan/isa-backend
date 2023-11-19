@@ -7,11 +7,13 @@ public class User : Entity<Guid>
     public Address Address { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public DateTime DateOfBirth { get; set; }
 
     public Guid AddresId { get; set; }
 
     public Guid? CompanyId {  get; set; }
+
+    public DateTime DateOfBirth { get; set;}
+
     public User()
     {
 
@@ -26,5 +28,20 @@ public class User : Entity<Guid>
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
         AddresId = address.Id;
+    }
+
+    public void Update(string? name, string? lastname, string? phoneNumber, DateTime? dateOfBirth)
+    {
+        if (name != null)
+            Firstname = name;
+
+        if (lastname != null)
+            Lastname = lastname;
+
+        if (phoneNumber != null)
+            PhoneNumber = phoneNumber;
+
+        if (dateOfBirth != null)
+            DateOfBirth = (DateTime)dateOfBirth;
     }
 }

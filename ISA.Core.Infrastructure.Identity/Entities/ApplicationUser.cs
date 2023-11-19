@@ -11,5 +11,10 @@ namespace ISA.Core.Infrastructure.Identity.Entities
             UserName = email;
             EmailConfirmed = false;
         }
+
+        public ApplicationUser()
+        {
+
+        }
     }
 }

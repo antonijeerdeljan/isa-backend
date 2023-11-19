@@ -35,16 +35,12 @@ namespace ISA.Core.Infrastructure.Identity.Services
             ApplicationUser newUser = new ApplicationUser(id, email);
 
             IdentityResult registrationResult = await _userManager.CreateAsync(newUser, password);
+
             if (!registrationResult.Succeeded)
-            {
                 throw new ArgumentException(registrationResult.ToString());
-            }
 
             try
             {
-                if (!await _roleManager.RoleExistsAsync(roleName))
-                    await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });
-
                 await _userManager.AddToRoleAsync(newUser, roleName);
             }
             catch (Exception ex)
@@ -71,9 +67,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (!result.Succeeded)
                 throw new ArgumentException(result.ToString());
 
-            User user = await _userRepository.GetByIdAsync(userToSignIn.Id);
-
-            return _tokenGenerator.GenerateAccessToken(user.Id.ToString(), userRole[0]);
+            return _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
 
 
         }

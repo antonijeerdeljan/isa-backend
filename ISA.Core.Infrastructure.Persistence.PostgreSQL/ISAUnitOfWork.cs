@@ -19,7 +19,13 @@ public class ISAUnitOfWork : IISAUnitOfWork
 
     public async Task SaveAndCommitChangesAsync()
     {
-        await _isaDbContext.SaveChangesAsync();
+        try {
+            await _isaDbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
         await _isaDbContext.Database.CommitTransactionAsync();
     }
 }

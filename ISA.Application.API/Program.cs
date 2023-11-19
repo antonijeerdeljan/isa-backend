@@ -32,7 +32,11 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+
 builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
+
+builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
 builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
@@ -60,26 +64,18 @@ builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 builder.Services.AddTransient<SignInManager<ApplicationUser>>();
 builder.Services.AddAuthentication();
 
-    /*.AddJwtBearer(configureOptions =>
-    {
-        configureOptions.Events.OnMessageReceived = context =>
-        {
-            context.Token = context.HttpContext.Request.Headers["X-JWT-Assertion"];
-            return Task.CompletedTask;
-        };
-    });*/
-
-
-/*builder.Services.AddAuthorization(options =>
-{
-    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .Build();
-});*/
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    var userService = serviceProvider.GetRequiredService<UserService>();
+
+    await userService.CheckForSystemAdmin();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -88,9 +84,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 
 app.MapControllers();
