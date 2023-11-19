@@ -69,8 +69,7 @@ using (var scope = app.Services.CreateScope())
 
     var userService = serviceProvider.GetRequiredService<UserService>();
 
-    var systemAdminCreation = new SystemAdminCreation(userService);
-    systemAdminCreation.CheckForSystemAdmin().Wait();
+    await userService.CheckForSystemAdmin();
 }
 
 if (app.Environment.IsDevelopment())

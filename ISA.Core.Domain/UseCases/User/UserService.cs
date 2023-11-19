@@ -58,7 +58,24 @@ public class UserService
         }
 
     }
-
+    public async Task CheckForSystemAdmin()
+    {
+        Address address = new Address
+        {
+            Id = Guid.NewGuid(),
+            Country = "srbija",
+            City = "zrenjanin"
+        };
+        await AddAsync("admin@gmail.com", 
+                       "Admin123!", 
+                       "admin", 
+                       "admin", 
+                       address,DateTime.Now.ToUniversalTime(),
+                       "123123123",
+                       null,
+                       null,
+                       "Sysadmin");
+    }
 
     public async Task<AuthenticationTokens> LoginAsync(string email, string password)
     {

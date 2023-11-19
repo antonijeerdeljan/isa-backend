@@ -2,9 +2,8 @@
 
 namespace ISA.Core.Domain.Entities.User;
 
-public class Address
+public class Address : Entity<Guid>
 {
-    public Guid Id { get; set; }
     public string Country { get; set; }
     public string City { get; set; }
     public Address()

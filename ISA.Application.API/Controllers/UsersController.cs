@@ -34,20 +34,6 @@ public class UsersController : ControllerBase
                                    registrationRequestModel.CompanyInfo,
                                    IdentityRoles.CUSTOMER);
 
-    /*[HttpPost("Register")]
-    public async Task RegisterCustomer([FromBody] RegistrationRequestModel registrationRequestModel)
-    => await _userService.AddAsync(registrationRequestModel.Email,
-                                   registrationRequestModel.Password,
-                                   registrationRequestModel.Firstname,
-                                   registrationRequestModel.Lastname,
-                                   registrationRequestModel.Address,
-                                   registrationRequestModel.DateOfBirth,
-                                   registrationRequestModel.PhoneNumber,
-                                   IdentityRoles.CUSTOMER);*/
-
-
-
-
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
     {

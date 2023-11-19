@@ -1,8 +1,7 @@
 ﻿namespace ISA.Core.Domain.Entities.User;
 
-public class Customer
+public class Customer : Entity<Guid>
 {
-    public Guid Id { get; set; }
     public string Profession { get; set; }
     public string CompanyInfo { get; set; }
     public User User { get; set; }
