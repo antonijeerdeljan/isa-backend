@@ -24,5 +24,27 @@ public class GenericRepository<TEntity, TKey> where TEntity : class
         //await _dbContext.SaveChangesAsync();
     }
 
+    public async Task SaveAsync()
+    {
+        try
+        {
+        await _dbContext.SaveChangesAsync();
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    public void Update(TEntity entity)
+    {
+        try
+        {
+        _dbContext.Update(entity);
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
 
 }

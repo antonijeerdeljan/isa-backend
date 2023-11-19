@@ -22,4 +22,19 @@ public class User : Entity<Guid>
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
     }
+
+    public void Update(string? name, string? lastname, string? phoneNumber, DateTime? dateOfBirth)
+    {
+        if (name != null)
+            Firstname = name;
+
+        if (lastname != null)
+            Lastname = lastname;
+
+        if (phoneNumber != null)
+            PhoneNumber = phoneNumber;
+
+        if (dateOfBirth != null)
+            DateOfBirth = (DateTime)dateOfBirth;
+    }
 }

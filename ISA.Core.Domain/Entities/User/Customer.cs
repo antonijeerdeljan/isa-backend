@@ -11,8 +11,9 @@ public class Customer : Entity<Guid>
 
     }
 
-    public Customer(string profession, string companyInfo, User user)
+    public Customer(Guid id,string profession, string companyInfo, User user)
     {
+        Id = Id;
         Profession = profession;
         CompanyInfo = companyInfo;
         User = user;

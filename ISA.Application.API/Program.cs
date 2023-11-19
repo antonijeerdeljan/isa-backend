@@ -39,7 +39,6 @@ builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
-//builder.Services.AddTransient<IsaDbContext>();
 
 
 

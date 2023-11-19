@@ -45,7 +45,7 @@ public class UserService
 
             if(profession!= null && companyInfo != null)
             {
-                Entities.User.Customer customer = new(profession,companyInfo,newUser);
+                Entities.User.Customer customer = new(newUserId,profession, companyInfo,newUser);
                 await _customerRepository.AddAsync(customer);
             }
 
@@ -80,5 +80,18 @@ public class UserService
     public async Task<AuthenticationTokens> LoginAsync(string email, string password)
     {
         return await _identityService.LoginAsync(email, password);
+    }
+
+    public async Task<Entities.User.User> GetUserById(Guid id)
+    {
+        return await _userRepository.GetByIdAsync(id);
+    }
+
+    public async Task UpdateUserAsync(Guid guid, string? name, string? lastname, string? phoneNumber, DateTime? dateOfBirth) 
+    {
+        Entities.User.User userToUpdate = await GetUserById(guid);
+        userToUpdate.Update(name, lastname, phoneNumber, dateOfBirth);
+        await _userRepository.SaveAsync();
+
     }
 }

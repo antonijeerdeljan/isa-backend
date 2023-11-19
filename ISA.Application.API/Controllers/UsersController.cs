@@ -1,6 +1,7 @@
 ﻿using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,25 @@ public class UsersController : ControllerBase
 
 
         return Ok(token);
+    }
+
+    [HttpPost("EditProfile")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Policy = "superAdminPolicy")]
+    [Authorize(Policy = "allowAllPolicy")]
+    //[Authorize(Policy = "corpAdminPolicy")]
+    public async Task<IActionResult> EditProfile([FromBody] EditProfileRequestModel editProfileRequestModel)
+    {
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value); // TO DO: Make as exstension method
+
+        await _userService.UpdateUserAsync(id,
+                                           editProfileRequestModel.Name,
+                                           editProfileRequestModel.Lastname,
+                                           editProfileRequestModel.PhoneNumber,
+                                           editProfileRequestModel.DateOfBirth);
+
+
+        return Ok();
     }
 
 

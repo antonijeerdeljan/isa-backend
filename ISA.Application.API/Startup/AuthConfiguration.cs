@@ -61,6 +61,16 @@ public static class AuthConfiguration
             options.AddPolicy("customerPolicy", policy => policy.RequireRole("Customer"));
             options.AddPolicy("corpAdminPolicy", policy => policy.RequireRole("Corpadmin"));
             options.AddPolicy("superAdminPolicy", policy => policy.RequireRole("Sysadmin"));
+
+            options.AddPolicy("allowAllPolicy", policy =>
+            {
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole("Customer") ||
+                    context.User.IsInRole("Corpadmin") ||
+                    context.User.IsInRole("Sysadmin")
+                );
+            });
+
         });
     }
 
