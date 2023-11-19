@@ -33,29 +33,6 @@ public class UsersController : ControllerBase
                                    IdentityRoles.CUSTOMER);
 
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "customerPolicy")]
-    [HttpPost("RegisterCorpAdmin")]
-    public async Task RegisterCorpAdmin([FromBody] RegistrationRequestModel registrationRequestModel)
-    => await _userService.AddAsync(registrationRequestModel.Email,
-                                   registrationRequestModel.Password,
-                                   registrationRequestModel.Firstname,
-                                   registrationRequestModel.Lastname,
-                                   registrationRequestModel.Address,
-                                   registrationRequestModel.DateOfBirth,
-                                   registrationRequestModel.PhoneNumber,
-                                   IdentityRoles.CORPADMIN);
-
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "customerPolicy")]
-    [HttpPost("RegisterSystemAdmin")]
-    public async Task RegisterSystemAdmin([FromBody] RegistrationRequestModel registrationRequestModel)
-    => await _userService.AddAsync(registrationRequestModel.Email,
-                                   registrationRequestModel.Password,
-                                   registrationRequestModel.Firstname,
-                                   registrationRequestModel.Lastname,
-                                   registrationRequestModel.Address,
-                                   registrationRequestModel.DateOfBirth,
-                                   registrationRequestModel.PhoneNumber,
-                                   IdentityRoles.SYSADMIN);
 
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)

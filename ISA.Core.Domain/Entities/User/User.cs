@@ -8,6 +8,10 @@ public class User : Entity<Guid>
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public DateTime DateOfBirth { get; set; }
+
+    public Guid AddresId { get; set; }
+
+    public Guid? CompanyId {  get; set; }
     public User()
     {
 
@@ -21,5 +25,6 @@ public class User : Entity<Guid>
         Email = email;
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
+        AddresId = address.Id;
     }
 }
