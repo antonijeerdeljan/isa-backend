@@ -41,6 +41,7 @@ public class SystemAdminController : ControllerBase
                                        registrationRequestModel.Address,
                                        registrationRequestModel.DateOfBirth,
                                        registrationRequestModel.PhoneNumber,
+                                       null,null,
                                        role);
         else
             throw new RoleException("Invalid role detected.");

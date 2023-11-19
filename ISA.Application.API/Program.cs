@@ -31,6 +31,7 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
 builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();

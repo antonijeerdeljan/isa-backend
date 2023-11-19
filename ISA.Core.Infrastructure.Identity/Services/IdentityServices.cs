@@ -35,16 +35,12 @@ namespace ISA.Core.Infrastructure.Identity.Services
             ApplicationUser newUser = new ApplicationUser(id, email);
 
             IdentityResult registrationResult = await _userManager.CreateAsync(newUser, password);
+
             if (!registrationResult.Succeeded)
-            {
                 throw new ArgumentException(registrationResult.ToString());
-            }
 
             try
             {
-                /*if (!await _roleManager.RoleExistsAsync(roleName))
-                    await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });*/
-
                 await _userManager.AddToRoleAsync(newUser, roleName);
             }
             catch (Exception ex)

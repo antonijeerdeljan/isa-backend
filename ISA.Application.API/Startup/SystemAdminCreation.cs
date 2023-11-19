@@ -19,15 +19,12 @@ public class SystemAdminCreation
             Password = "Admin123!",
             Firstname = "admin",
             Lastname = "admin",
-            DateOfBirth = DateTime.Now,
+            DateOfBirth = DateTime.Now.ToUniversalTime(),
             Address = new Address
             {
                 Id = Guid.NewGuid(),
                 Country = "srbija",
-                City = "zrenjanin",
-                Street = "njegoseva",
-                Number = 23,
-                ZipCode = 23000
+                City = "zrenjanin"
             },
             PhoneNumber = "1231231232"
         };
@@ -43,16 +40,9 @@ public class SystemAdminCreation
                                         registrationRequestModel.Address,
                                         registrationRequestModel.DateOfBirth,
                                         registrationRequestModel.PhoneNumber,
+                                        null,null,
                                         "Sysadmin");
-            //email, firstName, lastName, address, birthDate, phoneNumber
 
-/*
-            await _userService.CreateUser(registrationRequestModel.Email,
-                                    registrationRequestModel.Firstname,
-                                    registrationRequestModel.Lastname,
-                                    registrationRequestModel.Address,
-                                    registrationRequestModel.DateOfBirth,
-                                    registrationRequestModel.PhoneNumber);*/
         }catch(Exception ex) {
             Console.WriteLine(ex.ToString());
         }
