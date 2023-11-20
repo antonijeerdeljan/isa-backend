@@ -65,6 +65,12 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -235,21 +241,21 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "c8665635-d2a2-48e6-a743-8a23e08ff6e0",
+                            ConcurrencyStamp = "c24e2409-191d-40be-b33a-dad77b81b45c",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "0e1b97fe-9592-4b13-85e2-0f29e83a2e65",
+                            ConcurrencyStamp = "4c9e17e6-d6f5-43ac-9e9c-2affc5c47954",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "85f82108-1855-4628-95a4-5f051f9cde4f",
+                            ConcurrencyStamp = "e0ff862b-e3a4-4bda-97c6-9cdfa0e47fc1",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });

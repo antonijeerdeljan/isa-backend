@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class RefreshToken : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,8 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -165,9 +167,9 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "0e1b97fe-9592-4b13-85e2-0f29e83a2e65", "ApplicationRole", "Corpadmin", "CORPADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "85f82108-1855-4628-95a4-5f051f9cde4f", "ApplicationRole", "Sysadmin", "SYSADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "c8665635-d2a2-48e6-a743-8a23e08ff6e0", "ApplicationRole", "Customer", "CUSTOMER" }
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "4c9e17e6-d6f5-43ac-9e9c-2affc5c47954", "ApplicationRole", "Corpadmin", "CORPADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "e0ff862b-e3a4-4bda-97c6-9cdfa0e47fc1", "ApplicationRole", "Sysadmin", "SYSADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "c24e2409-191d-40be-b33a-dad77b81b45c", "ApplicationRole", "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

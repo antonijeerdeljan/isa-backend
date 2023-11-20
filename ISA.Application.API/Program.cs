@@ -62,7 +62,9 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 
 builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 builder.Services.AddTransient<SignInManager<ApplicationUser>>();
+
 builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 
 
@@ -84,6 +86,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

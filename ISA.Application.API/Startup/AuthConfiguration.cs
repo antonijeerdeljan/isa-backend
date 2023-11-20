@@ -17,19 +17,20 @@ public static class AuthConfiguration
     private static void ConfigureAuthentication(IServiceCollection services)
     {
         var key = Environment.GetEnvironmentVariable("secret") ?? "secretqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
-        var issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "https://localhost:7109";
-        var audience = Environment.GetEnvironmentVariable("validAudience") ?? "https://localhost:7109";
+        var issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "localhost";
+        var audience = Environment.GetEnvironmentVariable("validAudience") ?? "localhost";
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = issuer,
-                    ValidAudience = audience,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
 
                 options.Events = new JwtBearerEvents
