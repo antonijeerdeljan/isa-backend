@@ -27,7 +27,6 @@ public class User : Entity<Guid>
         Email = email;
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
-        AddresId = address.Id;
     }
 
     public void Update(string? name, string? lastname, string? phoneNumber, DateTime? dateOfBirth)

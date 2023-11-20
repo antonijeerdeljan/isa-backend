@@ -52,6 +52,7 @@ public class UserService
 
         try
         {
+            await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
             await _userRepository.AddAsync(newUser);
 
             if(profession!= null && companyInfo != null)
@@ -60,7 +61,6 @@ public class UserService
                 await _customerRepository.AddAsync(customer);
             }
 
-            await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
         catch (Exception ex)

@@ -165,6 +165,16 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.User.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("ISA.Core.Domain.Entities.Company.Company", "AddresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {

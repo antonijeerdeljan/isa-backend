@@ -20,7 +20,14 @@ public class GenericRepository<TEntity, TKey> where TEntity : class
 
     public async Task AddAsync(TEntity? entity)
     {
+        try
+        {
+
         await _dbSet.AddAsync(entity);
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
         //await _dbContext.SaveChangesAsync();
     }
 

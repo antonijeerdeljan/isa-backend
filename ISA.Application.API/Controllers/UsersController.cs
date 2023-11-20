@@ -48,9 +48,7 @@ public class UsersController : ControllerBase
 
     [HttpPost("EditProfile")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    //[Authorize(Policy = "superAdminPolicy")]
     [Authorize(Policy = "allowAllPolicy")]
-    //[Authorize(Policy = "corpAdminPolicy")]
     public async Task<IActionResult> EditProfile([FromBody] EditProfileRequestModel editProfileRequestModel)
     {
         Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value); // TO DO: Make as exstension method
