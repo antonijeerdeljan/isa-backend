@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestSharp;
+using System.Net;
 using System.Security.Claims;
 
 namespace ISA.Application.API.Controllers;
@@ -38,12 +40,20 @@ public class UsersController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
     {
-        //string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var token = await _userService.LoginAsync(loginRequestModel.Email,
                                    loginRequestModel.Password);
 
+        var cookieOptions = new CookieOptions
+        {
+            Path = "/",
+            HttpOnly = true,
+            IsEssential = true, 
+            Expires = token.RefreshToken.ExpirationDate 
+        };
 
-        return Ok(token);
+        Response.Cookies.Append("RefreshToken", token.RefreshToken.Id.ToString(), cookieOptions);
+
+        return Ok(token.AuthToken);
     }
 
     [HttpPost("EditProfile")]

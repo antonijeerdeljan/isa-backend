@@ -42,6 +42,7 @@ builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 
 
+
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();

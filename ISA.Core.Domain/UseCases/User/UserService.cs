@@ -88,7 +88,7 @@ public class UserService
                        "Sysadmin");
     }
 
-    public async Task<AuthenticationTokens> LoginAsync(string email, string password)
+    public async Task<LoginCookie> LoginAsync(string email, string password)
     {
         return await _identityService.LoginAsync(email, password);
     }

@@ -30,6 +30,14 @@ namespace ISA.Core.Infrastructure.Identity.Services
             _tokenGenerator = tokenGenerator;
         }
 
+        private RefreshToken GenerateRefreshToken()
+        {
+            RefreshToken refreshToken = new RefreshToken();
+            refreshToken.Id = Guid.NewGuid();
+            refreshToken.ExpirationDate = DateTime.UtcNow.AddDays(30);
+            return refreshToken;
+        }
+
         public async Task RegisterUserAsync(Guid id, string email, string password, string roleName)
         {
             ApplicationUser newUser = new ApplicationUser(id, email);
@@ -49,7 +57,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
             }
         }
 
-        public async Task<AuthenticationTokens> LoginAsync(string email, string password)
+        public async Task<LoginCookie> LoginAsync(string email, string password)
         {
             ApplicationUser? userToSignIn = await _userManager.FindByEmailAsync(email) ??
                 throw new KeyNotFoundException("User with entered email does not exist!");
@@ -67,10 +75,27 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (!result.Succeeded)
                 throw new ArgumentException(result.ToString());
 
-            return _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
+            AuthenticationTokens token = new();
+            LoginCookie loginCookie = new LoginCookie();
 
+            try
+            {
+                token = _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
+                var refreshToken = GenerateRefreshToken();
+                userToSignIn.RefreshToken = refreshToken.Id;
+                userToSignIn.RefreshTokenExpirationDate = refreshToken.ExpirationDate;
+                await _userManager.UpdateAsync(userToSignIn);
+                loginCookie.AuthToken = token;
+                loginCookie.RefreshToken = refreshToken;
+            }
+            catch(Exception ex)
+            {
+                
+            }
+            return loginCookie;
 
         }
 
+       
     }
 }

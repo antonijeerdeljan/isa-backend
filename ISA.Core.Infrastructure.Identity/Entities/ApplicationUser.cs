@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ISA.Core.Domain.Entities.Token;
+using Microsoft.AspNetCore.Identity;
 
 namespace ISA.Core.Infrastructure.Identity.Entities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
 
-        public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public Guid? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpirationDate { get; set; }
 
         public ApplicationUser(Guid id, string email)
         {

@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 

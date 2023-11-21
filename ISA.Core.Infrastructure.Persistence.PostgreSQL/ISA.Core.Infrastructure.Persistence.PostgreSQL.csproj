@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ISA.Core.Domain\ISA.Core.Domain.csproj" />
+    <ProjectReference Include="..\ISA.Core.Infrastructure.Identity\ISA.Core.Infrastructure.Identity.csproj" />
   </ItemGroup>
 
 </Project>
