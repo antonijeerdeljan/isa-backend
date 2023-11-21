@@ -57,6 +57,17 @@ namespace ISA.Core.Infrastructure.Identity.Services
             }
         }
 
+        public async Task<bool> VerifyRefreshToken(string userId, string refreshToken)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            return (user.RefreshToken == Guid.Parse(refreshToken)) ? true : false;
+        }
+
+        public AuthenticationTokens GenerateNewJWT(string userId, string userRole)
+        {
+            return _tokenGenerator.GenerateAccessToken(userId, userRole);
+        }
+
         public async Task<LoginCookie> LoginAsync(string email, string password)
         {
             ApplicationUser? userToSignIn = await _userManager.FindByEmailAsync(email) ??
@@ -78,12 +89,13 @@ namespace ISA.Core.Infrastructure.Identity.Services
             AuthenticationTokens token = new();
             LoginCookie loginCookie = new LoginCookie();
 
+            token = _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
+            var refreshToken = GenerateRefreshToken();
+            userToSignIn.RefreshToken = refreshToken.Id;
+            userToSignIn.RefreshTokenExpirationDate = refreshToken.ExpirationDate;
+
             try
             {
-                token = _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
-                var refreshToken = GenerateRefreshToken();
-                userToSignIn.RefreshToken = refreshToken.Id;
-                userToSignIn.RefreshTokenExpirationDate = refreshToken.ExpirationDate;
                 await _userManager.UpdateAsync(userToSignIn);
                 loginCookie.AuthToken = token;
                 loginCookie.RefreshToken = refreshToken;

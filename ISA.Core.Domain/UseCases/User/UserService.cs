@@ -3,6 +3,7 @@ using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
+using System.Runtime.CompilerServices;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -96,6 +97,17 @@ public class UserService
     public async Task<Entities.User.User> GetUserById(Guid id)
     {
         return await _userRepository.GetByIdAsync(id);
+    }
+
+    public async Task<bool> IsRefreshTokenValid(string userId, string refreshToken)
+    {
+        return await _identityService.VerifyRefreshToken(userId, refreshToken);
+    }
+
+
+    public AuthenticationTokens GenerateNewJWT(string userId, string role)
+    {
+        return _identityService.GenerateNewJWT(userId, role);
     }
 
     public async Task UpdateUserAsync(Guid guid, string? name, string? lastname, string? phoneNumber, DateTime? dateOfBirth) 

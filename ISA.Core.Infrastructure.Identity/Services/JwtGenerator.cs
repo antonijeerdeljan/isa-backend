@@ -27,7 +27,7 @@ public class JwtGenerator : ITokenGenerator
             new(ClaimTypes.Role, userRole)
         };
 
-        var jwt = CreateToken(claims, 5);
+        var jwt = CreateToken(claims, 1);
         authenticationResponse.Id = userId;
         authenticationResponse.AccessToken = jwt;
 

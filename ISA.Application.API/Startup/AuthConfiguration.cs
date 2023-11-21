@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using ISA.Core.Domain.UseCases.User;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
 
 namespace ISA.Application.API.Startup;
@@ -35,14 +40,56 @@ public static class AuthConfiguration
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
+                    OnAuthenticationFailed = async context =>
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                        var serviceProvider = services.BuildServiceProvider();
+                        var userService = serviceProvider.GetRequiredService<UserService>();
+
+                        var userId = string.Empty;
+                        var userRole = string.Empty;
+
+                        if (!string.IsNullOrEmpty(token))
                         {
-                            context.Response.Headers.Add("AuthenticationTokens-Expired", "true");
+                            // Attempt to parse the token claims without validation
+                            var tokenHandler = new JwtSecurityTokenHandler();
+                            var tokenClaims = tokenHandler.ReadJwtToken(token)?.Payload;
+
+                            if (tokenClaims != null)
+                            {
+                                // Extract any available information from the token claims
+                                userId = tokenClaims.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                                userRole = tokenClaims.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
+
+
+
+                                if (!string.IsNullOrEmpty(userId))
+                                {
+                                    // Use the retrieved information if available
+                                    Console.WriteLine($"User ID from failed token: {userId}");
+                                    // Perform additional actions or logging with this information
+                                }
+                            }
                         }
 
-                        return Task.CompletedTask;
+
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            var refreshToken = context.HttpContext.Request.Cookies["RefreshToken"];
+                            if (!string.IsNullOrEmpty(refreshToken))
+                            {
+                                // Check and validate the refresh token
+                                bool isRefreshTokenValid = await userService.IsRefreshTokenValid(userId,refreshToken); // Implement your validation logic
+
+                                if (isRefreshTokenValid)
+                                {
+                                    var newJwt = userService.GenerateNewJWT(userId, userRole);
+                                    context.Response.Headers.Add("X-New-Token", newJwt.AccessToken);
+                                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden; // Use 403 status code
+                                    return;
+                                }
+                            }
+                        }
                     }
                 };
 

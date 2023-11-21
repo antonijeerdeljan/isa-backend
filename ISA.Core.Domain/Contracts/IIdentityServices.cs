@@ -8,4 +8,8 @@ public interface IIdentityServices
 
     public Task<LoginCookie> LoginAsync(string email, string password);
 
+    public Task<bool> VerifyRefreshToken(string id, string token);
+
+    public AuthenticationTokens GenerateNewJWT(string userId, string userRole);
+
 }
