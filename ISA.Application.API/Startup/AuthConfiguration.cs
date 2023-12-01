@@ -51,26 +51,20 @@ public static class AuthConfiguration
 
                         if (!string.IsNullOrEmpty(token))
                         {
-                            // Attempt to parse the token claims without validation
                             var tokenHandler = new JwtSecurityTokenHandler();
                             var tokenClaims = tokenHandler.ReadJwtToken(token)?.Payload;
 
                             if (tokenClaims != null)
                             {
-                                // Extract any available information from the token claims
                                 userId = tokenClaims.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
                                 userRole = tokenClaims.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
 
-
-
-                                if (!string.IsNullOrEmpty(userId))
-                                {
-                                    // Use the retrieved information if available
-                                    Console.WriteLine($"User ID from failed token: {userId}");
-                                    // Perform additional actions or logging with this information
-                                }
+                                if (!string.IsNullOrEmpty(userId) || !string.IsNullOrEmpty(userRole))
+                                    return;
                             }
                         }
+                        else
+                            return;
 
 
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
@@ -79,13 +73,13 @@ public static class AuthConfiguration
                             if (!string.IsNullOrEmpty(refreshToken))
                             {
                                 // Check and validate the refresh token
-                                bool isRefreshTokenValid = await userService.IsRefreshTokenValid(userId,refreshToken); // Implement your validation logic
+                                bool isRefreshTokenValid = await userService.IsRefreshTokenValid(userId,refreshToken); 
 
                                 if (isRefreshTokenValid)
                                 {
                                     var newJwt = userService.GenerateNewJWT(userId, userRole);
                                     context.Response.Headers.Add("X-New-Token", newJwt.AccessToken);
-                                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden; // Use 403 status code
+                                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                                     return;
                                 }
                             }
