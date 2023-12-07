@@ -78,16 +78,15 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (await _userManager.IsInRoleAsync(userToSignIn, userRole[0]) is false)
                 throw new ArgumentException("Not allowed!");
 
-            if (await _userManager.IsEmailConfirmedAsync(userToSignIn) is false)
-                throw new ArgumentException("Email not confirmed!");
-
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(
                                                         user: userToSignIn,
                                                         password,
                                                         lockoutOnFailure: false);
-
             if (!result.Succeeded)
                 throw new ArgumentException(result.ToString());
+
+            await _signInManager.SignInAsync(userToSignIn, false);
+            
 
             AuthenticationTokens token = new();
             LoginCookie loginCookie = new LoginCookie();
@@ -105,8 +104,10 @@ namespace ISA.Core.Infrastructure.Identity.Services
             }
             catch(Exception ex)
             {
-                
+                throw new InvalidOperationException("Unable to login");
             }
+            loginCookie.AuthToken = token;
+            loginCookie.RefreshToken = refreshToken;
             return loginCookie;
 
         }
