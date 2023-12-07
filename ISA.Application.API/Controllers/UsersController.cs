@@ -1,14 +1,10 @@
 ﻿using ISA.Application.API.Models.Requests;
+using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestSharp;
-using System.Net;
-using System.Security.Claims;
 
 namespace ISA.Application.API.Controllers;
 
@@ -30,7 +26,8 @@ public class UsersController : ControllerBase
                                    registrationRequestModel.Password,
                                    registrationRequestModel.Firstname,
                                    registrationRequestModel.Lastname,
-                                   registrationRequestModel.Address,
+                                   registrationRequestModel.City,
+                                   registrationRequestModel.Country,
                                    registrationRequestModel.DateOfBirth,
                                    registrationRequestModel.PhoneNumber,
                                    registrationRequestModel.Profession,
@@ -40,8 +37,14 @@ public class UsersController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
     {
-        var token = await _userService.LoginAsync(loginRequestModel.Email,
-                                   loginRequestModel.Password);
+        var token = new LoginCookie();
+        try
+        {
+            token = await _userService.LoginAsync(loginRequestModel.Email, loginRequestModel.Password);
+        }catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
         var cookieOptions = new CookieOptions
         {
@@ -68,8 +71,6 @@ public class UsersController : ControllerBase
                                            editProfileRequestModel.Lastname,
                                            editProfileRequestModel.PhoneNumber,
                                            editProfileRequestModel.DateOfBirth);
-
-
         return Ok();
     }
 

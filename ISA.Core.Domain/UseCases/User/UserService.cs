@@ -35,7 +35,8 @@ public class UserService
                                string password,
                                string firstName,
                                string lastName,
-                               Address address,
+                               string city,
+                               string country,
                                DateTime birthDate,
                                string phoneNumber,
                                string? profession,
@@ -47,7 +48,7 @@ public class UserService
 
         await _isaUnitOfWork.StartTransactionAsync();
 
-
+        Entities.User.Address address = new(country, city);
         Entities.User.User newUser = new(newUserId, firstName, lastName, address, email, phoneNumber, birthDate);
 
 
@@ -66,23 +67,22 @@ public class UserService
         }
         catch (Exception ex)
         {
-
+            await _isaUnitOfWork.RollBackAsync();
         }
+
+
 
     }
     public async Task CheckForSystemAdmin()
     {
-        Address address = new Address
-        {
-            Id = Guid.NewGuid(),
-            Country = "srbija",
-            City = "zrenjanin"
-        };
+        Address address = new("srbija", "zrenjanin");
         await AddAsync("admin@gmail.com", 
                        "Admin123!", 
                        "admin", 
                        "admin", 
-                       address,DateTime.Now.ToUniversalTime(),
+                       address.City,
+                       address.Country,
+                       DateTime.Now.ToUniversalTime(),
                        "123123123",
                        null,
                        null,

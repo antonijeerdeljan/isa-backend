@@ -12,6 +12,7 @@ public class Address : Entity<Guid>
     }
     public Address(string country, string city)
     {
+        Id = new Guid();
         Country = country;
         City = city;
     }

@@ -8,7 +8,7 @@ public class User : Entity<Guid>
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
 
-    public Guid AddresId { get; set; }
+    //public Guid AddresId { get; set; }
 
     public Guid? CompanyId {  get; set; }
 

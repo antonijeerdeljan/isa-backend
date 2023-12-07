@@ -6,4 +6,5 @@ public interface IISAUnitOfWork
     public Task CommitTransactionAsync();
     public Task SaveChangesAsync();
     public Task SaveAndCommitChangesAsync();
+    public Task RollBackAsync();
 }

@@ -19,10 +19,10 @@ public class IsaDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
+        /*modelBuilder.Entity<User>()
             .HasOne(u => u.Address)
             .WithOne()
-            .HasForeignKey<User>(u => u.AddresId);
+            .HasForeignKey<User>(u => u.AddresId);*/
 
         modelBuilder.Entity<Company>()
             .HasOne(c => c.Address)

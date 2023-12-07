@@ -9,7 +9,8 @@ namespace ISA.Application.API.Models.Requests
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public Address Address { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
         public string PhoneNumber { get; set; }
 
     }

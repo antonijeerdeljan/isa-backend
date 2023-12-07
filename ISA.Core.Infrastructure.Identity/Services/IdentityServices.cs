@@ -78,6 +78,9 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (await _userManager.IsInRoleAsync(userToSignIn, userRole[0]) is false)
                 throw new ArgumentException("Not allowed!");
 
+            if (await _userManager.IsEmailConfirmedAsync(userToSignIn) is false)
+                throw new ArgumentException("Email not confirmed!");
+
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(
                                                         user: userToSignIn,
                                                         password,
