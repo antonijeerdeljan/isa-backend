@@ -47,6 +47,8 @@ namespace ISA.Core.Infrastructure.Identity.Services
             if (!registrationResult.Succeeded)
                 throw new ArgumentException(registrationResult.ToString());
 
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+
             try
             {
                 await _userManager.AddToRoleAsync(newUser, roleName);
