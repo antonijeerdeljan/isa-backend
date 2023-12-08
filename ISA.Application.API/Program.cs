@@ -3,6 +3,7 @@ using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
+using ISA.Core.Infrastructure.HttpClients;
 using ISA.Core.Infrastructure.Identity;
 using ISA.Core.Infrastructure.Identity.Entities;
 using ISA.Core.Infrastructure.Identity.Services;
@@ -46,7 +47,7 @@ builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
-
+builder.Services.AddTransient<IHttpClientService,HttpClientService>();
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>

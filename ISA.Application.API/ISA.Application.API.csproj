@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ISA.Core.Domain\ISA.Core.Domain.csproj" />
+    <ProjectReference Include="..\ISA.Core.Infrastructure.HttpClient\ISA.Core.Infrastructure.HttpClient.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Identity\ISA.Core.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj" />
   </ItemGroup>

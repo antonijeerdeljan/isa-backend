@@ -12,22 +12,19 @@ namespace ISA.Core.Infrastructure.Identity.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IUserRepository _userRepository;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IHttpClientService _httpClientService;
 
         public IdentityServices(
             UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
-            IUserRepository userRepository,
-            ITokenGenerator tokenGenerator)
+            ITokenGenerator tokenGenerator,
+            IHttpClientService httpClientService)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _signInManager = signInManager;
-            _userRepository = userRepository;
             _tokenGenerator = tokenGenerator;
+            _httpClientService = httpClientService;
         }
 
         private RefreshToken GenerateRefreshToken()
@@ -48,6 +45,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
                 throw new ArgumentException(registrationResult.ToString());
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+            await _httpClientService.SendEmail(email, token);
 
             try
             {
