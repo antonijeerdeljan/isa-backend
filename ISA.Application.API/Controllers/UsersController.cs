@@ -59,6 +59,13 @@ public class UsersController : ControllerBase
         return Ok(token.AuthToken);
     }
 
+    [HttpGet("VerifyEmail")]
+    public async Task<IActionResult> VerifyEmail(string email, string token)
+    {   
+        await _userService.VerifyEmail(email, token);
+        return Ok();
+    }
+
     [HttpPost("EditProfile")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = "allowAllPolicy")]

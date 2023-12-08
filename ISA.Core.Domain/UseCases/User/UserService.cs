@@ -3,7 +3,9 @@ using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -30,6 +32,11 @@ public class UserService
         _isaUnitOfWork = isaUnitOfWork;
         _customerRepository = customerRepository;
 	}
+
+    public async Task VerifyEmail(string email, string token)
+    {
+        await _identityService.VerifyEmail(email, token);
+    }
 
     public async Task AddAsync(string email,
                                string password,
@@ -69,9 +76,6 @@ public class UserService
         {
             await _isaUnitOfWork.RollBackAsync();
         }
-
-
-
     }
     public async Task CheckForSystemAdmin()
     {
@@ -103,7 +107,6 @@ public class UserService
     {
         return await _identityService.VerifyRefreshToken(userId, refreshToken);
     }
-
 
     public AuthenticationTokens GenerateNewJWT(string userId, string role)
     {

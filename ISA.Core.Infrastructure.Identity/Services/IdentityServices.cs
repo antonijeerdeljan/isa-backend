@@ -5,6 +5,7 @@ using ISA.Core.Domain.Exceptions.UserExceptions;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.Entities.Token;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ISA.Core.Infrastructure.Identity.Services
 {
@@ -66,6 +67,13 @@ namespace ISA.Core.Infrastructure.Identity.Services
         public AuthenticationTokens GenerateNewJWT(string userId, string userRole)
         {
             return _tokenGenerator.GenerateAccessToken(userId, userRole);
+        }
+
+        public async Task VerifyEmail(string email, string token)
+        {
+            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+            var confirmation = await _userManager.ConfirmEmailAsync(user, token);
+            await _userManager.UpdateAsync(user);
         }
 
         public async Task<LoginCookie> LoginAsync(string email, string password)

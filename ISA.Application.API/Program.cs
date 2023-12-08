@@ -1,3 +1,4 @@
+using ISA.Application.API.Models.Requests;
 using ISA.Application.API.Startup;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
@@ -11,6 +12,7 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +23,12 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
+builder.Configuration.AddEnvironmentVariables()
+                     .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
 
 var connectionString = builder.Configuration.GetConnectionString("ISADB");
+
 builder.Services.AddDbContext<IsaDbContext>(options =>
     options.UseNpgsql(connectionString,
         npgsqlOptions => npgsqlOptions.MigrationsAssembly("ISA.Application.API"))); // Specify the assembly containing migrations
@@ -33,22 +38,18 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-
 builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
-
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
-
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
 builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
+builder.Services.AddTransient<IHttpClientService,HttpClientService>();
 
 
 
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
-builder.Services.AddTransient<IHttpClientService,HttpClientService>();
-
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 {
