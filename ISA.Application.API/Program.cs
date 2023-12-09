@@ -12,6 +12,9 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,13 +46,16 @@ builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
 builder.Services.AddTransient<IISAUnitOfWork, ISAUnitOfWork>();
 builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
+
 builder.Services.AddTransient<IHttpClientService,HttpClientService>();
-
-
-
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
+
+var baseUrl = builder.Configuration.GetSection("AzureEmailFunction:baseUrl").Value;
+
+builder.Services.AddHttpClient<HttpClientService>(nameof(HttpClientService),x => { x.BaseAddress = new Uri(baseUrl);
+                                                         x.DefaultRequestHeaders.Add("x-functions-key", builder.Configuration.GetSection("AzureEmailFunctionSettings:Key").Value); });
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
 {
