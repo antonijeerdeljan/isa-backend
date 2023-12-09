@@ -1,3 +1,4 @@
+using ISA.Application.API.Mappings;
 using ISA.Application.API.Startup;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
@@ -10,6 +11,7 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,10 +32,12 @@ builder.Services.AddDbContext<IsaDbContext>(options =>
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("ISA.Core.Infrastructure.Identity")));
 
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-
 builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
+
 
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 

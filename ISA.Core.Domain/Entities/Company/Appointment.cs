@@ -9,6 +9,7 @@
 
         public Appointment()
         {
+            Id = Guid.NewGuid();
         }
     }
 }

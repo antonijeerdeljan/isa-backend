@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20231121032811_nullforrfrtkn")]
-    partial class nullforrfrtkn
+    [Migration("20231209183219_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,12 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("RefreshToken")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("RefreshTokenExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -78,9 +84,6 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("refreshTokenId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -90,23 +93,7 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("refreshTokenId");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ISA.Core.Infrastructure.Identity.Entities.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -257,33 +244,24 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "b508a2cd-39ee-451e-9aba-b7cc319152a0",
+                            ConcurrencyStamp = "e7441d60-1d21-4fb0-bb95-128ba440f743",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "0aabaf15-e484-41bd-851d-177612508ad3",
+                            ConcurrencyStamp = "72102594-1689-4eb0-aa22-e584909825bd",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "c16e5e84-70d9-4ec9-b288-df9e7872e6b4",
+                            ConcurrencyStamp = "39518a84-a271-44b5-b9f9-8fa416bf3433",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });
-                });
-
-            modelBuilder.Entity("ISA.Core.Infrastructure.Identity.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("ISA.Core.Infrastructure.Identity.Entities.RefreshToken", "refreshToken")
-                        .WithMany()
-                        .HasForeignKey("refreshTokenId");
-
-                    b.Navigation("refreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
