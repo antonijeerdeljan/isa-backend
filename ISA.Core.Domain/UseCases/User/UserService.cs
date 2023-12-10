@@ -1,6 +1,7 @@
 ﻿
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using System.Runtime.CompilerServices;
@@ -115,6 +116,31 @@ public class UserService
         Entities.User.User userToUpdate = await GetUserById(guid);
         userToUpdate.Update(name, lastname, phoneNumber, dateOfBirth);
         await _userRepository.SaveAsync();
+
+    }
+
+    public async Task AddNewCorpAdmin(CorpAdminRegistrationDto corpAdmin)
+
+    {
+        Guid newUserId = Guid.NewGuid();
+
+        await _isaUnitOfWork.StartTransactionAsync();
+
+        Entities.User.Address address = new(corpAdmin.Country, corpAdmin.City);
+        Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber, corpAdmin.CompanyId,corpAdmin.DateOfBirth);
+
+        try
+        {
+            await _identityService.RegisterUserAsync(newUserId, corpAdmin.Email, corpAdmin.Password, "Corpadmin");
+            await _userRepository.AddAsync(newUser);
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            await _isaUnitOfWork.RollBackAsync();
+        }
+
+
 
     }
 }

@@ -4,6 +4,7 @@
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.UseCases.Company;
+    using ISA.Core.Domain.UseCases.User;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Register")]
+        [Authorize(Policy = "Sysadmin")]
         public async Task RegisterCompany([FromBody] Company company)
         => await _companyService.AddAsync(company.Name,
                                        company.Address,
@@ -33,9 +35,9 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("UpdateCompany")]
+        [Authorize(Policy = "Corpadmin")]
         public async Task UpdateCompany([FromBody] CompanyUpdateDto company)
         => await _companyService.UpdateAsync(company);
-
 
     }
 }

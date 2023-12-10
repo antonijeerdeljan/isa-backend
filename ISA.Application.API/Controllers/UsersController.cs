@@ -1,4 +1,5 @@
 ﻿using ISA.Application.API.Models.Requests;
+using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
@@ -73,6 +74,15 @@ public class UsersController : ControllerBase
                                            editProfileRequestModel.DateOfBirth);
         return Ok();
     }
+
+
+    [HttpPost("RegisterNewAdmin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Policy = "Corpadmin")]
+    public async Task RegisterNewAdmin([FromBody] CorpAdminRegistrationDto corpAdmin)
+=> await _userService.AddNewCorpAdmin(corpAdmin);
+
+
 
 
 };

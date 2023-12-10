@@ -13,5 +13,6 @@
         void UpdateAndSaveChanges(Company company);
 
         void Update(Company company);
+
     }
 }

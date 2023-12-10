@@ -1,6 +1,5 @@
 ﻿namespace ISA.Core.Domain.Dtos
 {
-    using ISA.Core.Domain.Entities.User;
 
     public class CompanyUpdateDto
     {
