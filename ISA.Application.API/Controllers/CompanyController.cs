@@ -20,9 +20,9 @@
             _companyService = companyService;
             _contextAccessor = contextAccessor;
         }
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Register")]
-        [Authorize(Policy = "Sysadmin")]
         public async Task RegisterCompany([FromBody] Company company)
         => await _companyService.AddAsync(company.Name,
                                        company.Address,

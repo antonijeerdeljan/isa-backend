@@ -17,7 +17,7 @@
 
         new public async Task<Company?> GetByIdAsync(Guid Id)
         {
-            return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).FirstOrDefaultAsync();
+            return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).FirstOrDefaultAsync(); ;
         }
 
     }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20231209183243_Init")]
+    [Migration("20231210152851_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -31,6 +31,17 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AdminFirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("AdminId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AdminLastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
@@ -41,6 +52,8 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("CompanyId");
 
@@ -160,6 +173,12 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
                 {
+                    b.HasOne("ISA.Core.Domain.Entities.User.User", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
                         .WithMany("Appointments")
                         .HasForeignKey("CompanyId")
@@ -208,6 +227,11 @@ namespace ISA.Application.API.Migrations
                 {
                     b.Navigation("Admins");
 
+                    b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>
+                {
                     b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618

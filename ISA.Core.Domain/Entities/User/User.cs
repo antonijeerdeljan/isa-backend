@@ -1,5 +1,7 @@
 ﻿namespace ISA.Core.Domain.Entities.User;
 
+using ISA.Core.Domain.Entities.Company;
+
 public class User : Entity<Guid>
 {
     public string Firstname { get; set; }
@@ -13,6 +15,8 @@ public class User : Entity<Guid>
     public Guid? CompanyId {  get; set; }
 
     public DateTime DateOfBirth { get; set;}
+
+    public List<Appointment>? Appointments { get; set; }
 
     public User()
     {

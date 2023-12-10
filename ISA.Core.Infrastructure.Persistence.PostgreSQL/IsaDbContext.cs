@@ -40,6 +40,11 @@ public class IsaDbContext : DbContext
             .HasForeignKey(a => a.CompanyId);
 
 
+        modelBuilder.Entity<User>()
+            .HasMany(c => c.Appointments)
+            .WithOne()
+            .HasForeignKey(a => a.AdminId);
+
     }
 
 }
