@@ -38,6 +38,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
 builder.Services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddTransient<IEquipmentRepository, EquipmentRepository>();
 
 
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
@@ -51,6 +52,7 @@ builder.Services.AddTransient<ITokenGenerator, JwtGenerator>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<CompanyService>();
 builder.Services.AddTransient<AppointmentService>();
+builder.Services.AddTransient<EquimpentService>();
 builder.Services.AddTransient<UserManager<ApplicationUser>>();
 
 

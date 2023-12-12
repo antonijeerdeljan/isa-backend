@@ -85,6 +85,29 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Equipments");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -194,6 +217,15 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Address");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
+                        .WithMany("Equipment")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
@@ -225,6 +257,8 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Admins");
 
                     b.Navigation("Appointments");
+
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>

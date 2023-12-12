@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20231210152851_Init")]
+    [Migration("20231212191938_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -86,6 +86,29 @@ namespace ISA.Application.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Equipments");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Address", b =>
@@ -197,6 +220,15 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Address");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
+                        .WithMany("Equipment")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
@@ -228,6 +260,8 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Admins");
 
                     b.Navigation("Appointments");
+
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>

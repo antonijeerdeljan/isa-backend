@@ -11,6 +11,8 @@
         public List<Appointment>? Appointments { get; set; }
         public List<User>? Admins { get; set; }
 
+        public List<Equipment>? Equipment { get; set; }
+
         public Guid AddresId { get; set; }
 
 

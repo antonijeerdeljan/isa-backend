@@ -14,5 +14,7 @@
 
         void Update(Company company);
 
+        bool Exist(Guid id);
+
     }
 }

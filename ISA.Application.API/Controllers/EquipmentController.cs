@@ -1,7 +1,7 @@
 ﻿namespace ISA.Application.API.Controllers
 {
-    using ISA.Application.API.Models.Requests;
     using ISA.Core.Domain.Dtos;
+    using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.UseCases.Company;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -10,19 +10,19 @@
 
     [ApiController]
     [Route("[controller]")]
-    public class AppointmentController : ControllerBase
+    public class EquipmentController : ControllerBase
     {
-        private readonly AppointmentService _appointmentService;
+        private readonly EquimpentService _equipmentService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public AppointmentController(AppointmentService appointmentService, IHttpContextAccessor contextAccessor)
+        public EquipmentController(EquimpentService equimpentService, IHttpContextAccessor contextAccessor)
         {
-            _appointmentService = appointmentService;
+            _equipmentService = equimpentService;
             _contextAccessor = contextAccessor;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Create")]
         //[Authorize(Policy = "Corpadmin")]
-        public async Task AddAppointment([FromBody] AppointmentRequestModel appointment) => await _appointmentService.AddAsync(appointment);
+        public async Task AddAppointment([FromBody] Equipment equipment) => await _equipmentService.AddAsync(equipment);
     }
 }

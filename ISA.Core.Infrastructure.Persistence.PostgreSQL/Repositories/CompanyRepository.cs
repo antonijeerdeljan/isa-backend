@@ -15,6 +15,16 @@
             _isaDbContext = isaDbContext;
         }
 
+        public bool Exist(Guid id)
+        {
+            var company = _dbSet.Where(c => c.Id == id).FirstOrDefault();
+            if (company == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         new public async Task<Company?> GetByIdAsync(Guid Id)
         {
             return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).FirstOrDefaultAsync(); ;
