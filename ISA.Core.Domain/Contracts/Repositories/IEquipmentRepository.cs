@@ -7,10 +7,14 @@
     public interface IEquipmentRepository
     {
         Task AddAsync(Equipment equipmentToAdd);
+
+        Task RemoveAsync(Guid id);
         Task<Equipment?> GetByIdAsync(Guid id);
 
         void UpdateAndSaveChanges(Equipment equipment);
 
         void Update(Equipment equipment);
+
+        Task RemoveAndSaveChangesAsync(Guid Id);
     }
 }

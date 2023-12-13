@@ -72,5 +72,36 @@ public class GenericRepository<TEntity, TKey> where TEntity : class
         }
     }
 
+    public async Task RemoveAsync(TKey Id)
+    {
+        TEntity? entity = await GetByIdAsync(Id);
+        try
+        {
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        //await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveAndSaveChangesAsync(TKey Id)
+    {
+
+        try
+        {
+            await RemoveAsync(Id);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
 
 }

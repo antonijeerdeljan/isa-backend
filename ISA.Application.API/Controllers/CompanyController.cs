@@ -1,10 +1,8 @@
 ﻿namespace ISA.Application.API.Controllers
 {
-    using ISA.Application.API.Models.Requests;
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.UseCases.Company;
-    using ISA.Core.Domain.UseCases.User;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -22,7 +20,8 @@
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("Register")]
+        [HttpPost]
+        [Authorize(Policy = "superAdminPolicy")]
         public async Task RegisterCompany([FromBody] Company company)
         => await _companyService.AddAsync(company.Name,
                                        company.Address,
@@ -34,10 +33,29 @@
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPut("UpdateCompany")]
-        [Authorize(Policy = "Corpadmin")]
+        [HttpPut]
+        [Authorize(Policy = "corpAdminPolicy")]
         public async Task UpdateCompany([FromBody] CompanyUpdateDto company)
         => await _companyService.UpdateAsync(company);
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public ActionResult<Company> GetCompany([FromQuery] Guid id)
+        {
+            return _companyService.GetCompanyAsync(id).Result;
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("Profile/{id}")]
+        [Authorize(Policy = "allowAllPolicy")]
+        public ActionResult<CompanyProfileDto> GetCompanyProfile([FromRoute] Guid id)
+        {
+            return _companyService.GetCompanyProfile(id).Result;
+        }
+
+
 
     }
 }

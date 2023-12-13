@@ -21,8 +21,21 @@
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("Create")]
-        //[Authorize(Policy = "Corpadmin")]
-        public async Task AddAppointment([FromBody] Equipment equipment) => await _equipmentService.AddAsync(equipment);
+        [HttpPost]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public async Task AddEquipment([FromBody] Equipment equipment) => await _equipmentService.AddAsync(equipment);
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public async Task UpdateCompany([FromBody] Equipment equipment)
+        => await _equipmentService.UpdateAsync(equipment);
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpDelete("/{id}")]
+        [Authorize(Policy = "superAdminPolicy")]
+        public async Task RemoveEquipment([FromRoute] Guid id) => await _equipmentService.RemoveAsync(id);
+
     }
 }

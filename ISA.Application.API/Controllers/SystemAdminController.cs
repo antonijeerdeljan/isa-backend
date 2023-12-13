@@ -17,14 +17,11 @@ public class SystemAdminController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly IHttpContextAccessor _contextAccessor;
-    private readonly IUserRepository _userRepository;
     public SystemAdminController(UserService userService,
-                                 IHttpContextAccessor contextAccessor,
-                                 IUserRepository userRepository)
+                                 IHttpContextAccessor contextAccessor)
     {
         _userService = userService;
         _contextAccessor = contextAccessor;
-        _userRepository = userRepository;
     }
 
 

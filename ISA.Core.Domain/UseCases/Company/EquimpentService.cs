@@ -1,34 +1,31 @@
 ﻿namespace ISA.Core.Domain.UseCases.Company
 {
     using AutoMapper;
-    using ISA.Core.Domain.Contracts.Repositories;
     using ISA.Core.Domain.Contracts;
+    using ISA.Core.Domain.Contracts.Repositories;
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Entities.Company;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
 
     public class EquimpentService
     {
         private readonly IEquipmentRepository _equimpentRepository;
-        private readonly ICompanyRepository _companyRepository;
+        private readonly ICompanyRepository _newEquipmentRepository;
         private readonly IISAUnitOfWork _isaUnitOfWork;
         private readonly IMapper _mapper;
 
-        public EquimpentService(IEquipmentRepository equimpentRepository, ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+        public EquimpentService(IEquipmentRepository equimpentRepository, ICompanyRepository newEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
         {
             _equimpentRepository = equimpentRepository;
-            _companyRepository = companyRepository;
+            _newEquipmentRepository = newEquipmentRepository;
             _isaUnitOfWork = isaUnitOfWork;
             _mapper = mapper;
         }
 
         public async Task AddAsync(Equipment equipment)
         {
-            if (_companyRepository.Exist(equipment.CompanyId))
+            if (_newEquipmentRepository.Exist(equipment.CompanyId))
             {
                 await _isaUnitOfWork.StartTransactionAsync();
                 try
@@ -43,6 +40,25 @@
 
             }
 
+        }
+
+        public async Task RemoveAsync(Guid id)
+        {
+            await _isaUnitOfWork.StartTransactionAsync();
+            try
+            {
+                await _equimpentRepository.RemoveAndSaveChangesAsync(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+        }
+
+        public async Task UpdateAsync(Equipment newEquipment)
+        {
+            _equimpentRepository.UpdateAndSaveChanges(newEquipment);
         }
     }
 }

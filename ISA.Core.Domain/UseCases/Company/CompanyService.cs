@@ -6,9 +6,8 @@
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.User;
-    using System.Xml.Linq;
 
-    public class CompanyService : BaseService<CompanyUpdateDto,Company>
+    public class CompanyService : BaseService<CompanyUpdateDto, Company>
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IISAUnitOfWork _isaUnitOfWork;
@@ -30,7 +29,7 @@
             Company newCompany = new Company(name, address, description, averageGrade, appointments, admins);
 
             try
-            { 
+            {
                 await _companyRepository.AddAsync(newCompany);
                 await _isaUnitOfWork.SaveAndCommitChangesAsync();
 
@@ -46,14 +45,14 @@
             var nova = await _companyRepository.GetByIdAsync(company.Id);
             _mapper.Map(company, nova);
             nova.Address.City = company.City;
-            nova.Address.Country= company.Country;
+            nova.Address.Country = company.Country;
 
 
             await _isaUnitOfWork.StartTransactionAsync();
 
             try
             {
-                
+
                 _companyRepository.Update(nova);
                 //_addressRepository.Update(nova.Address);
                 await _isaUnitOfWork.SaveAndCommitChangesAsync();
@@ -63,6 +62,21 @@
             {
 
             }
+
+        }
+
+        public async Task<Company> GetCompanyAsync(Guid id)
+        {
+            return await _companyRepository.GetByIdAsync(id);
+
+        }
+
+        public async Task<CompanyProfileDto> GetCompanyProfile(Guid id)
+        {
+            CompanyProfileDto companyDto = new CompanyProfileDto();
+            var company = await _companyRepository.GetByIdAsync(id);
+            company.Equipment.RemoveAll(e => e.Quantity <= 0);
+            return _mapper.Map(company, companyDto);
 
         }
     }

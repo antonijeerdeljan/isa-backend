@@ -1,6 +1,5 @@
 ﻿namespace ISA.Application.API.Controllers
 {
-    using ISA.Application.API.Models.Requests;
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.UseCases.Company;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,8 +20,8 @@
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("Create")]
-        //[Authorize(Policy = "Corpadmin")]
+        [HttpPost]
+        [Authorize(Policy = "corpAdminPolicy")]
         public async Task AddAppointment([FromBody] AppointmentRequestModel appointment) => await _appointmentService.AddAsync(appointment);
     }
 }
