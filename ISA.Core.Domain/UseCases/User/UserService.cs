@@ -1,11 +1,10 @@
 ﻿
+using FluentResults;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNet.Identity;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -33,9 +32,10 @@ public class UserService
         _customerRepository = customerRepository;
 	}
 
-    public async Task VerifyEmail(string email, string token)
+    public async Task<Result<IdentityResult>> VerifyEmail(string email, string token)
     {
-        await _identityService.VerifyEmail(email, token);
+        var result = await _identityService.VerifyEmail(email, token);
+        return result;
     }
 
     public async Task AddAsync(string email,

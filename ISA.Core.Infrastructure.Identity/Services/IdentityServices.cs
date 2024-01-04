@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Exceptions.UserExceptions;
-using ISA.Core.Domain.Contracts.Repositories;
-using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.Entities.Token;
-using System.Security.Cryptography.X509Certificates;
+using FluentResults;
 
 namespace ISA.Core.Infrastructure.Identity.Services
 {
@@ -69,14 +67,16 @@ namespace ISA.Core.Infrastructure.Identity.Services
             return _tokenGenerator.GenerateAccessToken(userId, userRole);
         }
 
-        public async Task VerifyEmail(string email, string token)
+        public async Task<Result<IdentityResult>> VerifyEmail(string email, string token)
         {
             ApplicationUser? user = await _userManager.FindByEmailAsync(email);
-            var confirmation = await _userManager.ConfirmEmailAsync(user, token);
+            Result<IdentityResult> confirmation = await _userManager.ConfirmEmailAsync(user, token);
             await _userManager.UpdateAsync(user);
+            return confirmation;
         }
 
-        public async Task<LoginCookie> LoginAsync(string email, string password)
+
+        private async Task<(ApplicationUser, string)> ValidateLogin(string email, string password)
         {
             ApplicationUser? userToSignIn = await _userManager.FindByEmailAsync(email) ??
                 throw new KeyNotFoundException("User with entered email does not exist!");
@@ -94,12 +94,18 @@ namespace ISA.Core.Infrastructure.Identity.Services
                 throw new ArgumentException(result.ToString());
 
             await _signInManager.SignInAsync(userToSignIn, false);
-            
+
+            return (userToSignIn, userRole[0]);
+        }
+
+        public async Task<LoginCookie> LoginAsync(string email, string password)
+        {
+            (ApplicationUser userToSignIn, string userRole) = await ValidateLogin(email, password);
 
             AuthenticationTokens token = new();
             LoginCookie loginCookie = new LoginCookie();
 
-            token = _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole[0]);
+            token = _tokenGenerator.GenerateAccessToken(userToSignIn.Id.ToString(), userRole);
             var refreshToken = GenerateRefreshToken();
             userToSignIn.RefreshToken = refreshToken.Id;
             userToSignIn.RefreshTokenExpirationDate = refreshToken.ExpirationDate;
@@ -120,6 +126,9 @@ namespace ISA.Core.Infrastructure.Identity.Services
 
         }
 
-       
+        Task<Result<Microsoft.AspNet.Identity.IdentityResult>> IIdentityServices.VerifyEmail(string email, string token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,10 +1,12 @@
-﻿using ISA.Application.API.Models.Requests;
+﻿using FluentResults;
+using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace ISA.Application.API.Controllers;
 
@@ -61,9 +63,9 @@ public class UsersController : ControllerBase
 
     [HttpGet("VerifyEmail")]
     public async Task<IActionResult> VerifyEmail(string email, string token)
-    {   
-        await _userService.VerifyEmail(email, token);
-        return Ok();
+    {
+        var result = await _userService.VerifyEmail(email, token);
+        return (result.IsSuccess) ? Ok(result.Value) : BadRequest(); 
     }
 
     [HttpPost("EditProfile")]

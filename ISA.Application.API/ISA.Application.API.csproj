@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentResults" Version="3.15.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
@@ -25,6 +26,10 @@
     <ProjectReference Include="..\ISA.Core.Infrastructure.HttpClient\ISA.Core.Infrastructure.HttpClient.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Identity\ISA.Core.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Results\" />
   </ItemGroup>
 
 </Project>
