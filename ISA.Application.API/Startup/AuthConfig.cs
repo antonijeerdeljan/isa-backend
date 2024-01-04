@@ -1,16 +1,13 @@
 ﻿using ISA.Core.Domain.UseCases.User;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
 
 namespace ISA.Application.API.Startup;
 
-public static class AuthConfiguration
+public static class AuthConfig
 {
     public static IServiceCollection ConfigureAuth(this IServiceCollection services)
     {
