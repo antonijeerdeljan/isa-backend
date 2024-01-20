@@ -1,4 +1,4 @@
-﻿namespace ISA.Core.Domain.Contracts;
+﻿namespace ISA.Core.Domain.Contracts.Services;
 
 public interface IISAUnitOfWork
 {

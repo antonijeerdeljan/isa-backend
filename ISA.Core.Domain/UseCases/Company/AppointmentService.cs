@@ -2,7 +2,6 @@
 {
     using AutoMapper;
     using ISA.Core.Domain.Contracts.Repositories;
-    using ISA.Core.Domain.Contracts;
     using ISA.Core.Domain.Dtos;
     using System;
     using System.Collections.Generic;
@@ -11,6 +10,7 @@
     using System.Threading.Tasks;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.User;
+    using ISA.Core.Domain.Contracts.Services;
 
     public class AppointmentService 
     {

@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using ISA.Core.Domain.Entities.Token;
 
-namespace ISA.Core.Domain.Contracts;
+namespace ISA.Core.Domain.Contracts.Services;
 
 public interface IIdentityServices
 {

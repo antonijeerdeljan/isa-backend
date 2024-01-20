@@ -1,4 +1,4 @@
-﻿using ISA.Core.Domain.Contracts;
+﻿using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Infrastructure.Identity;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL;

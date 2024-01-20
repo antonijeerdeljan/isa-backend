@@ -1,9 +1,9 @@
 ﻿using ISA.Core.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
-using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Exceptions.UserExceptions;
 using ISA.Core.Domain.Entities.Token;
 using FluentResults;
+using ISA.Core.Domain.Contracts.Services;
 
 namespace ISA.Core.Infrastructure.Identity.Services
 {

@@ -1,7 +1,7 @@
 ﻿
 using FluentResults;
-using ISA.Core.Domain.Contracts;
 using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;

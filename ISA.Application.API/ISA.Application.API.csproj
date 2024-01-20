@@ -29,8 +29,4 @@
     <ProjectReference Include="..\ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Results\" />
-  </ItemGroup>
-
 </Project>

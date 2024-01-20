@@ -1,5 +1,7 @@
 ﻿using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.Contracts.Services;
+using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Exceptions.UserExceptions;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
@@ -8,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using System.Formats.Asn1;
+using System.Xml.Linq;
 
 namespace ISA.Application.API.Controllers;
 
@@ -17,11 +21,14 @@ public class SystemAdminController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly IHttpContextAccessor _contextAccessor;
+    private readonly ILoyaltyProgramService _loyaltyProgramService;
     public SystemAdminController(UserService userService,
-                                 IHttpContextAccessor contextAccessor)
+                                 IHttpContextAccessor contextAccessor,
+                                 ILoyaltyProgramService loyaltyProgramService)
     {
         _userService = userService;
         _contextAccessor = contextAccessor;
+        _loyaltyProgramService = loyaltyProgramService;
     }
 
 
@@ -41,8 +48,21 @@ public class SystemAdminController : ControllerBase
                                        registrationRequestModel.PhoneNumber,
                                        null,null,
                                        role);
-        else
-            throw new RoleException("Invalid role detected.");
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
+    [HttpPost("DefineLoyaltyProgram")]
+
+    public async Task CreateLoyaltyProgram([FromBody] LoyaltyProgramRequest loyaltyProgramReqeust)
+    {
+        LoyaltyProgram loyaltyProgram = new(loyaltyProgramReqeust.Name,
+                                            loyaltyProgramReqeust.NewPoints, 
+                                            loyaltyProgramReqeust.MinCategoryThresholds, 
+                                            loyaltyProgramReqeust.MaxPenaltyPoints,
+                                            loyaltyProgramReqeust.MaxPenaltyPoints,
+                                            loyaltyProgramReqeust.CategoryDiscounts);
+
+        await _loyaltyProgramService.CreateLoyaltyProgramAsync(loyaltyProgram);
     }
 
 };

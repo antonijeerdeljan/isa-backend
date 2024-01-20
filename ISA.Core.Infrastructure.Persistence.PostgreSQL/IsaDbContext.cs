@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ public class IsaDbContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<Equipment> Equipments { get; set; }
+    public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

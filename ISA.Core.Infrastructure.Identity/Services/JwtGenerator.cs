@@ -1,4 +1,4 @@
-﻿using ISA.Core.Domain.Contracts;
+﻿using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Infrastructure.Identity.Entities;
