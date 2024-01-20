@@ -5,6 +5,7 @@ using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.AspNet.Identity;
+using System.Net.Http.Headers;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -32,10 +33,9 @@ public class UserService
         _customerRepository = customerRepository;
 	}
 
-    public async Task<Result<IdentityResult>> VerifyEmail(string email, string token)
+    public async Task VerifyEmail(string email, string token)
     {
-        var result = await _identityService.VerifyEmail(email, token);
-        return result;
+        await _identityService.VerifyEmail(email, token);
     }
 
     public async Task AddAsync(string email,
@@ -55,7 +55,7 @@ public class UserService
 
         await _isaUnitOfWork.StartTransactionAsync();
 
-        Entities.User.Address address = new(country, city);
+        Address address = new(country, city);
         Entities.User.User newUser = new(newUserId, firstName, lastName, address, email, phoneNumber, birthDate);
 
 
@@ -100,7 +100,7 @@ public class UserService
 
     public async Task<Entities.User.User> GetUserById(Guid id)
     {
-        return await _userRepository.GetByIdAsync(id);
+        return await _userRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
     }
 
     public async Task<bool> IsRefreshTokenValid(string userId, string refreshToken)

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240104201611_initial")]
-    partial class initial
+    [Migration("20240119152245_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

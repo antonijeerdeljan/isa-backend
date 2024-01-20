@@ -39,33 +39,25 @@ public class UsersController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
     {
-        var token = new LoginCookie();
-        try
-        {
-            token = await _userService.LoginAsync(loginRequestModel.Email, loginRequestModel.Password);
-        }catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-
+        
+        var authToken = await _userService.LoginAsync(loginRequestModel.Email, loginRequestModel.Password);
+        
         var cookieOptions = new CookieOptions
         {
             Path = "/",
             HttpOnly = true,
             IsEssential = true, 
-            Expires = token.RefreshToken.ExpirationDate 
+            Expires = authToken.RefreshToken.ExpirationDate 
         };
 
-        Response.Cookies.Append("RefreshToken", token.RefreshToken.Id.ToString(), cookieOptions);
-
-        return Ok(token.AuthToken);
+        Response.Cookies.Append("RefreshToken", authToken.RefreshToken.Id.ToString(), cookieOptions);
+        return Ok(authToken.AuthToken);
     }
 
     [HttpGet("VerifyEmail")]
-    public async Task<IActionResult> VerifyEmail(string email, string token)
+    public async Task VerifyEmail(string email, string token)
     {
-        var result = await _userService.VerifyEmail(email, token);
-        return (result.IsSuccess) ? Ok(result.Value) : BadRequest(); 
+        await _userService.VerifyEmail(email, token);
     }
 
     [HttpPost("EditProfile")]

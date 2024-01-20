@@ -67,12 +67,11 @@ namespace ISA.Core.Infrastructure.Identity.Services
             return _tokenGenerator.GenerateAccessToken(userId, userRole);
         }
 
-        public async Task<Result<IdentityResult>> VerifyEmail(string email, string token)
+        public async Task VerifyEmail(string email, string token)
         {
             ApplicationUser? user = await _userManager.FindByEmailAsync(email);
             Result<IdentityResult> confirmation = await _userManager.ConfirmEmailAsync(user, token);
             await _userManager.UpdateAsync(user);
-            return confirmation;
         }
 
 
@@ -126,9 +125,6 @@ namespace ISA.Core.Infrastructure.Identity.Services
 
         }
 
-        Task<Result<Microsoft.AspNet.Identity.IdentityResult>> IIdentityServices.VerifyEmail(string email, string token)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
