@@ -27,6 +27,7 @@ builder.Services.AddHttpClientConfig(builder);
 builder.Services.AddIdentityConfig();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.MapperConfig();
 
 var app = builder.Build();
 
