@@ -16,6 +16,7 @@ public class IsaDbContext : DbContext
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<Equipment> Equipments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,7 +33,7 @@ public class IsaDbContext : DbContext
         modelBuilder.Entity<Company>()
             .HasMany(c => c.Admins)
             .WithOne()
-            .HasForeignKey(u => u.CompanyId);
+            .HasForeignKey(a => a.CompanyId);
 
         modelBuilder.Entity<Company>()
             .HasMany(c => c.Appointments)
@@ -40,6 +41,15 @@ public class IsaDbContext : DbContext
             .HasForeignKey(a => a.CompanyId);
 
 
+        modelBuilder.Entity<User>()
+            .HasMany(c => c.Appointments)
+            .WithOne()
+            .HasForeignKey(a => a.AdminId);
+
+        modelBuilder.Entity<Company>()
+            .HasMany(c => c.Equipment)
+            .WithOne()
+            .HasForeignKey(e => e.CompanyId);
     }
 
 }

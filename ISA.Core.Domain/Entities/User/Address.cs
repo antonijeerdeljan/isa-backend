@@ -8,7 +8,7 @@ public class Address : Entity<Guid>
     public string City { get; set; }
     public Address()
     {
-
+        Id = new Guid();
     }
     public Address(string country, string city)
     {
