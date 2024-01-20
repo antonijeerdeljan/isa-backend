@@ -241,21 +241,21 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "b3d72fc2-1007-4553-a35d-5c4cfdd18e63",
+                            ConcurrencyStamp = "5fff5582-82ee-431e-abc0-5a9bc4e07c82",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "2e3c7c80-d349-4981-a2d9-5d5bb5b15f9d",
+                            ConcurrencyStamp = "181b30ec-2337-45da-99ef-1c555a995995",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "a8cf5cd8-f636-4a13-bfc2-60efc83a91bf",
+                            ConcurrencyStamp = "f344e545-5485-4591-94b0-dad912ffdbda",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });

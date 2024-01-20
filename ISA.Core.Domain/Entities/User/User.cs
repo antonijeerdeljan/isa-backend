@@ -9,15 +9,7 @@ public class User : Entity<Guid>
     public Address Address { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-
-    //public Guid AddresId { get; set; }
-
-    public Guid? CompanyId {  get; set; }
-
     public DateTime DateOfBirth { get; set;}
-
-    public List<Appointment>? Appointments { get; set; }
-
     public User()
     {
 
@@ -41,7 +33,6 @@ public class User : Entity<Guid>
         Address = address;
         Email = email;
         PhoneNumber = phoneNumber;
-        CompanyId = companyId;
         DateOfBirth = dateOfBirth;
     }
 

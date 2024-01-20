@@ -8,7 +8,6 @@
         public string AdminLastName {  get; set; }
         public DateTime DateTime { get; set; }
         public int Duration { get; set; }
-
         public Guid AdminId { get; set; }
         public Guid CompanyId {  get; set; }
 

@@ -7,7 +7,7 @@
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.User;
 
-    public class CompanyService : BaseService<CompanyUpdateDto, Company>
+    public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanyService
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IISAUnitOfWork _isaUnitOfWork;
@@ -20,13 +20,12 @@
             _mapper = mapper;
         }
 
-        public async Task AddAsync(string name, Address address, string description, double averageGrade, List<Appointment> appointments, List<User> admins)
+        public async Task AddAsync(string name, Address address, int startWorkingHour, int endWorkingHour, string description)
         {
-            //Guid newCompanyId = Guid.NewGuid();
-
             await _isaUnitOfWork.StartTransactionAsync();
 
-            Company newCompany = new Company(name, address, description, averageGrade, appointments, admins);
+            Company newCompany = new Company(name, address, description, startWorkingHour, endWorkingHour);
+            newCompany.Id = Guid.NewGuid();
 
             try
             {
@@ -67,7 +66,7 @@
 
         public async Task<Company> GetCompanyAsync(Guid id)
         {
-            return await _companyRepository.GetByIdAsync(id);
+            return await _companyRepository.GetByIdAsync(id) ?? throw new ArgumentNullException();
 
         }
 

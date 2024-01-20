@@ -24,11 +24,10 @@
         [Authorize(Policy = "superAdminPolicy")]
         public async Task RegisterCompany([FromBody] Company company)
         => await _companyService.AddAsync(company.Name,
-                                       company.Address,
-                                       company.Description,
-                                       company.AverageGrade,
-                                       company.Appointments,
-                                       company.Admins);
+                                          company.Address,
+                                          company.StartinWorkingHour,
+                                          company.EndWorkingHour,
+                                          company.Description);
 
 
 

@@ -9,14 +9,9 @@
     public class Equipment : Entity<Guid>
     {
         public string Name {  get; set; }
-
         public int Quantity { get; set; }
-
         public Guid CompanyId {  get; set; }
 
-        
-
-        
         public Equipment(string name, int quantity, Guid companyId)
         {
             Id = new Guid();

@@ -1,12 +1,8 @@
-﻿
-using FluentResults;
-using ISA.Core.Domain.Contracts.Repositories;
+﻿using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
-using Microsoft.AspNet.Identity;
-using System.Net.Http.Headers;
 
 namespace ISA.Core.Domain.UseCases.User;
 
@@ -15,24 +11,21 @@ public class UserService
     private readonly IIdentityServices _identityService;
     private readonly IUserRepository _userRepository;
     private readonly ICustomerRepository _customerRepository;
+    private readonly ICompanyAdminRepository _companyAdminRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
+    private readonly ICompanyService _companyService;
 
 
-    public UserService(IIdentityServices identityServices, IUserRepository userRepository, IISAUnitOfWork isaUnitOfWork)
-    {
-        _identityService = identityServices;
-        _userRepository = userRepository;
-        _isaUnitOfWork = isaUnitOfWork;
-    }
-
-
-	public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, IISAUnitOfWork isaUnitOfWork)
+	public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, ICompanyAdminRepository companyAdminRepository)
 	{
         _identityService = identityServices;
         _userRepository = userRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _customerRepository = customerRepository;
-	}
+        _companyService = companyService;
+        _companyAdminRepository = companyAdminRepository;
+
+    }
 
     public async Task VerifyEmail(string email, string token)
     {
@@ -128,9 +121,11 @@ public class UserService
         Guid newUserId = Guid.NewGuid();
 
         await _isaUnitOfWork.StartTransactionAsync();
-
         Entities.User.Address address = new(corpAdmin.Country, corpAdmin.City);
-        Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber, corpAdmin.CompanyId,corpAdmin.DateOfBirth);
+        var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
+        Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
+        Entities.User.CompanyAdmin newCompanyAdmin = new(newUser, company);
+        await _companyAdminRepository.AddAsync(newCompanyAdmin);
 
         try
         {

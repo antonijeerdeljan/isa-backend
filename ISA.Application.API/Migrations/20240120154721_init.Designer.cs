@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240120115635_init")]
+    [Migration("20240120154721_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -53,8 +53,6 @@ namespace ISA.Application.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
-
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Appointment");
@@ -69,16 +67,22 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("AddresId")
                         .HasColumnType("uuid");
 
-                    b.Property<double>("AverageGrade")
+                    b.Property<double?>("AverageGrade")
                         .HasColumnType("double precision");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("EndWorkingHour")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("StartinWorkingHour")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -111,6 +115,36 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Equipments");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.LoyaltyProgram.LoyaltyProgram", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CategoryDiscounts")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxCategoryThresholds")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxPenaltyPoints")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MinCategoryThresholds")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("NewPoints")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoyaltyPrograms");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -130,6 +164,22 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyAdmin");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -140,6 +190,15 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("LoyaltyProgramId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("PenaltyPoints")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Points")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Profession")
                         .IsRequired()
                         .HasColumnType("text");
@@ -148,6 +207,8 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LoyaltyProgramId");
 
                     b.HasIndex("UserId");
 
@@ -161,9 +222,6 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("AddressId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("DateOfBirth")
@@ -189,19 +247,11 @@ namespace ISA.Application.API.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("CompanyId");
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.User.User", null)
-                        .WithMany("Appointments")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
                         .WithMany("Appointments")
                         .HasForeignKey("CompanyId")
@@ -229,13 +279,30 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
+                        .WithMany("Admins")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
+                    b.HasOne("ISA.Core.Domain.Entities.LoyaltyProgram.LoyaltyProgram", "LoyaltyProgram")
+                        .WithMany()
+                        .HasForeignKey("LoyaltyProgramId");
+
                     b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("LoyaltyProgram");
 
                     b.Navigation("User");
                 });
@@ -248,10 +315,6 @@ namespace ISA.Application.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
-                        .WithMany("Admins")
-                        .HasForeignKey("CompanyId");
-
                     b.Navigation("Address");
                 });
 
@@ -262,11 +325,6 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Equipment");
-                });
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.User.User", b =>
-                {
-                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

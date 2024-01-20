@@ -26,6 +26,8 @@ public static class DIConfig
         services.AddTransient<IHttpClientService, HttpClientService>();
         services.AddTransient<ILoyaltyProgramRepository, LoyaltyProgramRepository>();
         services.AddTransient<ILoyaltyProgramService, LoyaltyProgramService>();
+        services.AddTransient<ICompanyService, CompanyService>();
+        services.AddTransient<ICompanyAdminRepository, CompanyAdminRepository>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<UserManager<ApplicationUser>>();

@@ -3,6 +3,7 @@ using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL;
 
@@ -19,13 +20,10 @@ public class IsaDbContext : DbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<Equipment> Equipments { get; set; }
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
+    //public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        /*modelBuilder.Entity<User>()
-            .HasOne(u => u.Address)
-            .WithOne()
-            .HasForeignKey<User>(u => u.AddresId);*/
 
         modelBuilder.Entity<Company>()
             .HasOne(c => c.Address)
@@ -33,20 +31,9 @@ public class IsaDbContext : DbContext
             .HasForeignKey<Company>(c => c.AddresId);
 
         modelBuilder.Entity<Company>()
-            .HasMany(c => c.Admins)
-            .WithOne()
-            .HasForeignKey(a => a.CompanyId);
-
-        modelBuilder.Entity<Company>()
             .HasMany(c => c.Appointments)
             .WithOne()
             .HasForeignKey(a => a.CompanyId);
-
-
-        modelBuilder.Entity<User>()
-            .HasMany(c => c.Appointments)
-            .WithOne()
-            .HasForeignKey(a => a.AdminId);
 
         modelBuilder.Entity<Company>()
             .HasMany(c => c.Equipment)
