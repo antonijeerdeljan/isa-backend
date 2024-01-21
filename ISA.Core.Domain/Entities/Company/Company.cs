@@ -6,7 +6,6 @@
     {
         public string Name {  get; set; }
         public Address Address { get; set; }
-        public Guid AddresId { get; set; }
         public string Description { get; set; }
         public int StartinWorkingHour { get; set; }
         public int EndWorkingHour { get; set; }
@@ -17,10 +16,7 @@
 
 
 
-        public Company() 
-        {
-            Id = new Guid();
-        }
+        public Company() {}
 
 
         public Company(string name, Address address, string description, int startWorkingHour, int endWorkingHour)
@@ -29,7 +25,6 @@
             Name = name;
             Address = address;
             Description = description;
-            AddresId = address.Id;
             StartinWorkingHour = startWorkingHour;
             EndWorkingHour = endWorkingHour;
         }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240121103845_init")]
-    partial class init
+    [Migration("20240121112750_upd")]
+    partial class upd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AddresId")
+                    b.Property<Guid>("AddressId")
                         .HasColumnType("uuid");
 
                     b.Property<double?>("AverageGrade")
@@ -86,8 +86,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddresId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Companies");
                 });
@@ -173,9 +172,14 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CompanyAdmins");
                 });
@@ -252,18 +256,20 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Appointments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("ISA.Core.Domain.Entities.Company.Company", "AddresId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -272,11 +278,13 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Equipment")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
@@ -287,7 +295,15 @@ namespace ISA.Application.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>

@@ -22,24 +22,6 @@ public class IsaDbContext : DbContext
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
     public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        
-
-        modelBuilder.Entity<Company>()
-            .HasOne(c => c.Address)
-            .WithOne()
-            .HasForeignKey<Company>(c => c.AddresId);
-
-        modelBuilder.Entity<Company>()
-            .HasMany(c => c.Appointments)
-            .WithOne()
-            .HasForeignKey(a => a.CompanyId);
-
-        modelBuilder.Entity<Company>()
-            .HasMany(c => c.Equipment)
-            .WithOne()
-            .HasForeignKey(e => e.CompanyId);
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {}
 
 }

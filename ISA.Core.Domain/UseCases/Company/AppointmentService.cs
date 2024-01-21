@@ -28,12 +28,12 @@ public class AppointmentService
     public async Task AddAsync(AppointmentRequestModel appointment)
     {
         var company = await _companyRepository.GetByIdAsync(appointment.CompanyId);
-        var user = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
 
-        if (company != null && user!=null && company.Admins.Contains(user))
+        if (company != null && companyAdmin != null && company.Admins.Contains(companyAdmin))
         {
             await _isaUnitOfWork.StartTransactionAsync();
-            Appointment newAppointment = new Appointment(appointment.CompanyId, user.Id, user.User.Firstname, user.User.Lastname, appointment.DateTime, appointment.Duration);
+            Appointment newAppointment = new Appointment(company, companyAdmin, appointment.DateTime, appointment.Duration);
             try
             {
                 await _appointmentRepository.AddAsync(newAppointment);
