@@ -79,6 +79,8 @@ public class UsersController : ControllerBase
 
     [HttpPost("RegisterNewAdmin")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "superAdminPolicy")]
+    [Authorize(Policy = "corpAdminPolicy")]
     public async Task RegisterCompanyAdmin([FromBody] CorpAdminRegistrationDto corpAdmin)
 => await _userService.AddNewCorpAdmin(corpAdmin);
 
