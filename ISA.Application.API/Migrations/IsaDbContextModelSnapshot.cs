@@ -54,6 +54,21 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Appointment");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.AppointmentEquipment", b =>
+                {
+                    b.Property<Guid>("AppointmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EquipmentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AppointmentId", "EquipmentId");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("AppointmentEquipment");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,9 +108,6 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AppointmentId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
@@ -107,8 +119,6 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
 
                     b.HasIndex("CompanyId");
 
@@ -274,6 +284,25 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.AppointmentEquipment", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", "Appointment")
+                        .WithMany("Equipments")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Equipment", "Equipment")
+                        .WithMany()
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Equipment");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.Address", "Address")
@@ -287,10 +316,6 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", null)
-                        .WithMany("Equipment")
-                        .HasForeignKey("AppointmentId");
-
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Equipment")
                         .HasForeignKey("CompanyId")
@@ -349,7 +374,7 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
                 {
-                    b.Navigation("Equipment");
+                    b.Navigation("Equipments");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>

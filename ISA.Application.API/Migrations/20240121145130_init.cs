@@ -88,16 +88,35 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyAdmins",
+                name: "Equipments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Equipments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompanyAdmins",
+                columns: table => new
+                {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyAdmins", x => x.Id);
+                    table.PrimaryKey("PK_CompanyAdmins", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_CompanyAdmins_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -145,7 +164,7 @@ namespace ISA.Application.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyAdminId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyAdminUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -161,10 +180,10 @@ namespace ISA.Application.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointment_CompanyAdmins_CompanyAdminId",
-                        column: x => x.CompanyAdminId,
+                        name: "FK_Appointment_CompanyAdmins_CompanyAdminUserId",
+                        column: x => x.CompanyAdminUserId,
                         principalTable: "CompanyAdmins",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Appointment_Customers_CustomerId",
@@ -174,35 +193,33 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Equipments",
+                name: "AppointmentEquipment",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: true)
+                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Equipments", x => x.Id);
+                    table.PrimaryKey("PK_AppointmentEquipment", x => new { x.AppointmentId, x.EquipmentId });
                     table.ForeignKey(
-                        name: "FK_Equipments_Appointment_AppointmentId",
+                        name: "FK_AppointmentEquipment_Appointment_AppointmentId",
                         column: x => x.AppointmentId,
                         principalTable: "Appointment",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Equipments_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        name: "FK_AppointmentEquipment_Equipments_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointment_CompanyAdminId",
+                name: "IX_Appointment_CompanyAdminUserId",
                 table: "Appointment",
-                column: "CompanyAdminId");
+                column: "CompanyAdminUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_CompanyId",
@@ -215,6 +232,11 @@ namespace ISA.Application.API.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppointmentEquipment_EquipmentId",
+                table: "AppointmentEquipment",
+                column: "EquipmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Companies_AddressId",
                 table: "Companies",
                 column: "AddressId");
@@ -225,11 +247,6 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyAdmins_UserId",
-                table: "CompanyAdmins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Customers_LoyaltyProgramId",
                 table: "Customers",
                 column: "LoyaltyProgramId");
@@ -238,11 +255,6 @@ namespace ISA.Application.API.Migrations
                 name: "IX_Customers_UserId",
                 table: "Customers",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Equipments_AppointmentId",
-                table: "Equipments",
-                column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Equipments_CompanyId",
@@ -259,10 +271,13 @@ namespace ISA.Application.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Equipments");
+                name: "AppointmentEquipment");
 
             migrationBuilder.DropTable(
                 name: "Appointment");
+
+            migrationBuilder.DropTable(
+                name: "Equipments");
 
             migrationBuilder.DropTable(
                 name: "CompanyAdmins");

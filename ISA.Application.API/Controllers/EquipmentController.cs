@@ -1,5 +1,6 @@
 ﻿namespace ISA.Application.API.Controllers
 {
+    using ISA.Application.API.Models.Requests;
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.UseCases.Company;
@@ -23,7 +24,10 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task AddEquipment([FromBody] Equipment equipment) => await _equipmentService.AddAsync(equipment);
+        public async Task AddEquipment([FromBody] AddEqupmentRequest equipment)
+        {
+            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, equipment.CompanyId);
+        }
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
