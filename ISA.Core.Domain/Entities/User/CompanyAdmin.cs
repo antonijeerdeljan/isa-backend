@@ -2,12 +2,11 @@
 
 public class CompanyAdmin : Entity<Guid>
 {
-    public Entities.Company.Company Company { get; set; }
+    public User User { get; set; }
+    public Company.Company Company { get; set; }
 
-    public User User;
-	public CompanyAdmin() : base()
+    public CompanyAdmin()
     {
-
     }
 
     public CompanyAdmin(User user, Company.Company company)

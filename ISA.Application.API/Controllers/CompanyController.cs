@@ -56,10 +56,10 @@
             return _companyService.GetCompanyProfile(id).Result;
         }
 
-        public async Task GettAllCompanies()
+        /*public async Task GettAllCompanies()
         {
 
-        }
+        }*/
 
 
 

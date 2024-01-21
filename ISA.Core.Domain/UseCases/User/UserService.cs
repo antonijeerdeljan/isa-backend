@@ -158,10 +158,10 @@ public class UserService
         Guid newUserId = Guid.NewGuid();
 
         await _isaUnitOfWork.StartTransactionAsync();
-        Entities.User.Address address = new(corpAdmin.Country, corpAdmin.City);
+        Address address = new(corpAdmin.Country, corpAdmin.City);
         var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
         Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
-        Entities.User.CompanyAdmin newCompanyAdmin = new(newUser, company);
+        CompanyAdmin newCompanyAdmin = new(newUser, company);
         await _companyAdminRepository.AddAsync(newCompanyAdmin);
 
         try

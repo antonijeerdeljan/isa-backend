@@ -20,10 +20,11 @@ public class IsaDbContext : DbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<Equipment> Equipments { get; set; }
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
-    //public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
+    public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
 
         modelBuilder.Entity<Company>()
             .HasOne(c => c.Address)

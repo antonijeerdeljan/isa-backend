@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240120154721_init")]
-    partial class init
+    [Migration("20240121105547_o")]
+    partial class o
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,11 +173,16 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyAdmin");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CompanyAdmins");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
@@ -287,7 +292,15 @@ namespace ISA.Application.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>

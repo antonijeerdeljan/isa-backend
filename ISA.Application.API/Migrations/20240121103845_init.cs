@@ -111,7 +111,7 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyAdmin",
+                name: "CompanyAdmins",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -119,9 +119,9 @@ namespace ISA.Application.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyAdmin", x => x.Id);
+                    table.PrimaryKey("PK_CompanyAdmins", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompanyAdmin_Companies_CompanyId",
+                        name: "FK_CompanyAdmins_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -188,8 +188,8 @@ namespace ISA.Application.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyAdmin_CompanyId",
-                table: "CompanyAdmin",
+                name: "IX_CompanyAdmins_CompanyId",
+                table: "CompanyAdmins",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
@@ -220,7 +220,7 @@ namespace ISA.Application.API.Migrations
                 name: "Appointment");
 
             migrationBuilder.DropTable(
-                name: "CompanyAdmin");
+                name: "CompanyAdmins");
 
             migrationBuilder.DropTable(
                 name: "Customers");
