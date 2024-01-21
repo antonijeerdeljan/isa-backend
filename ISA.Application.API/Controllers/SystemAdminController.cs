@@ -34,10 +34,8 @@ public class SystemAdminController : ControllerBase
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
     [HttpPost("Register")]
-    public async Task RegisterAdmin([FromBody] RegistrationRequestModel registrationRequestModel, string role)
+    public async Task RegisterSystemAdmin([FromBody] RegistrationRequestModel registrationRequestModel)
     {
-
-        if (role != IdentityRoles.SYSADMIN || role != IdentityRoles.CORPADMIN)
             await _userService.AddAsync(registrationRequestModel.Email,
                                        registrationRequestModel.Password,
                                        registrationRequestModel.Firstname,
@@ -47,8 +45,24 @@ public class SystemAdminController : ControllerBase
                                        registrationRequestModel.DateOfBirth,
                                        registrationRequestModel.PhoneNumber,
                                        null,null,
-                                       role);
+                                       "Sysadmin");
     }
+
+    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
+    [HttpPost("Register")]
+    public async Task RegisterCompanyAdmin([FromBody] RegistrationRequestModel registrationRequestModel, Guid comapnyId)
+    {
+
+            await _userService.AddCompanyAdminAsync(registrationRequestModel.Email,
+                                       registrationRequestModel.Password,
+                                       registrationRequestModel.Firstname,
+                                       registrationRequestModel.Lastname,
+                                       registrationRequestModel.City,
+                                       registrationRequestModel.Country,
+                                       registrationRequestModel.DateOfBirth,
+                                       registrationRequestModel.PhoneNumber);
+    }*/
+
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
     [HttpPost("DefineLoyaltyProgram")]

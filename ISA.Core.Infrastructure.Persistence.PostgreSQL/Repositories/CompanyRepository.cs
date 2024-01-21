@@ -4,6 +4,7 @@
     using ISA.Core.Domain.Entities;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.User;
+    using ISA.Core.Infrastructure.Persistence.PostgreSQL.QueryExtensionMethods;
     using Microsoft.EntityFrameworkCore;
     using System;
 
@@ -28,6 +29,12 @@
         new public async Task<Company?> GetByIdAsync(Guid Id)
         {
             return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).Include(t => t.Equipment).FirstOrDefaultAsync(); ;
+        }
+
+
+        public async Task<IEnumerable<Company>> GetAllCompanies(int page)
+        {
+            return await _dbSet.GetPage(page, 15).ToListAsync();
         }
 
     }

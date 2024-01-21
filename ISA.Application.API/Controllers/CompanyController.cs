@@ -56,6 +56,11 @@
             return _companyService.GetCompanyProfile(id).Result;
         }
 
+        public async Task GettAllCompanies()
+        {
+
+        }
+
 
 
     }

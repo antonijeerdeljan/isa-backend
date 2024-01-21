@@ -71,6 +71,43 @@ public class UserService
             await _isaUnitOfWork.RollBackAsync();
         }
     }
+
+
+
+    public async Task AddCompanyAdminAsync(string email,
+                               string password,
+                               string firstName,
+                               string lastName,
+                               string city,
+                               string country,
+                               DateTime birthDate,
+                               string phoneNumber)
+
+    {
+        Guid newUserId = Guid.NewGuid();
+
+        await _isaUnitOfWork.StartTransactionAsync();
+
+        Address address = new(country, city);
+        Entities.User.User newUser = new(newUserId, firstName, lastName, address, email, phoneNumber, birthDate);
+
+
+        try
+        {
+            await _identityService.RegisterUserAsync(newUserId, email, password, "Corpadmin");
+            await _userRepository.AddAsync(newUser);
+
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            await _isaUnitOfWork.RollBackAsync();
+        }
+    }
+
+
+
+
     public async Task CheckForSystemAdmin()
     {
         Address address = new("srbija", "zrenjanin");
