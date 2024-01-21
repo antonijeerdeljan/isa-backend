@@ -28,8 +28,11 @@ public static class DIConfig
         services.AddTransient<ILoyaltyProgramService, LoyaltyProgramService>();
         services.AddTransient<ICompanyService, CompanyService>();
         services.AddTransient<ICompanyAdminRepository, CompanyAdminRepository>();
+        services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+        services.AddTransient<ICompanyService,CompanyService>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
+        services.AddTransient<AppointmentService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

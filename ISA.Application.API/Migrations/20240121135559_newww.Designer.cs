@@ -3,6 +3,7 @@ using System;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    partial class IsaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240121135559_newww")]
+    partial class newww
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,7 +31,7 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CompanyAdminUserId")
+                    b.Property<Guid>("CompanyAdminId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CompanyId")
@@ -45,7 +48,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyAdminUserId");
+                    b.HasIndex("CompanyAdminId");
 
                     b.HasIndex("CompanyId");
 
@@ -159,21 +162,6 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("CompanyAdmins");
-                });
-
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -221,6 +209,10 @@ namespace ISA.Application.API.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -242,13 +234,34 @@ namespace ISA.Application.API.Migrations
                     b.HasIndex("AddressId");
 
                     b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
+                {
+                    b.HasBaseType("ISA.Core.Domain.Entities.User.User");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasDiscriminator().HasValue("CompanyAdmin");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.CompanyAdmin", "CompanyAdmin")
                         .WithMany()
-                        .HasForeignKey("CompanyAdminUserId")
+                        .HasForeignKey("CompanyAdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -291,25 +304,6 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
-                {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
-                        .WithMany("Admins")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
                     b.HasOne("ISA.Core.Domain.Entities.LoyaltyProgram.LoyaltyProgram", "LoyaltyProgram")
@@ -336,6 +330,25 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
+                        .WithMany("Admins")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
