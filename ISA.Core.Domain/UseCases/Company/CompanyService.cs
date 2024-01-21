@@ -73,6 +73,14 @@
 
         }
 
+        public async Task<IEnumerable<CompanyProfileDto>> GetAllCompanies(int page)
+        {
+            var companies = await _companyRepository.GetAllCompanies(page);
+            var companyProfiles = companies.Select(company => _mapper.Map<CompanyProfileDto>(company));
+            return companyProfiles;
+        }
+
+
         public async Task<CompanyProfileDto> GetCompanyProfile(Guid id)
         {
             CompanyProfileDto companyDto = new CompanyProfileDto();

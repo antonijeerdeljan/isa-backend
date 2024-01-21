@@ -56,10 +56,11 @@
             return _companyService.GetCompanyProfile(id).Result;
         }
 
-        /*public async Task GettAllCompanies()
+        [HttpGet("{page}")]
+        public async Task<IEnumerable<CompanyProfileDto>> GettAllCompanies(int page)
         {
-
-        }*/
+            return await _companyService.GetAllCompanies(page);
+        }
 
 
 

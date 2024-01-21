@@ -34,7 +34,7 @@
 
         public async Task<IEnumerable<Company>> GetAllCompanies(int page)
         {
-            return await _dbSet.GetPage(page, 15).ToListAsync();
+            return await _dbSet.GetPaged(page).ToListAsync();
         }
 
     }

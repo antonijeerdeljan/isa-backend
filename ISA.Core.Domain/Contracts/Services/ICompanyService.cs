@@ -9,4 +9,5 @@ public interface ICompanyService
     Task UpdateAsync(CompanyUpdateDto company);
     Task<Company> GetCompanyAsync(Guid id);
     Task<CompanyProfileDto> GetCompanyProfile(Guid id);
+    Task<IEnumerable<CompanyProfileDto>> GetAllCompanies(int page);
 }
