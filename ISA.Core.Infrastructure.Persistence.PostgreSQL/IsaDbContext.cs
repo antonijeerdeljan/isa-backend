@@ -22,6 +22,12 @@ public class IsaDbContext : DbContext
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
     public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {}
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+    
+        modelBuilder.Entity<Appointment>()
+            .HasOne(c => c.Id)
+            .WithMany()
+
+    }
 
 }

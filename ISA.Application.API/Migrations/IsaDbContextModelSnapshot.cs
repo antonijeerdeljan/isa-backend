@@ -93,6 +93,9 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AppointmentId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
@@ -104,6 +107,8 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
 
                     b.HasIndex("CompanyId");
 
@@ -288,6 +293,10 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
                 {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", null)
+                        .WithMany("Equipment")
+                        .HasForeignKey("AppointmentId");
+
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Equipment")
                         .HasForeignKey("CompanyId")
@@ -342,6 +351,11 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
+                {
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
