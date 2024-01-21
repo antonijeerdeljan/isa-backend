@@ -1,17 +1,25 @@
 ﻿namespace ISA.Core.Domain.Entities.User;
 
-public class CompanyAdmin : Entity<Guid>
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class CompanyAdmin 
 {
-    public User User { get; set; }
+    [Key]
+    public Guid UserId { get; set; }  
+
+    [ForeignKey("UserId")]
+    public User User { get; set; }  
+
     public Company.Company Company { get; set; }
 
     public CompanyAdmin()
     {
     }
 
-    public CompanyAdmin(User user, Company.Company company)
+    public CompanyAdmin(Guid userId, Company.Company company)
     {
-        User = user;
+        UserId = userId;
         Company = company;
     }
 }

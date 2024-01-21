@@ -3,6 +3,7 @@ using System;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    partial class IsaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240121140520_newwwhgf")]
+    partial class newwwhgf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +96,6 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AppointmentId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
@@ -107,8 +107,6 @@ namespace ISA.Application.API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
 
                     b.HasIndex("CompanyId");
 
@@ -167,14 +165,20 @@ namespace ISA.Application.API.Migrations
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
                 {
                     b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("UserId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("CompanyAdmins");
                 });
@@ -287,10 +291,6 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", null)
-                        .WithMany("Equipment")
-                        .HasForeignKey("AppointmentId");
-
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Equipment")
                         .HasForeignKey("CompanyId")
@@ -310,7 +310,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasOne("ISA.Core.Domain.Entities.User.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -345,11 +345,6 @@ namespace ISA.Application.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Appointment", b =>
-                {
-                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
