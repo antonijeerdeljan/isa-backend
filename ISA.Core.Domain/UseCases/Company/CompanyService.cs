@@ -20,9 +20,12 @@
             _mapper = mapper;
         }
 
-        public async Task AddAsync(string name, Address address, int startWorkingHour, int endWorkingHour, string description)
+        public async Task AddAsync(string name, int startWorkingHour, int endWorkingHour, string description,string country, string city)
         {
             await _isaUnitOfWork.StartTransactionAsync();
+
+            Address address = new(country,city);
+            address.Id = Guid.NewGuid();
 
             Company newCompany = new Company(name, address, description, startWorkingHour, endWorkingHour);
             newCompany.Id = Guid.NewGuid();

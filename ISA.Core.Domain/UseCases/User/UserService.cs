@@ -74,7 +74,7 @@ public class UserService
     public async Task CheckForSystemAdmin()
     {
         Address address = new("srbija", "zrenjanin");
-        await AddAsync("admin@gmail.com", 
+        await AddAsync("ftngrupa7@gmail.com", 
                        "Admin123!", 
                        "admin", 
                        "admin", 
