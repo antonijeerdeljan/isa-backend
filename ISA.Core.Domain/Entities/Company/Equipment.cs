@@ -10,14 +10,14 @@
     {
         public string Name {  get; set; }
         public int Quantity { get; set; }
-        public Guid CompanyId {  get; set; }
+        public Company Company {  get; set; }
 
-        public Equipment(string name, int quantity, Guid companyId)
+        public Equipment(string name, int quantity, Company company)
         {
             Id = new Guid();
             Name = name;
             Quantity = quantity;
-            CompanyId = companyId;
+            Company = company;
         }
 
         public Equipment()

@@ -25,7 +25,7 @@
 
         public async Task AddAsync(Equipment equipment)
         {
-            if (_newEquipmentRepository.Exist(equipment.CompanyId))
+            if (_newEquipmentRepository.Exist(equipment.Company.Id))
             {
                 await _isaUnitOfWork.StartTransactionAsync();
                 try

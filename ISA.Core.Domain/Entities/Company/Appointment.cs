@@ -1,30 +1,26 @@
 ﻿namespace ISA.Core.Domain.Entities.Company
 {
+    using ISA.Core.Domain.Entities.User;
     using System.ComponentModel;
 
     public class Appointment : Entity<Guid>
     {
-        public string AdminFirstName {  get; set; }
-        public string AdminLastName {  get; set; }
+        public CompanyAdmin CompanyAdmin { get; set; }
         public DateTime DateTime { get; set; }
         public int Duration { get; set; }
-        public Guid AdminId { get; set; }
-        public Guid CompanyId {  get; set; }
+        public Company Company {  get; set; }
 
-        public Appointment()
+        public Customer? Customer { get; set; }
+
+        public Appointment() {}
+
+        public Appointment(Company company, CompanyAdmin companyAdmin, DateTime dateTime, int duration)
         {
             Id = Guid.NewGuid();
-        }
-
-        public Appointment(Guid companyId, Guid adminId ,string adminFirstName, string adminLastName, DateTime dateTime, int duration)
-        {
-            Id = Guid.NewGuid();
-            AdminFirstName = adminFirstName;
-            AdminLastName = adminLastName;
+            CompanyAdmin = companyAdmin;
             DateTime = dateTime;
             Duration = duration;
-            AdminId = adminId;
-            CompanyId = companyId;
+            Company = company;
         }
     }
 }
