@@ -23,10 +23,19 @@ public class IsaDbContext : DbContext
     public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
-    
-        modelBuilder.Entity<Appointment>()
-            .HasOne(c => c.Id)
-            .WithMany()
+
+        modelBuilder.Entity<AppointmentEquipment>()
+        .HasKey(ae => new { ae.AppointmentId, ae.EquipmentId }); //kompozitni kljuc
+
+        modelBuilder.Entity<AppointmentEquipment>()
+            .HasOne(ae => ae.Appointment) //appointment equipment ima jedan appoitment
+            .WithMany(a => a.Equipments) // jedan appointment moze imati vise appointmentequpmenta?
+            .HasForeignKey(ae => ae.AppointmentId);
+
+        modelBuilder.Entity<AppointmentEquipment>()
+            .HasOne(ae => ae.Equipment)
+            .WithMany() 
+            .HasForeignKey(ae => ae.EquipmentId);
 
     }
 

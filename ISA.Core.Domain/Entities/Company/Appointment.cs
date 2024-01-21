@@ -10,6 +10,7 @@
         public int Duration { get; set; }
         public Company Company {  get; set; }
         public Customer? Customer { get; set; }
+        public List<AppointmentEquipment> Equipments { get; set; }
         public Appointment() {}
 
         public Appointment(Company company, CompanyAdmin companyAdmin, DateTime dateTime, int duration)
