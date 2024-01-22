@@ -16,4 +16,9 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
     {
         return await _dbSet.GetPaged(page).Where(c => c.Company.Id == id).Include(c => c.User).Include(c => c.User.Address).ToListAsync(); 
     }
+    public async Task<bool> CheckIfAdmin(Guid companyId, Guid userId)
+    {
+        return await _dbSet.AnyAsync(c => c.UserId == userId && c.Company.Id == companyId);
+    }
+
 }

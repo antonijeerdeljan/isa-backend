@@ -12,4 +12,5 @@ public interface ICompanyAdminRepository
 
     Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page);
 
+    Task<bool> CheckIfAdmin(Guid companyId, Guid userId);
 }

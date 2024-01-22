@@ -30,13 +30,12 @@ public static class DIConfig
         services.AddTransient<ICompanyService, CompanyService>();
         services.AddTransient<ICompanyAdminRepository, CompanyAdminRepository>();
         services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+        services.AddTransient<ICompanyService,CompanyService>();
         services.AddTransient<IEquipmentRepository, EquipmentRepository>();
-        
-        services.AddTransient<EquipmentService>();
-
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
+        services.AddTransient<EquimpentService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

@@ -24,7 +24,6 @@ public class UserService
         _customerRepository = customerRepository;
         _companyService = companyService;
         _companyAdminRepository = companyAdminRepository;
-
     }
 
     public async Task VerifyEmail(string email, string token)
@@ -174,9 +173,11 @@ public class UserService
         {
             await _isaUnitOfWork.RollBackAsync();
         }
+    }
 
-
-
+    public async Task<bool> IsUserIdInCompanyAdmins(Guid userId, Guid companyId)
+    {
+        return await _companyAdminRepository.CheckIfAdmin(companyId, userId);
     }
 
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
