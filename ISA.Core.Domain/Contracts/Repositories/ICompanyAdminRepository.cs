@@ -8,4 +8,5 @@ public interface ICompanyAdminRepository
     Task<CompanyAdmin?> GetByIdAsync(Guid id);
     void UpdateAndSaveChanges(CompanyAdmin companyAdmin);
     void Update(CompanyAdmin companyAdmin);
+    Task<bool> CheckIfAdmin(Guid companyId, Guid userId);
 }

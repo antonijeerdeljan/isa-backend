@@ -26,7 +26,8 @@
         [Authorize(Policy = "corpAdminPolicy")]
         public async Task AddEquipment([FromBody] AddEqupmentRequest equipment)
         {
-            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, equipment.CompanyId);
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, equipment.CompanyId, userId);
         }
 
 
