@@ -1,4 +1,4 @@
-﻿using ISA.Core.Domain.Dtos;
+﻿using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 
 namespace ISA.Core.Domain.Contracts.Services;

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.LoyaltyProgram;
+using ISA.Core.Domain.UseCases.Company;
 
 namespace ISA.Application.API.Startup.DI;
 
@@ -29,7 +30,10 @@ public static class DIConfig
         services.AddTransient<ICompanyService, CompanyService>();
         services.AddTransient<ICompanyAdminRepository, CompanyAdminRepository>();
         services.AddTransient<IAppointmentRepository, AppointmentRepository>();
-        services.AddTransient<ICompanyService,CompanyService>();
+        services.AddTransient<IEquipmentRepository, EquipmentRepository>();
+        
+        services.AddTransient<EquipmentService>();
+
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();

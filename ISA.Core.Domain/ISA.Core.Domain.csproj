@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\NewFolder1\**" />
+    <Compile Remove="Dtos\NewFolder2\**" />
+    <Compile Remove="Dtos\NewFolder\**" />
+    <EmbeddedResource Remove="Dtos\NewFolder1\**" />
+    <EmbeddedResource Remove="Dtos\NewFolder2\**" />
+    <EmbeddedResource Remove="Dtos\NewFolder\**" />
+    <None Remove="Dtos\NewFolder1\**" />
+    <None Remove="Dtos\NewFolder2\**" />
+    <None Remove="Dtos\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentResults" Version="3.15.2" />

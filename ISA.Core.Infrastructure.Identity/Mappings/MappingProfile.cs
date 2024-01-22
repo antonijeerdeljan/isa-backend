@@ -2,6 +2,7 @@
 {
     using AutoMapper;
     using ISA.Core.Domain.Dtos;
+    using ISA.Core.Domain.Dtos.Company;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.User;
 
@@ -13,6 +14,7 @@
             CreateMap<Company, CompanyProfileDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Equipment, EquipmentDto>().ReverseMap();
+            CreateMap<Appointment, AppointmentDto>().ReverseMap();
         }
     }
 }
