@@ -110,6 +110,14 @@ public static class AuthConfig
                 );
             });
 
+            options.AddPolicy("AdminsPolicy", policy =>
+            {
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole("Corpadmin") ||
+                    context.User.IsInRole("Sysadmin")
+                );
+            });
+
         });
     }
 

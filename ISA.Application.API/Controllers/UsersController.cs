@@ -2,6 +2,7 @@
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Token;
+using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -79,10 +80,18 @@ public class UsersController : ControllerBase
 
     [HttpPost("RegisterNewAdmin")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Policy = "superAdminPolicy")]
-    [Authorize(Policy = "corpAdminPolicy")]
+    [Authorize(Policy = "adminsPolicy")]
     public async Task RegisterCompanyAdmin([FromBody] CorpAdminRegistrationDto corpAdmin)
 => await _userService.AddNewCorpAdmin(corpAdmin);
+
+
+    [HttpGet("CompanyAdmins/{companyId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "adminsPolicy")]
+    public async Task<IEnumerable<CompanyAdmin>> GettAllCompanyAdmins(Guid companyId, int page)
+    {
+        return await _userService.GetAllCompanyAdmins(companyId, page);
+    }
 
 
 

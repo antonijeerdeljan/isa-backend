@@ -178,4 +178,9 @@ public class UserService
 
 
     }
+
+    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
+    {
+        return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
+    }
 }
