@@ -24,5 +24,13 @@
         {
             Id = new Guid();
         }
+
+        public Equipment(Guid id,string name, int quantity, Company company)
+        {
+            Id = id;
+            Name = name;
+            Quantity = quantity;
+            Company = company;
+        }
     }
 }

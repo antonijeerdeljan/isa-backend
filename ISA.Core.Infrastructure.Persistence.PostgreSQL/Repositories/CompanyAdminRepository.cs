@@ -3,6 +3,7 @@ using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.QueryExtensionMethods;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 
@@ -24,7 +25,7 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
     }
     public async Task<bool> CheckIfAdmin(Guid companyId, Guid userId)
     {
-        return await _dbSet.AnyAsync(c => c.Id == userId && c.Company.Id == companyId);
+        return await _dbSet.AnyAsync(c => c.UserId == userId && c.Company.Id == companyId);
     }
 
 }

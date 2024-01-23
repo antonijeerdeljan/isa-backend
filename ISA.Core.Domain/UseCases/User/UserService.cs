@@ -160,7 +160,7 @@ public class UserService
         Address address = new(corpAdmin.Country, corpAdmin.City);
         var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
         Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
-        CompanyAdmin newCompanyAdmin = new(newUser, company);
+        CompanyAdmin newCompanyAdmin = new(newUserId, company);
 
         try
         {
@@ -184,4 +184,6 @@ public class UserService
     {
         return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
     }
+
+
 }

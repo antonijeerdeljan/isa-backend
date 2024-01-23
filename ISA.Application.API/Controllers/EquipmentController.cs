@@ -24,18 +24,21 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task AddEquipment([FromBody] AddEqupmentRequest equipment)
+        public async Task AddEquipment([FromBody] AddEquipmentRequest equipment)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
-            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, equipment.CompanyId, userId);
+            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, userId);
         }
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task UpdateCompany([FromBody] Equipment equipment)
-        => await _equipmentService.UpdateAsync(equipment);
+        public async Task UpdateEquipment([FromBody] UpdateEquipmentRequest equipment)
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            await _equipmentService.UpdateAsync(equipment.Id, equipment.Name, equipment.Quantity, userId);
+        }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("/{id}")]

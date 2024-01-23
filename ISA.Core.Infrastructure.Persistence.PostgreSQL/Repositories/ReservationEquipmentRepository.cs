@@ -2,27 +2,19 @@
 {
     using ISA.Core.Domain.Contracts.Repositories;
     using ISA.Core.Domain.Entities.Company;
-    using Microsoft.EntityFrameworkCore;
+    using ISA.Core.Domain.Entities.Reservation;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
-    public class EquipmentRepository : GenericRepository<Equipment, Guid>, IEquipmentRepository
+    public class ReservationEquipmentRepository : GenericRepository<ReservationEquipment, Guid>, IReservationEquipmentRepository
     {
         private readonly IsaDbContext _isaDbContext;
-        public EquipmentRepository(IsaDbContext isaDbContext) : base(isaDbContext)
+        public ReservationEquipmentRepository(IsaDbContext isaDbContext) : base(isaDbContext)
         {
             _isaDbContext = isaDbContext;
-        }
-
-        public async Task <bool> ExistEnough(Guid id, int quantity)
-        {
-
-            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.Quantity >= quantity) is not null;
-            
-
         }
     }
 }

@@ -6,6 +6,7 @@ using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
 
+
 namespace ISA.Core.Domain.UseCases.Company;
 
 public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipmentService
@@ -16,27 +17,26 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     private readonly IMapper _mapper;
     private readonly ICompanyService _companyService;
     private readonly UserService _userService;
+    private readonly ICompanyAdminRepository _companyAdminRepository;
 
-    public EquipmentService(IEquipmentRepository equipmentRepository, ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper, ICompanyService companyService, UserService userService)  : base(mapper)
+    public EquipmentService(IEquipmentRepository equipmentRepository, ICompanyRepository companyRepository, ICompanyAdminRepository companyAdminRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper, ICompanyService companyService, UserService userService)  : base(mapper)
 
     {
         _equipmentRepository = equipmentRepository;
         _companyRepository = companyRepository;
+        _companyAdminRepository = companyAdminRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
         _companyService = companyService;
         _userService = userService;
     }
 
-    public async Task AddAsync(string equpmentName, int quantity, Guid companyId, Guid userId)
+    public async Task AddAsync(string equipmentName, int quantity, Guid userId)
     {
-        if(await _userService.IsUserIdInCompanyAdmins(userId,companyId) is false)
-        {
-            throw new ArgumentException();
-        }
-        var company = await _companyService.GetCompanyAsync(companyId);
-        Equipment equipment = new(equpmentName,quantity,company);
-        if (_companyRepository.Exist(equipment.Company.Id))
+        
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
+        Equipment equipment = new(equipmentName,quantity,companyAdmin.Company);
+        if (companyAdmin.Company is not null)
         {
             await _isaUnitOfWork.StartTransactionAsync();
             try
@@ -67,8 +67,10 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     }
 
-    public async Task UpdateAsync(Equipment newEquipment)
+    public async Task UpdateAsync(Guid id, string name, int quantity, Guid userId)
     {
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
+        Equipment newEquipment = new Equipment(id, name, quantity, companyAdmin.Company);
         _equipmentRepository.UpdateAndSaveChanges(newEquipment);
     }
 }

@@ -19,4 +19,12 @@ public class Reservation : Entity<Guid>
         Appointment = appointment;
         IsFinished = isFinished;
     }
+
+    public Reservation(Guid id, Appointment appointment, Customer customer, List<ReservationEquipment> equipments)
+    {
+        Id = id;
+        Appointment = appointment;
+        Customer = customer;
+        Equipments = equipments;
+    }
 }
