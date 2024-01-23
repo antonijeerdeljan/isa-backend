@@ -1,6 +1,6 @@
-﻿namespace ISA.Application.API.Models.Requests;
-
-public record ReservationRequest
+﻿namespace ISA.Application.API.Models.Requests
 {
-
+    public class ReservationRequest
+    {
+    }
 }

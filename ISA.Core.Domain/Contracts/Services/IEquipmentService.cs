@@ -8,6 +8,6 @@
     {
         Task AddAsync(string equpmentName, int quantity, Guid userId);
         Task RemoveAsync(Guid id);
-        Task UpdateAsync(Equipment newEquipment);
+        Task UpdateAsync(Guid id, string name, int quantity, Guid userId);
     }
 }

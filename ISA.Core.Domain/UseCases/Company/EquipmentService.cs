@@ -6,6 +6,7 @@ using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
 
+
 namespace ISA.Core.Domain.UseCases.Company;
 
 public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipmentService
@@ -30,11 +31,11 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
         _userService = userService;
     }
 
-    public async Task AddAsync(string equpmentName, int quantity, Guid userId)
+    public async Task AddAsync(string equipmentName, int quantity, Guid userId)
     {
         
         var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        Equipment equipment = new(equpmentName,quantity,companyAdmin.Company);
+        Equipment equipment = new(equipmentName,quantity,companyAdmin.Company);
         if (companyAdmin.Company is not null)
         {
             await _isaUnitOfWork.StartTransactionAsync();
@@ -66,8 +67,10 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     }
 
-    public async Task UpdateAsync(Equipment newEquipment)
+    public async Task UpdateAsync(Guid id, string name, int quantity, Guid userId)
     {
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
+        Equipment newEquipment = new Equipment(id, name, quantity, companyAdmin.Company);
         _equipmentRepository.UpdateAndSaveChanges(newEquipment);
     }
 }
