@@ -3,6 +3,7 @@ using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.QueryExtensionMethods;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 

@@ -6,7 +6,7 @@
 
     public interface IEquipmentService
     {
-        Task AddAsync(string equpmentName, int quantity, Guid CompanyId, Guid userId);
+        Task AddAsync(string equpmentName, int quantity, Guid userId);
         Task RemoveAsync(Guid id);
         Task UpdateAsync(Equipment newEquipment);
     }

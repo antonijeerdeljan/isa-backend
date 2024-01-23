@@ -24,10 +24,10 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task AddEquipment([FromBody] AddEqupmentRequest equipment)
+        public async Task AddEquipment([FromBody] AddEquipmentRequest equipment)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
-            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, equipment.CompanyId, userId);
+            await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, userId);
         }
 
 
