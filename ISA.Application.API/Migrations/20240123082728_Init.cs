@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,8 +49,8 @@ namespace ISA.Application.API.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     AddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    StartinWorkingHour = table.Column<int>(type: "integer", nullable: false),
-                    EndWorkingHour = table.Column<int>(type: "integer", nullable: false),
+                    StartingWorkingHour = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    EndWorkingHour = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     AverageGrade = table.Column<double>(type: "double precision", nullable: true)
                 },
                 constraints: table =>
@@ -165,8 +165,8 @@ namespace ISA.Application.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyAdminUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Duration = table.Column<int>(type: "integer", nullable: false),
+                    StartingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uuid", nullable: true)
                 },

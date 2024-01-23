@@ -5,8 +5,8 @@
         public Guid CompanyId { get; set; }
         public Guid AdminId { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime StartingDateTime { get; set; }
 
-        public int Duration { get; set; }
+        public DateTime EndingDateTime { get; set; }
     }
 }

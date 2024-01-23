@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Contracts.Repositories;
+using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.QueryExtensionMethods;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,11 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
     public CompanyAdminRepository(IsaDbContext isaDbContext) : base(isaDbContext)
     {
 
+    }
+
+    new public async Task<CompanyAdmin?> GetByIdAsync(Guid Id)
+    {
+        return await _dbSet.Where(t => t.UserId == Id).Include(t => t.Company).FirstOrDefaultAsync(); ;
     }
 
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)

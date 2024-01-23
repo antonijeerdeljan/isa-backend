@@ -37,11 +37,11 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("EndingDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("StartingDateTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -85,15 +85,15 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("EndWorkingHour")
-                        .HasColumnType("integer");
+                    b.Property<TimeOnly>("EndWorkingHour")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StartinWorkingHour")
-                        .HasColumnType("integer");
+                    b.Property<TimeOnly>("StartingWorkingHour")
+                        .HasColumnType("time without time zone");
 
                     b.HasKey("Id");
 

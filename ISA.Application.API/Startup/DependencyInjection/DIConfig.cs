@@ -35,7 +35,7 @@ public static class DIConfig
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
-        services.AddTransient<EquimpentService>();
+        services.AddTransient<EquipmentService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

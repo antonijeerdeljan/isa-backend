@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240121145130_init")]
-    partial class init
+    [Migration("20240123082728_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,11 +40,11 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("EndingDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("StartingDateTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -88,15 +88,15 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("EndWorkingHour")
-                        .HasColumnType("integer");
+                    b.Property<TimeOnly>("EndWorkingHour")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StartinWorkingHour")
-                        .HasColumnType("integer");
+                    b.Property<TimeOnly>("StartingWorkingHour")
+                        .HasColumnType("time without time zone");
 
                     b.HasKey("Id");
 
