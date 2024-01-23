@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class CompanyAdmin 
 {
-    [Key]
+    [Key] //Do not change
     public Guid UserId { get; set; }
 
     [ForeignKey(nameof(UserId))]

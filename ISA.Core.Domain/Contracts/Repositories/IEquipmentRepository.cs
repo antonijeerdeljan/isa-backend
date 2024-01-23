@@ -16,5 +16,7 @@
         void Update(Equipment equipment);
 
         Task RemoveAndSaveChangesAsync(Guid Id);
+
+        Task<bool> ExistEnough(Guid id, int quantity);
     }
 }
