@@ -36,5 +36,8 @@
             Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
             return await _appointmentService.GetAllCompanyAppointments(page, adminId);
         }
+
+
+
     }
 }

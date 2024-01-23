@@ -1,13 +1,7 @@
-﻿namespace ISA.Core.Domain.Dtos
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿namespace ISA.Core.Domain.Dtos;
 
-    public class EquipmentDto
-    {
-        public string Name { get; set; }
-    }
+public record EquipmentDto
+{
+    public string Name { get; set; }
+    public int Quantity { get; set; }
 }

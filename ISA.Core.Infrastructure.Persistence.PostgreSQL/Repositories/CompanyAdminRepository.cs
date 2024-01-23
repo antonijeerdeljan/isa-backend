@@ -24,7 +24,7 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
     }
     public async Task<bool> CheckIfAdmin(Guid companyId, Guid userId)
     {
-        return await _dbSet.AnyAsync(c => c.UserId == userId && c.Company.Id == companyId);
+        return await _dbSet.AnyAsync(c => c.Id == userId && c.Company.Id == companyId);
     }
 
 }
