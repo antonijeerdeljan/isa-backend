@@ -7,7 +7,6 @@ using ISA.Core.Infrastructure.Identity.Services;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.AspNetCore.Identity;
-using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.LoyaltyProgram;
 
@@ -31,6 +30,7 @@ public static class DIConfig
         services.AddTransient<IAppointmentRepository, AppointmentRepository>();
         services.AddTransient<ICompanyService,CompanyService>();
         services.AddTransient<IEquipmentRepository, EquipmentRepository>();
+        services.AddTransient<IReservationRepository, ReservationRepository>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();

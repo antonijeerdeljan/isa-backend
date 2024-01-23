@@ -160,13 +160,13 @@ public class UserService
         Address address = new(corpAdmin.Country, corpAdmin.City);
         var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
         Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
-        CompanyAdmin newCompanyAdmin = new(newUser.Id, company);
-        await _companyAdminRepository.AddAsync(newCompanyAdmin);
+        CompanyAdmin newCompanyAdmin = new(newUser, company);
 
         try
         {
             await _identityService.RegisterUserAsync(newUserId, corpAdmin.Email, corpAdmin.Password, "Corpadmin");
             await _userRepository.AddAsync(newUser);
+            await _companyAdminRepository.AddAsync(newCompanyAdmin);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
         catch (Exception ex)

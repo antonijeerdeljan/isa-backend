@@ -21,7 +21,11 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        //[Authorize(Policy = "corpAdminPolicy")]
+        [Authorize(Policy = "corpAdminPolicy")]
         public async Task AddAppointment([FromBody] AppointmentRequestModel appointment) => await _appointmentService.AddAsync(appointment);
+
+
+
+
     }
 }

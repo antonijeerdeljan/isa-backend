@@ -111,12 +111,13 @@ namespace ISA.Application.API.Migrations
                 name: "CompanyAdmins",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyAdmins", x => x.UserId);
+                    table.PrimaryKey("PK_CompanyAdmins", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CompanyAdmins_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -164,11 +165,10 @@ namespace ISA.Application.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyAdminUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyAdminId = table.Column<Guid>(type: "uuid", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uuid", nullable: true)
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,61 +180,72 @@ namespace ISA.Application.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointment_CompanyAdmins_CompanyAdminUserId",
-                        column: x => x.CompanyAdminUserId,
+                        name: "FK_Appointment_CompanyAdmins_CompanyAdminId",
+                        column: x => x.CompanyAdminId,
                         principalTable: "CompanyAdmins",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Appointment_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppointmentEquipment",
+                name: "Reservations",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false)
+                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppointmentEquipment", x => new { x.AppointmentId, x.EquipmentId });
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppointmentEquipment_Appointment_AppointmentId",
+                        name: "FK_Reservations_Appointment_AppointmentId",
                         column: x => x.AppointmentId,
                         principalTable: "Appointment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AppointmentEquipment_Equipments_EquipmentId",
+                        name: "FK_Reservations_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReservationEquipment",
+                columns: table => new
+                {
+                    ReservationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservationEquipment", x => new { x.ReservationId, x.EquipmentId });
+                    table.ForeignKey(
+                        name: "FK_ReservationEquipment_Equipments_EquipmentId",
                         column: x => x.EquipmentId,
                         principalTable: "Equipments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReservationEquipment_Reservations_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointment_CompanyAdminUserId",
+                name: "IX_Appointment_CompanyAdminId",
                 table: "Appointment",
-                column: "CompanyAdminUserId");
+                column: "CompanyAdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_CompanyId",
                 table: "Appointment",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointment_CustomerId",
-                table: "Appointment",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppointmentEquipment_EquipmentId",
-                table: "AppointmentEquipment",
-                column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Companies_AddressId",
@@ -245,6 +256,11 @@ namespace ISA.Application.API.Migrations
                 name: "IX_CompanyAdmins_CompanyId",
                 table: "CompanyAdmins",
                 column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyAdmins_UserId",
+                table: "CompanyAdmins",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_LoyaltyProgramId",
@@ -262,6 +278,21 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReservationEquipment_EquipmentId",
+                table: "ReservationEquipment",
+                column: "EquipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_AppointmentId",
+                table: "Reservations",
+                column: "AppointmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_CustomerId",
+                table: "Reservations",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
                 table: "Users",
                 column: "AddressId");
@@ -271,25 +302,28 @@ namespace ISA.Application.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppointmentEquipment");
-
-            migrationBuilder.DropTable(
-                name: "Appointment");
+                name: "ReservationEquipment");
 
             migrationBuilder.DropTable(
                 name: "Equipments");
 
             migrationBuilder.DropTable(
-                name: "CompanyAdmins");
+                name: "Reservations");
+
+            migrationBuilder.DropTable(
+                name: "Appointment");
 
             migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "CompanyAdmins");
 
             migrationBuilder.DropTable(
                 name: "LoyaltyPrograms");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "Users");
