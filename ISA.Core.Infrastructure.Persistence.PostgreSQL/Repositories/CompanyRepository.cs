@@ -34,11 +34,14 @@
 
         public async Task<IEnumerable<Company>> GetAllCompanies(int page)
         {
-            return await _dbSet.GetPaged(page).Include(c => c.Address)
-                                              .Include(c => c.Appointments)
-                                              .Include(c => c.Equipment)
-                                              .ToListAsync();
+            return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment).Include(c => c.Appointments).ToListAsync();
         }
 
+        public async Task<bool> IsAppointmentInWorkingHours(DateTime start, DateTime end, Guid id)
+        {
+            var company = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
+            return (start.TimeOfDay >= company.StartingWorkingHour.ToTimeSpan()  && end.TimeOfDay <= company.EndWorkingHour.ToTimeSpan() && end >= start && start >= DateTime.UtcNow.AddHours(1) && start.Date == end.Date && start.Date.DayOfWeek != DayOfWeek.Sunday && start.Date.DayOfWeek != DayOfWeek.Saturday) ;
+
+        }
     }
 }

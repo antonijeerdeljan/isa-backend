@@ -9,6 +9,7 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.AspNetCore.Identity;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.LoyaltyProgram;
+using ISA.Core.Domain.UseCases.Company;
 
 namespace ISA.Application.API.Startup.DI;
 
@@ -34,7 +35,7 @@ public static class DIConfig
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
-        services.AddTransient<EquimpentService>();
+        services.AddTransient<EquipmentService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

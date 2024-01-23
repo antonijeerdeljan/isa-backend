@@ -7,8 +7,8 @@
         public string Name {  get; set; }
         public Address Address { get; set; }
         public string Description { get; set; }
-        public int StartinWorkingHour { get; set; }
-        public int EndWorkingHour { get; set; }
+        public TimeOnly StartingWorkingHour { get; set; }
+        public TimeOnly EndWorkingHour { get; set; }
         public double? AverageGrade {  get; set; }
         public List<Appointment>? Appointments { get; set; }
         public List<CompanyAdmin>? Admins { get; set; }
@@ -19,13 +19,13 @@
         public Company() {}
 
 
-        public Company(string name, Address address, string description, int startWorkingHour, int endWorkingHour)
+        public Company(string name, Address address, string description, TimeOnly startWorkingHour, TimeOnly endWorkingHour)
         {
             Id = new Guid();
             Name = name;
             Address = address;
             Description = description;
-            StartinWorkingHour = startWorkingHour;
+            StartingWorkingHour = startWorkingHour;
             EndWorkingHour = endWorkingHour;
         }
 

@@ -13,9 +13,9 @@
     [Route("[controller]")]
     public class EquipmentController : ControllerBase
     {
-        private readonly EquimpentService _equipmentService;
+        private readonly EquipmentService _equipmentService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public EquipmentController(EquimpentService equimpentService, IHttpContextAccessor contextAccessor)
+        public EquipmentController(EquipmentService equimpentService, IHttpContextAccessor contextAccessor)
         {
             _equipmentService = equimpentService;
             _contextAccessor = contextAccessor;
@@ -39,7 +39,7 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("/{id}")]
-        [Authorize(Policy = "superAdminPolicy")]
+        [Authorize(Policy = "corpAdminPolicy")]
         public async Task RemoveEquipment([FromRoute] Guid id) => await _equipmentService.RemoveAsync(id);
 
     }

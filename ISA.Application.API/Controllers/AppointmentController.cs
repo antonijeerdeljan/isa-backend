@@ -1,6 +1,8 @@
 ﻿namespace ISA.Application.API.Controllers
 {
+    using ISA.Core.Domain.Contracts.Services;
     using ISA.Core.Domain.Dtos;
+    using ISA.Core.Domain.Dtos.Company;
     using ISA.Core.Domain.UseCases.Company;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -24,6 +26,16 @@
         [Authorize(Policy = "corpAdminPolicy")]
         public async Task AddAppointment([FromBody] AppointmentRequestModel appointment) => await _appointmentService.AddAsync(appointment);
 
+        
+        
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("CompanyAppointments")]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public async Task<IEnumerable<AppointmentDto>> GettAllCompanyAppointments(int page)
+        {
+            Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _appointmentService.GetAllCompanyAppointments(page, adminId);
+        }
 
 
 

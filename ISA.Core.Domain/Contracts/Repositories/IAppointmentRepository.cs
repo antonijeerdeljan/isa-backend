@@ -12,5 +12,7 @@
         void UpdateAndSaveChanges(Appointment appointment);
 
         void Update(Appointment appointment);
+
+        Task<IEnumerable<Appointment>> GetAllCompanyAppointments(int page, Guid companyId);
     }
 }

@@ -179,4 +179,9 @@ public class UserService
     {
         return await _companyAdminRepository.CheckIfAdmin(companyId, userId);
     }
+
+    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
+    {
+        return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
+    }
 }
