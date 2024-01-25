@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240123114702_Init")]
-    partial class Init
+    [Migration("20240125115711_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CompanyAdminId")
+                    b.Property<Guid>("CompanyAdminUserId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CompanyId")
@@ -45,7 +45,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyAdminId");
+                    b.HasIndex("CompanyAdminUserId");
 
                     b.HasIndex("CompanyId");
 
@@ -147,7 +147,7 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("AppointmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsFinished")
@@ -157,7 +157,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CustomerUserId");
 
                     b.ToTable("Reservations");
                 });
@@ -169,6 +169,9 @@ namespace ISA.Application.API.Migrations
 
                     b.Property<Guid>("EquipmentId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
 
                     b.HasKey("ReservationId", "EquipmentId");
 
@@ -198,29 +201,22 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("CompanyAdmins");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CompanyInfo")
@@ -240,14 +236,9 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.HasIndex("LoyaltyProgramId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -291,7 +282,7 @@ namespace ISA.Application.API.Migrations
                 {
                     b.HasOne("ISA.Core.Domain.Entities.User.CompanyAdmin", "CompanyAdmin")
                         .WithMany()
-                        .HasForeignKey("CompanyAdminId")
+                        .HasForeignKey("CompanyAdminUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -338,7 +329,7 @@ namespace ISA.Application.API.Migrations
 
                     b.HasOne("ISA.Core.Domain.Entities.User.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("CustomerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -33,7 +33,6 @@ public class ReservationService
     {
         var customer = await _customerRepository.GetByIdAsync(userId);
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
-        Guid reservationId = new Guid();
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         if (customer is null || appointment is null)
         {
@@ -48,12 +47,12 @@ public class ReservationService
                 if  (await _equipmentRepository.ExistEnough(r.EquipmentId, r.Quantity) is false){
                     throw new ArgumentException("No enough equipment");
                 }
-                ReservationEquipment re = new ReservationEquipment(reservationId, r.EquipmentId, r.Quantity);
+                ReservationEquipment re = new ReservationEquipment(appointment.Id, r.EquipmentId, r.Quantity);
                 reservationEquipment.Add(re);
             }
 
            
-            Reservation reservation = new Reservation(reservationId, appointment, customer, reservationEquipment);
+            Reservation reservation = new Reservation(appointment, customer, reservationEquipment);
             await _reservationRepository.AddAsync(reservation);
             foreach (var r in reservation.Equipments)
             {
