@@ -16,7 +16,7 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
 
     new public async Task<CompanyAdmin?> GetByIdAsync(Guid Id)
     {
-        return await _dbSet.Where(t => t.Id == Id).Include(t => t.Company).FirstOrDefaultAsync(); ;
+        return await _dbSet.Where(t => t.UserId == Id).Include(t => t.Company).FirstOrDefaultAsync(); ;
     }
 
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
