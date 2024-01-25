@@ -10,10 +10,14 @@ public class Reservation
     //napriviti da id bude appoinemnt id
     //resiti datume za dodavanje appoinemtenta
     //resitii datume
-    public Appointment Appointment { get; set; }
+
+    [Key]
+    [ForeignKey("Appointment")] 
+    public Guid AppointmentID { get; set; }
+    public virtual Appointment Appointment { get; set; }
     public bool IsFinished { get; set; } = false;
-    public Customer Customer { get; set; }
-    public List<ReservationEquipment> Equipments { get; set; }
+    public virtual Customer Customer { get; set; }
+    public virtual List<ReservationEquipment> Equipments { get; set; }
 
     public Reservation()
     {
