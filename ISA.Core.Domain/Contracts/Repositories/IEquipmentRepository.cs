@@ -18,5 +18,7 @@
         Task RemoveAndSaveChangesAsync(Guid Id);
 
         Task<bool> ExistEnough(Guid id, int quantity);
+
+        Task EquipmentSold(Guid id, int quantity);
     }
 }

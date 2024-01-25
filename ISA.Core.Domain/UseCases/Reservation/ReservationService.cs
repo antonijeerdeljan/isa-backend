@@ -57,6 +57,7 @@ public class ReservationService
             foreach (var r in reservation.Equipments)
             {
                 await _reservationEquipmentRepository.AddAsync(r);
+                await _equipmentRepository.EquipmentSold(r.EquipmentId, r.Quantity);
             }
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
             

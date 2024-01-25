@@ -27,19 +27,20 @@ public class AppointmentService
         _companyAdminRepository = companyAdminRepository;
     }
 
-    public async Task AddAsync(AppointmentRequestModel appointment)
+    public async Task AddAsync(AppointmentRequestModel appointment, Guid userId)
     {
-        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, appointment.CompanyId) is false)
+        var compAdmin = await _companyAdminRepository.GetByIdAsync(userId);
+        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, compAdmin.Company.Id) is false)
         {
             throw new ArgumentException();
         }
-        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, appointment.CompanyId) is false)
+        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, compAdmin.Company.Id) is false)
         {
             throw new ArgumentException();
         }
         {
             await _isaUnitOfWork.StartTransactionAsync();
-            var company = await _companyService.GetCompanyAsync(appointment.CompanyId);
+            var company = await _companyService.GetCompanyAsync(compAdmin.Company.Id);
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
             Appointment newAppointment = new Appointment(company, companyAdmin, appointment.StartingDateTime, appointment.EndingDateTime);
             try
