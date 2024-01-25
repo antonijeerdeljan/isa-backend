@@ -24,8 +24,12 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task AddAppointment([FromBody] AppointmentRequestModel appointment) => await _appointmentService.AddAsync(appointment);
+        public async Task AddAppointment([FromBody] AppointmentRequestModel appointment)
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            await _appointmentService.AddAsync(appointment, userId);
 
+        }
         
         
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
