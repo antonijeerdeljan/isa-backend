@@ -86,6 +86,7 @@ public class ReservationService
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
         reservation.SetAsCanceled();
+
         if(IsAppointmentWithin24Hours(reservation) is false)
         {
             await _userService.GivePenaltyPoints(userId, 1);
