@@ -2,6 +2,7 @@
 using ISA.Core.Domain.Entities.User;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Contracts;
 
 namespace ISA.Core.Domain.Entities.Reservation;public enum ReservationState
 {
@@ -21,6 +22,7 @@ public class Reservation
     public bool IsFinished { get; set; } = false;
     public Customer Customer { get; set; }
     public List<ReservationEquipment> Equipments { get; set; }
+    public ReservationState State { get; set; } = ReservationState.Pending;
 
     public Reservation()
     {

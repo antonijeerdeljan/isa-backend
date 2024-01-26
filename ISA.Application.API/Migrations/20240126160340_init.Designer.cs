@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240126123507_i")]
-    partial class i
+    [Migration("20240126160340_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("AlreadyTaken")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("CompanyAdminUserId")
                         .HasColumnType("uuid");
@@ -140,16 +143,19 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
                 {
-                    b.Property<Guid>("AppointmentID")
+                    b.Property<Guid>("AppointmentId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
-                    b.HasKey("AppointmentID");
+                    b.HasKey("AppointmentId");
 
                     b.HasIndex("CustomerUserId");
 
@@ -317,7 +323,7 @@ namespace ISA.Application.API.Migrations
                 {
                     b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", "Appointment")
                         .WithMany()
-                        .HasForeignKey("AppointmentID")
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

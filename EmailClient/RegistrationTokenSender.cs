@@ -9,13 +9,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.Extensions.Configuration;
-using static System.Net.WebRequestMethods;
-using System.Text.Encodings.Web;
 
 namespace EmailClient
 {
-    public static class EmailSender
+    public static class RegistrationTokenSender
     {
         [FunctionName("Function1")]
         public static async Task<IActionResult> Run(
@@ -23,37 +20,37 @@ namespace EmailClient
             ILogger log)
         {
 
-
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             string email = data?.Email;
-            string message = data?.Message;
+            string body = data?.Message;
 
             try
             {
                 //string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
                 //string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
-                string fromMail = "ftngrupa7@gmail.com";
-                string fromPassword = "xowmkegadzjpwdrj";
+                /*string fromMail = "ftngrupa7@gmail.com";
+                string fromPassword = "xowmkegadzjpwdrj";*/
 
-                MailMessage message1 = new MailMessage();
-                message1.From = new MailAddress(fromMail);
-                message1.Subject = $"Thank for registering!";
-                message1.To.Add(new MailAddress(email));
-                var token = WebUtility.UrlEncode(message);
+                var token = WebUtility.UrlEncode(body);
                 string baseString = "https://localhost:7109/Users/VerifyEmail?email="+email+"&token="+token;
-                message1.Body = baseString;
 
-                var smtpClient = new SmtpClient("smtp.gmail.com")
+                //message.From = new MailAddress(fromMail);
+                MailMessage message = new MailMessage();
+                message.Subject = $"Thank for registering!";
+                message.To.Add(new MailAddress(email));
+                message.Body = baseString;
+
+                /*var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
                     Credentials = new NetworkCredential(fromMail, fromPassword),
                     EnableSsl = true
                 };
 
-                smtpClient.Send(message1);
+                smtpClient.Send(message);*/
+
+                SmtpMailClient.Send(message);
 
                 return new OkObjectResult(true);
             }

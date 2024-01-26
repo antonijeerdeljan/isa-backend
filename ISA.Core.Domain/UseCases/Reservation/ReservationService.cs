@@ -6,6 +6,7 @@ using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Entities.Reservation;
+using ISA.Core.Domain.UseCases.User;
 using Nest;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +22,7 @@ public class ReservationService
     private readonly IMapper _mapper;
     private readonly UserService _userService;
 
-    public ReservationService(IHttpClientService httpClientService, IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, ICustomerRepository customerRepository, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IHttpClientService httpClientService, IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, UserService userService, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
         _httpClientService = httpClientService;
         _equipmentRepository = equipmentRepository;

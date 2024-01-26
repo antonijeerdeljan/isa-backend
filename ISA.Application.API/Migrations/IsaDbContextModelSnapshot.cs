@@ -28,6 +28,9 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("AlreadyTaken")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("CompanyAdminUserId")
                         .HasColumnType("uuid");
 
@@ -137,16 +140,19 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
                 {
-                    b.Property<Guid>("AppointmentID")
+                    b.Property<Guid>("AppointmentId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
-                    b.HasKey("AppointmentID");
+                    b.HasKey("AppointmentId");
 
                     b.HasIndex("CustomerUserId");
 
@@ -314,7 +320,7 @@ namespace ISA.Application.API.Migrations
                 {
                     b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", "Appointment")
                         .WithMany()
-                        .HasForeignKey("AppointmentID")
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

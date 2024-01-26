@@ -61,7 +61,7 @@ public class ReservationOverdueService : IHostedService, IDisposable
                 {
                     await userService.GivePenaltyPoints(reservation.Customer.UserId, 2); // give user two penalty points
                     await equipmentService.ReturnEqupment(reservation.Equipments);
-                    await reservationService.SetReservationAsOverdue(reservation.AppointmentID);
+                    await reservationService.SetReservationAsOverdue(reservation.AppointmentId);
                 }
             }
 

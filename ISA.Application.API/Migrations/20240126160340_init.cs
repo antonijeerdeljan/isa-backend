@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class i : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -166,7 +166,8 @@ namespace ISA.Application.API.Migrations
                     CompanyAdminUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     StartingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AlreadyTaken = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,16 +190,17 @@ namespace ISA.Application.API.Migrations
                 name: "Reservations",
                 columns: table => new
                 {
-                    AppointmentID = table.Column<Guid>(type: "uuid", nullable: false),
-                    State = table.Column<int>(type: "integer", nullable: false),
-                    CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
+                    CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.AppointmentID);
+                    table.PrimaryKey("PK_Reservations", x => x.AppointmentId);
                     table.ForeignKey(
-                        name: "FK_Reservations_Appointment_AppointmentID",
-                        column: x => x.AppointmentID,
+                        name: "FK_Reservations_Appointment_AppointmentId",
+                        column: x => x.AppointmentId,
                         principalTable: "Appointment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -231,7 +233,7 @@ namespace ISA.Application.API.Migrations
                         name: "FK_ReservationEquipment_Reservations_ReservationId",
                         column: x => x.ReservationId,
                         principalTable: "Reservations",
-                        principalColumn: "AppointmentID",
+                        principalColumn: "AppointmentId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
