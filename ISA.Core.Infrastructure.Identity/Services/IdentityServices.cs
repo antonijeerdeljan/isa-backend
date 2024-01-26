@@ -44,7 +44,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
                 throw new ArgumentException(registrationResult.ToString());
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-            await _httpClientService.SendEmail(email, token);
+            await _httpClientService.SendRegistrationToken(email, token);
 
             try
             {

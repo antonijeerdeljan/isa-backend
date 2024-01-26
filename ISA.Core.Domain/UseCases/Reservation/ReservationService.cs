@@ -13,15 +13,16 @@ using Newtonsoft.Json.Linq;
 
 public class ReservationService
 {
-    private readonly IHttpClientService _httpClientService;
     private readonly EquipmentService _equipmentService;
-    private readonly IReservationRepository _reservationRepository;
     private readonly AppointmentService _appointmentService;
+    private readonly UserService _userService;
+
+    private readonly IHttpClientService _httpClientService;
+    private readonly IReservationRepository _reservationRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly IDocumentService _documentService;
     private readonly IMapper _mapper;
-    private readonly UserService _userService;
 
     public ReservationService(IHttpClientService httpClientService, EquipmentService equipmentService, IReservationRepository reservationRepository, UserService userService, AppointmentService appointmentService, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
@@ -55,14 +56,14 @@ public class ReservationService
         {
             foreach(var r in requests)
             {
-                if  (await _equipmentService.ExistEnough(r.EquipmentId, r.Quantity) is false){
+                if  (await _equipmentService.ExistEnough(r.EquipmentId, r.Quantity) is false)
+                {
                     throw new ArgumentException("No enough equipment");
                 }
                 ReservationEquipment re = new ReservationEquipment(appointment.Id, r.EquipmentId, r.Quantity);
                 reservationEquipment.Add(re);
             }
-
-           
+            
             Reservation reservation = new Reservation(appointment, customer, reservationEquipment);
             await _reservationRepository.AddAsync(reservation);
             foreach (var r in reservation.Equipments)
@@ -73,13 +74,11 @@ public class ReservationService
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
             Document pdf = _documentService.GeneratePdf(reservation.Equipments);
             await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", pdf);
-
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
-
     }
 
 
@@ -118,9 +117,7 @@ public class ReservationService
         }
 
         await _equipmentService.ReturnEqupment(reservation.Equipments);
-
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
-
     }
 
     private bool IsAppointmentWithin24Hours(Reservation reservation)
