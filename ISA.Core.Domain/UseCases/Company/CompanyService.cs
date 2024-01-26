@@ -3,16 +3,10 @@
 using AutoMapper;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
-using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
-using AutoMapper;
-using ISA.Core.Domain.Contracts.Repositories;
-using ISA.Core.Domain.Contracts.Services;
-using ISA.Core.Domain.Dtos.Company;
-using ISA.Core.Domain.Entities.Company;
-using ISA.Core.Domain.Entities.User;
+
 public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanyService { 
     
     private readonly ICompanyRepository _companyRepository;
@@ -27,22 +21,17 @@ public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUn
         _mapper = mapper;
     }
 
-    public async Task AddAsync(string name, string startWorkingHour, string endWorkingHour, string description,string country, string city)
+    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city)
     {
         
 
-        TimeOnly start;
-        TimeOnly end;
-        if (TimeOnly.TryParse(startWorkingHour, out start) && TimeOnly.TryParse(endWorkingHour, out end) is false)
-        {
-            throw new Exception();
-        }
+        
         await _isaUnitOfWork.StartTransactionAsync();
 
         Address address = new(country,city);
         address.Id = Guid.NewGuid();
 
-        Company newCompany = new Company(name, address, description, start, end);
+        Company newCompany = new Company(name, address, description, startWorkingHour, endWorkingHour);
         newCompany.Id = Guid.NewGuid();
 
         try
@@ -98,17 +87,40 @@ public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUn
     public async Task<CompanyProfileDto> GetCompanyProfile(Guid id)
     {
         CompanyProfileDto companyDto = new CompanyProfileDto();
-        var company = await _companyRepository.GetByIdAsync(id);
+        var company = await _companyRepository.GetByIdAsync(id) ?? throw new ArgumentException();
         company.Equipment.RemoveAll(e => e.Quantity <= 0);
         return _mapper.Map(company, companyDto);
 
     }
 
 
-    public async Task<bool> IsAppointmentInWorkingHours(DateTime start, DateTime end, Guid companyId)
+
+
+    public async Task<bool> IsAppointmentInWorkingHours(DateTime start, DateTime end, Guid id)
     {
-        return await _companyRepository.IsAppointmentInWorkingHours(start, end, companyId);
+        var company = await GetCompanyAsync(id);
+        if (company == null)
+        {
+            throw new ArgumentException();
+        }
+
+        TimeSpan companyStart = company.StartingWorkingHour.ToTimeSpan();
+        TimeSpan companyEnd = company.EndWorkingHour.ToTimeSpan();
+
+        bool isWithinWorkingHours = start.TimeOfDay >= companyStart && end.TimeOfDay <= companyEnd;
+
+        bool isAfterCurrentTimePlusOneHour = start >= DateTime.UtcNow.AddHours(1);
+
+        bool isSameDateAndWeekday = start.Date == end.Date &&
+                                    start.Date.DayOfWeek != DayOfWeek.Sunday &&
+                                    start.Date.DayOfWeek != DayOfWeek.Saturday;
+
+        bool isEndTimeAfterStartTime = end >= start;
+
+        return isWithinWorkingHours && isAfterCurrentTimePlusOneHour &&
+               isSameDateAndWeekday && isEndTimeAfterStartTime;
     }
+
 
 
 }

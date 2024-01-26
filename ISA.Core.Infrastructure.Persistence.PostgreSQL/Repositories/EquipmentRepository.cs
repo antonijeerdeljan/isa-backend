@@ -1,6 +1,7 @@
 ﻿namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories
 {
     using ISA.Core.Domain.Contracts.Repositories;
+    using ISA.Core.Domain.Contracts.Services;
     using ISA.Core.Domain.Entities.Company;
     using Microsoft.EntityFrameworkCore;
     using System;
@@ -15,6 +16,15 @@
         public EquipmentRepository(IsaDbContext isaDbContext) : base(isaDbContext)
         {
             _isaDbContext = isaDbContext;
+        }
+
+        public async Task EquipmentSold(Guid id, int quantity)
+        {
+            
+            var equipment = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            equipment.Quantity -= quantity;
+            _dbSet.Update(equipment);
+            
         }
 
         public async Task <bool> ExistEnough(Guid id, int quantity)

@@ -3,6 +3,7 @@ using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
 
@@ -72,6 +73,16 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
         var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
         Equipment newEquipment = new Equipment(id, name, quantity, companyAdmin.Company);
         _equipmentRepository.UpdateAndSaveChanges(newEquipment);
+    }
+
+    public async Task ReturnEqupment(IEnumerable<ReservationEquipment> equipment)
+    {
+        foreach (var equipmentItem in equipment)
+        {
+            var foundEqupment = await _equipmentRepository.GetByIdAsync(equipmentItem.EquipmentId) ?? throw new KeyNotFoundException();
+            foundEqupment.ReturnEquipment(equipmentItem.Quantity);
+            _equipmentRepository.Update(foundEqupment);
+        }
     }
 }
 

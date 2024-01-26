@@ -2,7 +2,6 @@
 {
     public class AppointmentRequestModel
     {
-        public Guid CompanyId { get; set; }
         public Guid AdminId { get; set; }
 
         public DateTime StartingDateTime { get; set; }

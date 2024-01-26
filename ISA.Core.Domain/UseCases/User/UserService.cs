@@ -185,5 +185,11 @@ public class UserService
         return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
     }
 
+    public async Task GivePenaltyPoints(Guid id,int points)
+    {
+        var customer = await _customerRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+        customer.AddPenaltyPoints(points);
+        _customerRepository.Update(customer);
+    }
 
 }

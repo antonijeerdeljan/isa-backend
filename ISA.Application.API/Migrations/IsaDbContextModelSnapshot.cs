@@ -137,18 +137,18 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
                 {
-                    b.Property<Guid>("AppointmentId")
+                    b.Property<Guid>("AppointmentID")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
 
-                    b.HasKey("AppointmentId");
+                    b.HasKey("AppointmentID");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CustomerUserId");
 
                     b.ToTable("Reservations");
                 });
@@ -160,6 +160,9 @@ namespace ISA.Application.API.Migrations
 
                     b.Property<Guid>("EquipmentId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
 
                     b.HasKey("ReservationId", "EquipmentId");
 
@@ -204,8 +207,7 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CompanyInfo")
@@ -225,14 +227,9 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.HasIndex("LoyaltyProgramId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -317,13 +314,13 @@ namespace ISA.Application.API.Migrations
                 {
                     b.HasOne("ISA.Core.Domain.Entities.Company.Appointment", "Appointment")
                         .WithMany()
-                        .HasForeignKey("AppointmentId")
+                        .HasForeignKey("AppointmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ISA.Core.Domain.Entities.User.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("CustomerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

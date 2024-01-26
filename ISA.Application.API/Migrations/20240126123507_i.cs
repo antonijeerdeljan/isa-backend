@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class i : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -111,13 +111,12 @@ namespace ISA.Application.API.Migrations
                 name: "CompanyAdmins",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyAdmins", x => x.Id);
+                    table.PrimaryKey("PK_CompanyAdmins", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_CompanyAdmins_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -136,17 +135,16 @@ namespace ISA.Application.API.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Profession = table.Column<string>(type: "text", nullable: false),
                     CompanyInfo = table.Column<string>(type: "text", nullable: false),
                     LoyaltyProgramId = table.Column<Guid>(type: "uuid", nullable: true),
                     PenaltyPoints = table.Column<int>(type: "integer", nullable: true),
-                    Points = table.Column<int>(type: "integer", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Points = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Customers_LoyaltyPrograms_LoyaltyProgramId",
                         column: x => x.LoyaltyProgramId,
@@ -165,7 +163,7 @@ namespace ISA.Application.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyAdminId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyAdminUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     StartingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndingDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -180,10 +178,10 @@ namespace ISA.Application.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointment_CompanyAdmins_CompanyAdminId",
-                        column: x => x.CompanyAdminId,
+                        name: "FK_Appointment_CompanyAdmins_CompanyAdminUserId",
+                        column: x => x.CompanyAdminUserId,
                         principalTable: "CompanyAdmins",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -191,25 +189,24 @@ namespace ISA.Application.API.Migrations
                 name: "Reservations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false)
+                    AppointmentID = table.Column<Guid>(type: "uuid", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
+                    CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.PrimaryKey("PK_Reservations", x => x.AppointmentID);
                     table.ForeignKey(
-                        name: "FK_Reservations_Appointment_AppointmentId",
-                        column: x => x.AppointmentId,
+                        name: "FK_Reservations_Appointment_AppointmentID",
+                        column: x => x.AppointmentID,
                         principalTable: "Appointment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservations_Customers_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Reservations_Customers_CustomerUserId",
+                        column: x => x.CustomerUserId,
                         principalTable: "Customers",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -218,7 +215,8 @@ namespace ISA.Application.API.Migrations
                 columns: table => new
                 {
                     ReservationId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false)
+                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,14 +231,14 @@ namespace ISA.Application.API.Migrations
                         name: "FK_ReservationEquipment_Reservations_ReservationId",
                         column: x => x.ReservationId,
                         principalTable: "Reservations",
-                        principalColumn: "Id",
+                        principalColumn: "AppointmentID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointment_CompanyAdminId",
+                name: "IX_Appointment_CompanyAdminUserId",
                 table: "Appointment",
-                column: "CompanyAdminId");
+                column: "CompanyAdminUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_CompanyId",
@@ -258,19 +256,9 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyAdmins_UserId",
-                table: "CompanyAdmins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Customers_LoyaltyProgramId",
                 table: "Customers",
                 column: "LoyaltyProgramId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customers_UserId",
-                table: "Customers",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Equipments_CompanyId",
@@ -283,14 +271,9 @@ namespace ISA.Application.API.Migrations
                 column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_AppointmentId",
+                name: "IX_Reservations_CustomerUserId",
                 table: "Reservations",
-                column: "AppointmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_CustomerId",
-                table: "Reservations",
-                column: "CustomerId");
+                column: "CustomerUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",

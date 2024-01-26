@@ -10,6 +10,4 @@ public interface ICompanyRepository
     void Update(Company company);
     bool Exist(Guid id);
     Task<IEnumerable<Company>> GetAllCompanies(int page);
-
-    Task<bool> IsAppointmentInWorkingHours(DateTime start, DateTime end, Guid id);
 }

@@ -8,4 +8,5 @@ public interface IReservationRepository
     public Task<Reservation?> GetByIdAsync(Guid id);
     public Task SaveAsync();
     public void Update(Reservation reservation);
+    Task<List<Reservation>> CheckForOverdueReservations();
 }
