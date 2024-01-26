@@ -1,30 +1,36 @@
 ﻿namespace ISA.Core.Domain.UseCases.Reservation;
 
 using AutoMapper;
+using ceTe.DynamicPDF;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Reservation;
 using Nest;
+using Newtonsoft.Json.Linq;
 
 public class ReservationService
 {
+    private readonly IHttpClientService _httpClientService;
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IReservationRepository _reservationRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
+    private readonly IDocumentService _documentService;
     private readonly IMapper _mapper;
 
-    public ReservationService(IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, ICustomerRepository customerRepository, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IHttpClientService httpClientService, IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, ICustomerRepository customerRepository, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
+        _httpClientService = httpClientService;
         _equipmentRepository = equipmentRepository;
         _reservationRepository = reservationRepository;
         _customerRepository = customerRepository;
         _appointmentRepository = appointmentRepository;
         _reservationEquipmentRepository = reservationEquipmentRepository;
+        _documentService = documentService;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
@@ -33,9 +39,9 @@ public class ReservationService
     {
         var customer = await _customerRepository.GetByIdAsync(userId);
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
-        Guid reservationId = new Guid();
+        var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
-        if (customer is null || appointment is null)
+        if (customer is null || appointment is null || reserved is not null)
         {
             throw new ArgumentNullException("Not good appointment");
         }
@@ -48,19 +54,22 @@ public class ReservationService
                 if  (await _equipmentRepository.ExistEnough(r.EquipmentId, r.Quantity) is false){
                     throw new ArgumentException("No enough equipment");
                 }
-                ReservationEquipment re = new ReservationEquipment(reservationId, r.EquipmentId, r.Quantity);
+                ReservationEquipment re = new ReservationEquipment(appointment.Id, r.EquipmentId, r.Quantity);
                 reservationEquipment.Add(re);
             }
 
            
-            Reservation reservation = new Reservation(reservationId, appointment, customer, reservationEquipment);
+            Reservation reservation = new Reservation(appointment, customer, reservationEquipment);
             await _reservationRepository.AddAsync(reservation);
             foreach (var r in reservation.Equipments)
             {
                 await _reservationEquipmentRepository.AddAsync(r);
+                await _equipmentRepository.EquipmentSold(r.EquipmentId, r.Quantity);
             }
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
-            
+            Document pdf = _documentService.GeneratePdf(reservation.Equipments);
+            await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", pdf);
+
         }
         catch (Exception ex)
         {

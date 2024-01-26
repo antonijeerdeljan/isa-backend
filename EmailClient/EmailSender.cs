@@ -33,8 +33,10 @@ namespace EmailClient
 
             try
             {
-                string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
-                string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
+                //string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
+                //string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
+                string fromMail = "ftngrupa7@gmail.com";
+                string fromPassword = "xowmkegadzjpwdrj";
 
                 MailMessage message1 = new MailMessage();
                 message1.From = new MailAddress(fromMail);

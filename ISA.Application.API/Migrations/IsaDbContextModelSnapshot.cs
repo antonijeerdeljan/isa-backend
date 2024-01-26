@@ -137,10 +137,6 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("AppointmentId")
                         .HasColumnType("uuid");
 
@@ -150,9 +146,7 @@ namespace ISA.Application.API.Migrations
                     b.Property<bool>("IsFinished")
                         .HasColumnType("boolean");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
+                    b.HasKey("AppointmentId");
 
                     b.HasIndex("CustomerId");
 
