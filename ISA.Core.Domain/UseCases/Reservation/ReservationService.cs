@@ -1,29 +1,35 @@
 ﻿namespace ISA.Core.Domain.UseCases.Reservation;
 
 using AutoMapper;
+using ceTe.DynamicPDF;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Entities.Reservation;
-using ISA.Core.Domain.UseCases.User;
+using Nest;
+using Newtonsoft.Json.Linq;
 
 public class ReservationService
 {
+    private readonly IHttpClientService _httpClientService;
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IReservationRepository _reservationRepository;
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
+    private readonly IDocumentService _documentService;
     private readonly IMapper _mapper;
     private readonly UserService _userService;
 
-    public ReservationService(IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, UserService userService, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IHttpClientService httpClientService, IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, ICustomerRepository customerRepository, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
+        _httpClientService = httpClientService;
         _equipmentRepository = equipmentRepository;
         _reservationRepository = reservationRepository;
         _userService = userService;
         _appointmentRepository = appointmentRepository;
         _reservationEquipmentRepository = reservationEquipmentRepository;
+        _documentService = documentService;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
@@ -32,8 +38,9 @@ public class ReservationService
     {
         var customer = await _userService.GetCustomerById(userId);
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
+        var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
-        if (customer is null || appointment is null)
+        if (customer is null || appointment is null || reserved is not null)
         {
             throw new ArgumentNullException("Not good appointment");
         }
@@ -59,7 +66,9 @@ public class ReservationService
                 await _equipmentRepository.EquipmentSold(r.EquipmentId, r.Quantity);
             }
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
-            
+            Document pdf = _documentService.GeneratePdf(reservation.Equipments);
+            await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", pdf);
+
         }
         catch (Exception ex)
         {

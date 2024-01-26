@@ -3,9 +3,7 @@ using ISA.Core.Domain.Entities.User;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ISA.Core.Domain.Entities.Reservation;
-
-public enum ReservationState
+namespace ISA.Core.Domain.Entities.Reservation;public enum ReservationState
 {
     Finished = 0,
     Pending = 1,
@@ -16,12 +14,13 @@ public enum ReservationState
 public class Reservation
 {
     [Key]
-    [ForeignKey("Appointment")] 
-    public Guid AppointmentID { get; set; }
-    public virtual Appointment Appointment { get; set; }
-    public ReservationState State { get; set; } = ReservationState.Pending;
-    public virtual Customer Customer { get; set; }
-    public virtual List<ReservationEquipment> Equipments { get; set; }
+    public Guid AppointmentId {  get; set; }
+    
+    [ForeignKey(nameof(AppointmentId))]
+    public Appointment Appointment { get; set; }
+    public bool IsFinished { get; set; } = false;
+    public Customer Customer { get; set; }
+    public List<ReservationEquipment> Equipments { get; set; }
 
     public Reservation()
     {

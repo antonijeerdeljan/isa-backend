@@ -1,23 +1,25 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net.Mail;
-using System.Net;
-using Microsoft.Extensions.Configuration;
-using static System.Net.WebRequestMethods;
-using System.Text.Encodings.Web;
-
-namespace EmailClient
+﻿namespace EmailClient
 {
-    public static class EmailSender
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Mail;
+    using System.Net;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Net.Mime;
+ 
+
+    public static class SendReservationConfirmation
     {
-        [FunctionName("Function1")]
+        [FunctionName("Function2")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -38,13 +40,22 @@ namespace EmailClient
                 string fromMail = "ftngrupa7@gmail.com";
                 string fromPassword = "xowmkegadzjpwdrj";
 
+
                 MailMessage message1 = new MailMessage();
                 message1.From = new MailAddress(fromMail);
-                message1.Subject = $"Thank for registering!";
+                message1.Subject = $"Order confirmation!";
                 message1.To.Add(new MailAddress(email));
-                var token = WebUtility.UrlEncode(message);
-                string baseString = "https://localhost:7109/Users/VerifyEmail?email="+email+"&token="+token;
+                
+                string baseString = "There is pdf file in attachment where you can see all order details.";
                 message1.Body = baseString;
+
+
+
+                var filePath = "C:\\Users\\I\\Desktop\\ISA projekat\\File.pdf";
+                //byte[] bytes = File.ReadAllBytes(filePath);
+                var emailAttachment = new Attachment(filePath, MediaTypeNames.Application.Pdf);
+
+                message1.Attachments.Add(emailAttachment);
 
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
@@ -65,3 +76,4 @@ namespace EmailClient
         }
     }
 }
+
