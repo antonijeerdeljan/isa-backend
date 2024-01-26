@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240125130928_reskey")]
-    partial class reskey
+    [Migration("20240126123507_i")]
+    partial class i
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,8 +146,8 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
 
                     b.HasKey("AppointmentID");
 

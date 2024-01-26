@@ -4,9 +4,7 @@ using AutoMapper;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
-using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Reservation;
-using Nest;
 
 public class ReservationService
 {
@@ -67,5 +65,19 @@ public class ReservationService
             Console.WriteLine(ex.ToString());
         }
 
+    }
+
+
+
+    public async Task<List<Reservation>> OverdueReservations()
+    {
+        return await _reservationRepository.CheckForOverdueReservations();
+    }
+
+    public async Task SetReservationAsOverdue(Guid reservationId)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        reservation.SetAsOverdue();
+        _reservationRepository.Update(reservation);
     }
 }

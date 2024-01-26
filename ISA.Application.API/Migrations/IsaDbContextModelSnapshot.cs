@@ -143,8 +143,8 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
 
                     b.HasKey("AppointmentID");
 

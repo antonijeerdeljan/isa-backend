@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class i : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,17 +189,16 @@ namespace ISA.Application.API.Migrations
                 name: "Reservations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
+                    AppointmentID = table.Column<Guid>(type: "uuid", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
                     CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.PrimaryKey("PK_Reservations", x => x.AppointmentID);
                     table.ForeignKey(
-                        name: "FK_Reservations_Appointment_AppointmentId",
-                        column: x => x.AppointmentId,
+                        name: "FK_Reservations_Appointment_AppointmentID",
+                        column: x => x.AppointmentID,
                         principalTable: "Appointment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -232,7 +231,7 @@ namespace ISA.Application.API.Migrations
                         name: "FK_ReservationEquipment_Reservations_ReservationId",
                         column: x => x.ReservationId,
                         principalTable: "Reservations",
-                        principalColumn: "Id",
+                        principalColumn: "AppointmentID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -270,11 +269,6 @@ namespace ISA.Application.API.Migrations
                 name: "IX_ReservationEquipment_EquipmentId",
                 table: "ReservationEquipment",
                 column: "EquipmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_AppointmentId",
-                table: "Reservations",
-                column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_CustomerUserId",

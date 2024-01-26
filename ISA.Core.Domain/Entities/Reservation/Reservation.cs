@@ -5,17 +5,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISA.Core.Domain.Entities.Reservation;
 
+public enum ReservationState
+{
+    Finished = 0,
+    Pending = 1,
+    Overdue = 2,
+
+}
 public class Reservation
 {
-    //napriviti da id bude appoinemnt id
-    //resiti datume za dodavanje appoinemtenta
-    //resitii datume
-
     [Key]
     [ForeignKey("Appointment")] 
     public Guid AppointmentID { get; set; }
     public virtual Appointment Appointment { get; set; }
-    public bool IsFinished { get; set; } = false;
+    public ReservationState State { get; set; } = ReservationState.Pending;
     public virtual Customer Customer { get; set; }
     public virtual List<ReservationEquipment> Equipments { get; set; }
 
@@ -23,10 +26,10 @@ public class Reservation
     {
 
     }
-    public Reservation(Appointment appointment, bool isFinished)
+    public Reservation(Appointment appointment, ReservationState state)
     {
         Appointment = appointment;
-        IsFinished = isFinished;
+        State = state;
     }
 
     public Reservation(Appointment appointment, Customer customer, List<ReservationEquipment> equipments)
@@ -34,5 +37,10 @@ public class Reservation
         Appointment = appointment;
         Customer = customer;
         Equipments = equipments;
+    }
+
+    public void SetAsOverdue()
+    {
+        State = ReservationState.Overdue;
     }
 }

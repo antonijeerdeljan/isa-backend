@@ -4,7 +4,6 @@ using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.User;
-using ISA.Core.Domain.Dtos.Company;
 
 namespace ISA.Core.Domain.UseCases.Company;
 

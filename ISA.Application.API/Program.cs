@@ -3,6 +3,7 @@ using ISA.Application.API.Mappings;
 using ISA.Application.API.Startup;
 using ISA.Application.API.Startup.DBConfiguration;
 using ISA.Application.API.Startup.DI;
+using ISA.Core.Domain.BackgroundTasks;
 using ISA.Core.Domain.UseCases.User;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -29,6 +30,7 @@ builder.Services.AddIdentityConfig();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.MapperConfig();
+builder.Services.AddHostedService<ReservationOverdueService>();
 
 var app = builder.Build();
 

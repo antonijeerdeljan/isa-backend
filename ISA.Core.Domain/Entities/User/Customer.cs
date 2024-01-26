@@ -27,4 +27,9 @@ public class Customer
         CompanyInfo = companyInfo;
         User = user;
     }
+
+    public void AddPenaltyPoints(int points)
+    {
+        Points = PenaltyPoints + points;
+    }
 }

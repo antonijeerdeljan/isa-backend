@@ -32,5 +32,10 @@
             Quantity = quantity;
             Company = company;
         }
+
+        public void ReturnEquipment(int quantity)
+        {
+            Quantity = Quantity + quantity;
+        }
     }
 }
