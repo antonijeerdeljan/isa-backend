@@ -5,22 +5,23 @@ using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Entities.Reservation;
+using ISA.Core.Domain.UseCases.User;
 
 public class ReservationService
 {
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IReservationRepository _reservationRepository;
-    private readonly ICustomerRepository _customerRepository;
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly IMapper _mapper;
+    private readonly UserService _userService;
 
-    public ReservationService(IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, ICustomerRepository customerRepository, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IEquipmentRepository equipmentRepository, IReservationRepository reservationRepository, UserService userService, IAppointmentRepository appointmentRepository, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
         _equipmentRepository = equipmentRepository;
         _reservationRepository = reservationRepository;
-        _customerRepository = customerRepository;
+        _userService = userService;
         _appointmentRepository = appointmentRepository;
         _reservationEquipmentRepository = reservationEquipmentRepository;
         _isaUnitOfWork = isaUnitOfWork;
@@ -29,7 +30,7 @@ public class ReservationService
 
     public async Task AddAsync(Guid userId, Guid appointmentId, List<ReservationEquipmentRequest> requests)
     {
-        var customer = await _customerRepository.GetByIdAsync(userId);
+        var customer = await _userService.GetCustomerById(userId);
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         if (customer is null || appointment is null)
@@ -79,5 +80,32 @@ public class ReservationService
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
         reservation.SetAsOverdue();
         _reservationRepository.Update(reservation);
+    }
+
+    public async Task CancelReservation(Guid userId, Guid reservationId)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        reservation.SetAsCanceled();
+        if(IsAppointmentWithin24Hours(reservation) is false)
+        {
+            await _userService.GivePenaltyPoints(userId, 1);
+            //vrati appointment za da moze opet da se zakupi
+        }
+        else
+        {
+            await _userService.GivePenaltyPoints(userId, 2);
+            //proveri da li je appoinement za vise od sat vremena od sad, ako jeste vrati da moze opet da se zakaze
+        }
+
+        //vrati sve iz rezervacije u stanje
+        //treba da stavi rezervaciju kao canceled i da vrati taj appointment u slobodne ako ne pocinje za manje od sat vremena
+
+
+
+    }
+
+    private bool IsAppointmentWithin24Hours(Reservation reservation)
+    {
+        return (reservation.Appointment.StartingDateTime > DateTime.UtcNow.AddHours(24)) ? true : false;
     }
 }

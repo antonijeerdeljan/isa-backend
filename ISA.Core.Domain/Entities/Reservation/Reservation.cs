@@ -10,6 +10,7 @@ public enum ReservationState
     Finished = 0,
     Pending = 1,
     Overdue = 2,
+    Canceled = 3,
 
 }
 public class Reservation
@@ -42,5 +43,10 @@ public class Reservation
     public void SetAsOverdue()
     {
         State = ReservationState.Overdue;
+    }
+
+    public void SetAsCanceled()
+    {
+        State = ReservationState.Canceled;
     }
 }

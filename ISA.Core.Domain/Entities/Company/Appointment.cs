@@ -8,15 +8,16 @@ public class Appointment : Entity<Guid>
     public DateTime StartingDateTime { get; set; }
     public DateTime EndingDateTime { get; set; }
     public Company Company {  get; set; }
+    public bool AlreadyTaken { get; set; } = false;
     public Appointment() {}
 
-        public Appointment(Company company, CompanyAdmin companyAdmin, DateTime startingDateTime, DateTime endingDateTime)
-        {
-            Id = Guid.NewGuid();
-            CompanyAdmin = companyAdmin;
-            StartingDateTime = startingDateTime;
-            EndingDateTime = endingDateTime;
-            Company = company;
-        }
+    public Appointment(Company company, CompanyAdmin companyAdmin, DateTime startingDateTime, DateTime endingDateTime)
+    {
+        Id = Guid.NewGuid();
+        CompanyAdmin = companyAdmin;
+        StartingDateTime = startingDateTime;
+        EndingDateTime = endingDateTime;
+        Company = company;
+    }
     
 }

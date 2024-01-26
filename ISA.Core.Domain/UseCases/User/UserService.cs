@@ -133,6 +133,12 @@ public class UserService
         return await _userRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
     }
 
+    public async Task<Entities.User.Customer> GetCustomerById(Guid id)
+    {
+        return await _customerRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+    }
+
+
     public async Task<bool> IsRefreshTokenValid(string userId, string refreshToken)
     {
         return await _identityService.VerifyRefreshToken(userId, refreshToken);
