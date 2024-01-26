@@ -13,7 +13,7 @@ public class GenericRepository<TEntity, TKey> where TEntity : class
         _dbSet = _dbContext.Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetByIdAsync(TKey Id)
+    public virtual async Task<TEntity?> GetByIdAsync(TKey Id)
     {
         return await _dbSet.FindAsync(Id);
     }

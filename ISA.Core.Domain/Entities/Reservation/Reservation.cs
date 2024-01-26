@@ -19,7 +19,6 @@ public class Reservation
     
     [ForeignKey(nameof(AppointmentId))]
     public Appointment Appointment { get; set; }
-    public bool IsFinished { get; set; } = false;
     public Customer Customer { get; set; }
     public List<ReservationEquipment> Equipments { get; set; }
     public ReservationState State { get; set; } = ReservationState.Pending;

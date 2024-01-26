@@ -50,10 +50,39 @@ public class AppointmentService
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-            }
-            
+            }   
         }
+    }
 
+    public async Task RecycleAppointment(Guid appointmentId)
+    {
+        var appointment = await GetAppointmentById(appointmentId);
+        Appointment newAppointment = new(appointment);
+        await _appointmentRepository.AddAsync(newAppointment);
+    }
+
+    public async Task SetAsAvailable(Guid id)
+    {
+        var appointment = await _appointmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+        appointment.SetAsAvailable();
+        _appointmentRepository.Update(appointment);
+    }
+
+    public void UpdateAppointment(Appointment appointment)
+    {
+        _appointmentRepository.Update(appointment);
+    }
+
+    public async Task SetAsTaken(Guid id)
+    {
+        var appointment = await _appointmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+        appointment.SetAsTaken();
+        _appointmentRepository.Update(appointment);
+    }
+
+    public async Task<Appointment> GetAppointmentById(Guid id)
+    {
+        return await _appointmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
     }
 
     public async Task<IEnumerable<AppointmentDto>> GetAllCompanyAppointments(int page, Guid adminId)
@@ -61,6 +90,11 @@ public class AppointmentService
         var admin = await _companyAdminRepository.GetByIdAsync(adminId);
         var appointments = _appointmentRepository.GetAllCompanyAppointments(page, admin.Company.Id);
         return appointments.Result.Select(appointment => _mapper.Map<AppointmentDto>(appointment));
+    }
+
+    public bool IsWithinOneHour(Appointment appointment)
+    {
+        return (DateTime.Now > appointment.StartingDateTime.AddHours(1)) ? false : true;
     }
 
 

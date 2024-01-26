@@ -30,6 +30,6 @@ public class Customer
 
     public void AddPenaltyPoints(int points)
     {
-        Points = PenaltyPoints + points;
+        PenaltyPoints = PenaltyPoints + points;
     }
 }

@@ -4,7 +4,6 @@ using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
-using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
 
 
@@ -13,23 +12,17 @@ namespace ISA.Core.Domain.UseCases.Company;
 public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipmentService
 {
     private readonly IEquipmentRepository _equipmentRepository;
-    private readonly ICompanyRepository _companyRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ICompanyService _companyService;
-    private readonly UserService _userService;
     private readonly ICompanyAdminRepository _companyAdminRepository;
+    private readonly IMapper _mapper;
 
-    public EquipmentService(IEquipmentRepository equipmentRepository, ICompanyRepository companyRepository, ICompanyAdminRepository companyAdminRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper, ICompanyService companyService, UserService userService)  : base(mapper)
+    public EquipmentService(IEquipmentRepository equipmentRepository,ICompanyAdminRepository companyAdminRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)  : base(mapper)
 
     {
         _equipmentRepository = equipmentRepository;
-        _companyRepository = companyRepository;
         _companyAdminRepository = companyAdminRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
-        _companyService = companyService;
-        _userService = userService;
     }
 
     public async Task AddAsync(string equipmentName, int quantity, Guid userId)
@@ -68,6 +61,11 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     }
 
+    public async Task<Equipment> GetById(Guid id)
+    {
+        return await _equipmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+    }
+
     public async Task UpdateAsync(Guid id, string name, int quantity, Guid userId)
     {
         var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
@@ -84,6 +82,21 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
             _equipmentRepository.Update(foundEqupment);
         }
     }
+
+    public async Task EquipmentSold(Guid id, int quantity)
+    {
+        var equipment = await GetById(id);
+        equipment.Quantity -= quantity;
+        _equipmentRepository.Update(equipment);
+
+    }
+
+    public async Task<bool> ExistEnough(Guid id, int quantity)
+    {
+        return await _equipmentRepository.ExistEnough(id, quantity);
+    }
+
+
 }
 
 

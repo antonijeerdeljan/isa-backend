@@ -27,28 +27,13 @@ namespace EmailClient
 
             try
             {
-                //string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
-                //string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
-                /*string fromMail = "ftngrupa7@gmail.com";
-                string fromPassword = "xowmkegadzjpwdrj";*/
-
                 var token = WebUtility.UrlEncode(body);
                 string baseString = "https://localhost:7109/Users/VerifyEmail?email="+email+"&token="+token;
 
-                //message.From = new MailAddress(fromMail);
                 MailMessage message = new MailMessage();
                 message.Subject = $"Thank for registering!";
                 message.To.Add(new MailAddress(email));
                 message.Body = baseString;
-
-                /*var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential(fromMail, fromPassword),
-                    EnableSsl = true
-                };
-
-                smtpClient.Send(message);*/
 
                 SmtpMailClient.Send(message);
 
