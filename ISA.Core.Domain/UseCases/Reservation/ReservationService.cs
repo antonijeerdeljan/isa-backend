@@ -67,8 +67,8 @@ public class ReservationService
                 await _equipmentRepository.EquipmentSold(r.EquipmentId, r.Quantity);
             }
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
-            Document pdf = _documentService.GeneratePdf(reservation.Equipments);
-            await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", pdf);
+            //Document pdf = _documentService.GeneratePdf(reservation.Equipments);
+            await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", reservation.Equipments, customer.User.Firstname, reservation.AppointmentId.ToString(), appointment.StartingDateTime.ToString());
 
         }
         catch (Exception ex)

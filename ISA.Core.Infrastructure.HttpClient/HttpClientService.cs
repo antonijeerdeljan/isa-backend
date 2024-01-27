@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using ceTe.DynamicPDF;
 using System.Text;
-
+using ISA.Core.Domain.Entities.Reservation;
 
 namespace ISA.Core.Infrastructure.HttpClients;
 
@@ -39,14 +39,24 @@ public class HttpClientService : IHttpClientService
         }       
     }
 
-    public async Task SendReservationConfirmation(string email, string message, Document document)
+    public async Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string name, string id, string time)
     {
+        string equipment = String.Empty;
+        foreach(var r in reservations)
+        {
+            equipment += r.Equipment.Name + "/" + r.Quantity.ToString() + "?";
+        }
+
 
         var payload = new EmailMessagePayload
         {
             Email = email,
-            Message = message
-            
+            Message = message,
+            Body = equipment,
+            Name = name,
+            Id = id.ToString(),
+            Time = time
+
         };
 
         var json = JsonConvert.SerializeObject(payload);

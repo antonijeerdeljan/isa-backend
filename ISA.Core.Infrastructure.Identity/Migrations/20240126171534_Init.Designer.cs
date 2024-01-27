@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20240126160507_init")]
-    partial class init
+    [Migration("20240126171534_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -244,21 +244,21 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "11e52311-9330-4681-bdf4-6027a5e7bd95",
+                            ConcurrencyStamp = "5689787c-b24e-4769-bde1-6c60734efc57",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "dae2ebd3-5792-4b61-8c41-ef5af05ad702",
+                            ConcurrencyStamp = "ed4ae524-6a26-4b9a-a182-4b2acac01429",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "157cac0d-7afe-4419-b577-d2940fe37eab",
+                            ConcurrencyStamp = "fc27b650-beaf-4330-a6aa-b3815837d064",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });
