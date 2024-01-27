@@ -6,6 +6,8 @@ using Newtonsoft.Json.Serialization;
 using ceTe.DynamicPDF;
 using System.Text;
 using ISA.Core.Domain.Entities.Reservation;
+using Nest;
+
 
 namespace ISA.Core.Infrastructure.HttpClients;
 
@@ -18,7 +20,7 @@ public class HttpClientService : IHttpClientService
         _httpClient = httpClient.CreateClient(nameof(HttpClientService));
     }
 
-    public async Task SendEmail(string email, string message)
+    public async Task SendRegistrationToken(string email, string message)
     {
         var payload = new EmailMessagePayload
         {
@@ -71,4 +73,7 @@ public class HttpClientService : IHttpClientService
             Console.WriteLine(ex.Message);
         }
     }
+
+
+    
 }
