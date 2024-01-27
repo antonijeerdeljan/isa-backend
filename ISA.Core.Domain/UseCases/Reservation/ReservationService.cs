@@ -21,10 +21,9 @@ public class ReservationService
     private readonly IReservationRepository _reservationRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
-    private readonly IDocumentService _documentService;
     private readonly IMapper _mapper;
 
-    public ReservationService(IHttpClientService httpClientService, EquipmentService equipmentService, IReservationRepository reservationRepository, UserService userService, AppointmentService appointmentService, IReservationEquipmentRepository reservationEquipmentRepository, IDocumentService documentService,IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IHttpClientService httpClientService, EquipmentService equipmentService, IReservationRepository reservationRepository, UserService userService, AppointmentService appointmentService, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
         _httpClientService = httpClientService;
         _equipmentService = equipmentService;
@@ -32,7 +31,6 @@ public class ReservationService
         _userService = userService;
         _appointmentService = appointmentService;
         _reservationEquipmentRepository = reservationEquipmentRepository;
-        _documentService = documentService;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }

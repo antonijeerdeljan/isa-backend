@@ -1,26 +1,20 @@
 ﻿namespace EmailClient;
 
+using ceTe.DynamicPDF;
+using ceTe.DynamicPDF.PageElements;
+using ceTe.DynamicPDF.PageElements.BarCoding;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Net.Mail;
-using System.Net;
-using System.Threading.Tasks;
-using System.Net.Mime;
-using System.Reflection.Metadata;
-using ceTe.DynamicPDF.PageElements;
-using ceTe.DynamicPDF;
-using System.Collections.Generic;
 using System.Linq;
-using ISA.Core.Domain.Entities.Reservation;
-using ceTe.DynamicPDF;
-using ISA.Core.Domain.UseCases.Reservation;
-using ceTe.DynamicPDF.PageElements.BarCoding;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 public static class SendReservationConfirmation
 {
@@ -41,7 +35,7 @@ public static class SendReservationConfirmation
         string id = data?.Id;
         string time = data?.Time;
 
-       Attachment attachment = GeneratePdf(equipment, name, id, time);
+        Attachment attachment = GeneratePdf(equipment, name, id, time);
 
         try
         {

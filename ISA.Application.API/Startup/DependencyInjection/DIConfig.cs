@@ -34,8 +34,6 @@ public static class DIConfig
         services.AddTransient<IEquipmentRepository, EquipmentRepository>();
         services.AddTransient<IReservationRepository, ReservationRepository>();
         services.AddTransient<IReservationEquipmentRepository, ReservationEquipmentRepository>();
-        services.AddTransient<IDocumentService, DocumentService>();
-        services.AddTransient<DocumentService>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
