@@ -198,4 +198,10 @@ public class UserService
         _customerRepository.Update(customer);
     }
 
+    public async Task<CompanyAdmin> GetCompanyAdmin(Guid id)
+    {
+        return await _companyAdminRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+    }
+
+
 }

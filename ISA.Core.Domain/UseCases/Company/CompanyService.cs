@@ -14,7 +14,7 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
     private readonly IMapper _mapper;
 
     
-public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper) : base(mapper)
+    public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper) : base(mapper)
     {
         _companyRepository = companyRepository;
         _isaUnitOfWork = isaUnitOfWork;

@@ -1,41 +1,41 @@
-﻿namespace ISA.Core.Domain.Entities.Company
+﻿namespace ISA.Core.Domain.Entities.Company;
+
+using System;
+
+public class Equipment : Entity<Guid>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    public string Name {  get; set; }
+    public int? Quantity { get; set; }
+    public Company? Company {  get; set; }
 
-    public class Equipment : Entity<Guid>
+    public Equipment(string name, int quantity, Company company)
     {
-        public string Name {  get; set; }
-        public int Quantity { get; set; }
-        public Company Company {  get; set; }
+        Id = new Guid();
+        Name = name;
+        Quantity = quantity;
+        Company = company;
+    }
 
-        public Equipment(string name, int quantity, Company company)
-        {
-            Id = new Guid();
-            Name = name;
-            Quantity = quantity;
-            Company = company;
-        }
+    public Equipment()
+    {
+        Id = new Guid();
+    }
 
-        public Equipment()
-        {
-            Id = new Guid();
-        }
+    public Equipment(string name)
+    {
+        Name = name;
+    }
 
-        public Equipment(Guid id,string name, int quantity, Company company)
-        {
-            Id = id;
-            Name = name;
-            Quantity = quantity;
-            Company = company;
-        }
+    public Equipment(Guid id,string name, int quantity, Company company)
+    {
+        Id = id;
+        Name = name;
+        Quantity = quantity;
+        Company = company;
+    }
 
-        public void ReturnEquipment(int quantity)
-        {
-            Quantity = Quantity + quantity;
-        }
+    public void ReturnEquipment(int quantity)
+    {
+        Quantity = Quantity + quantity;
     }
 }

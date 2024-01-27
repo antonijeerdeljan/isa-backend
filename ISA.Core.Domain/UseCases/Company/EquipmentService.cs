@@ -47,6 +47,50 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     }
 
+    public async Task AddGeneralAsync(string equipmentName)
+    {
+
+        Equipment equipment = new(equipmentName);
+        await _isaUnitOfWork.StartTransactionAsync();
+        try
+        {
+            await _equipmentRepository.AddAsync(equipment);
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    public async Task AddContractEquipmentAsync(Equipment equipment)
+    {
+
+        await _equipmentRepository.AddAsync(equipment);
+        
+    }
+
+    public async Task DeleteEquipment(Guid id)
+    {
+
+        await _equipmentRepository.DeleteContract(id);
+
+    }
+
+    public async Task<List<GeneralEquipmentDto>> GetGeneralEquipment(int page)
+    {
+        var generalEquipments =  await _equipmentRepository.GetGeneralEquipment(page);
+        List<GeneralEquipmentDto> equipments = new();
+
+        foreach(var equipment in generalEquipments)
+        {
+            equipments.Add(new GeneralEquipmentDto(equipment.Id,equipment.Name));
+        }
+
+        return equipments;
+    }
+
+
     public async Task RemoveAsync(Guid id)
     {
         await _isaUnitOfWork.StartTransactionAsync();
