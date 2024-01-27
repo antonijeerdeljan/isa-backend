@@ -49,4 +49,9 @@ public class Reservation
     {
         State = ReservationState.Canceled;
     }
+
+    public void SetAsFinished()
+    { 
+        State = ReservationState.Finished;
+    }
 }

@@ -5,7 +5,10 @@ using ceTe.DynamicPDF;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
+using ISA.Core.Domain.Dtos;
+using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Reservation;
+using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
 using Nest;
@@ -20,10 +23,12 @@ public class ReservationService
     private readonly IHttpClientService _httpClientService;
     private readonly IReservationRepository _reservationRepository;
     private readonly IReservationEquipmentRepository _reservationEquipmentRepository;
+    private readonly ICompanyAdminRepository _companyAdminRepository;
+    private readonly ICompanyService _companyService;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly IMapper _mapper;
 
-    public ReservationService(IHttpClientService httpClientService, EquipmentService equipmentService, IReservationRepository reservationRepository, UserService userService, AppointmentService appointmentService, IReservationEquipmentRepository reservationEquipmentRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
+    public ReservationService(IHttpClientService httpClientService, EquipmentService equipmentService, IReservationRepository reservationRepository, UserService userService, AppointmentService appointmentService, IReservationEquipmentRepository reservationEquipmentRepository,  ICompanyAdminRepository companyAdminRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, IMapper mapper)
     {
         _httpClientService = httpClientService;
         _equipmentService = equipmentService;
@@ -31,6 +36,8 @@ public class ReservationService
         _userService = userService;
         _appointmentService = appointmentService;
         _reservationEquipmentRepository = reservationEquipmentRepository;
+        _companyAdminRepository = companyAdminRepository;
+        _companyService = companyService;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
@@ -116,6 +123,33 @@ public class ReservationService
 
         await _equipmentService.ReturnEqupment(reservation.Equipments);
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
+    }
+
+    public async Task ReservationPickedUp(Guid userId, Guid reservationId)
+    {
+        await _isaUnitOfWork.StartTransactionAsync();
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId) ?? throw new KeyNotFoundException();
+        var customer = await _userService.GetCustomerById(reservation.Customer.UserId) ?? throw new KeyNotFoundException();
+        var company = await _companyService.GetCompanyAsync(appointment.Company.Id) ?? throw new KeyNotFoundException();
+        if (reservation.State != ReservationState.Pending) throw new KeyNotFoundException("Rezervacija je istekla ili je vec preuzeta");
+        if (appointment.CompanyAdmin.UserId == userId)
+            reservation.SetAsFinished();
+        else
+        {
+            throw new KeyNotFoundException("Nemate pravo predaje ove rezervacije ili je ");
+        }
+        
+        await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        await _httpClientService.SendPickUpConfirmation(customer.User.Email, "Pick up confirmation", customer.User.Firstname, appointment.StartingDateTime.ToString(), company.Name);
+    }
+
+    public async Task<IEnumerable<ReservationDto>> GetAllCompanyReservations(Guid adminId)
+    {
+        var admin = await _companyAdminRepository.GetByIdAsync(adminId);
+        var reservations = await _reservationRepository.GetAllCompanyReservations(admin.Company.Id);
+        var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
+        return reservationDtos;
     }
 
     private bool IsAppointmentWithin24Hours(Reservation reservation)

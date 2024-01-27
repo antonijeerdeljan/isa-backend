@@ -7,6 +7,7 @@ using ceTe.DynamicPDF;
 using System.Text;
 using ISA.Core.Domain.Entities.Reservation;
 using Nest;
+using System.Xml.Linq;
 
 
 namespace ISA.Core.Infrastructure.HttpClients;
@@ -18,6 +19,30 @@ public class HttpClientService : IHttpClientService
     public HttpClientService(IHttpClientFactory httpClient)
     {
         _httpClient = httpClient.CreateClient(nameof(HttpClientService));
+    }
+
+    public async Task SendPickUpConfirmation(string email, string message, string name, string time, string companyName)
+    {
+        var payload = new EmailMessagePayload
+        {
+            Email = email,
+            Message = message,
+            Name = name,
+            Time = time,
+            CompanyName = companyName
+        };
+
+        var json = JsonConvert.SerializeObject(payload);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _httpClient.PostAsync("Function3", content);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
     public async Task SendRegistrationToken(string email, string message)

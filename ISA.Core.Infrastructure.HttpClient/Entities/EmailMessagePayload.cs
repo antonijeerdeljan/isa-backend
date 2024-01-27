@@ -10,4 +10,5 @@ public class EmailMessagePayload
     public string Name {  get; set; }
     public string Id { get; set; }
     public string Time { get; set; }
+    public string CompanyName {  get; set; }
 }

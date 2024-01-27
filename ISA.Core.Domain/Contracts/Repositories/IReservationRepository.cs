@@ -9,4 +9,7 @@ public interface IReservationRepository
     public Task SaveAsync();
     public void Update(Reservation reservation);
     Task<List<Reservation>> CheckForOverdueReservations();
+
+    Task<List<Reservation>> GetAllCompanyReservations(Guid companyId);
+
 }

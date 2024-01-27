@@ -26,6 +26,13 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
         
     }
 
+    public async Task<List<Reservation>> GetAllCompanyReservations(Guid companyId)
+    {
+        return await _dbSet.Include(r => r.Appointment)
+                            .Include(r => r.Equipments)
+                            .Where(r => r.Appointment.Company.Id == companyId)
+                            .ToListAsync();
+    }
 
     public override async Task<Reservation?> GetByIdAsync(Guid Id)
     {
