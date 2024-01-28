@@ -35,6 +35,7 @@ public class Reservation
 
     public Reservation(Appointment appointment, Customer customer, List<ReservationEquipment> equipments)
     {
+        AppointmentId = appointment.Id;
         Appointment = appointment;
         Customer = customer;
         Equipments = equipments;

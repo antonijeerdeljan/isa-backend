@@ -4,7 +4,10 @@ using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
+using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
+using Nest;
+using System.Xml.Linq;
 
 
 namespace ISA.Core.Domain.UseCases.Company;
@@ -14,13 +17,15 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly ICompanyAdminRepository _companyAdminRepository;
+    private readonly IReservationRepository _reservationRepository;
     private readonly IMapper _mapper;
 
-    public EquipmentService(IEquipmentRepository equipmentRepository,ICompanyAdminRepository companyAdminRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)  : base(mapper)
+    public EquipmentService(IEquipmentRepository equipmentRepository,ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository ,IISAUnitOfWork isaUnitOfWork, IMapper mapper)  : base(mapper)
 
     {
         _equipmentRepository = equipmentRepository;
         _companyAdminRepository = companyAdminRepository;
+        _reservationRepository = reservationRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
@@ -47,18 +52,17 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     }
 
-    public async Task RemoveAsync(Guid id)
+    public async Task RemoveAsync(Guid id, Guid userId)
     {
-        await _isaUnitOfWork.StartTransactionAsync();
-        try
+        
+        if (await _reservationRepository.EquipmentCanBeDeleted(id) is false)
         {
-            await _equipmentRepository.RemoveAndSaveChangesAsync(id);
+            throw new KeyNotFoundException("Oprema ne moze biti obrisana jer se nalazi u zakazanim rezervacijama.");
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-
+        var equipment = await _equipmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+        equipment.Delete();
+        _equipmentRepository.UpdateAndSaveChanges(equipment);
+        
     }
 
     public async Task<Equipment> GetById(Guid id)

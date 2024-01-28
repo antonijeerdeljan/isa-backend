@@ -7,6 +7,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -33,6 +34,11 @@
             return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.Quantity >= quantity) is not null;
             
 
+        }
+
+        public new async Task<Equipment?> GetByIdAsync(Guid id)
+        {
+            return await _dbSet.Where(e => e.Id == id).Include(e => e.Company).FirstOrDefaultAsync();
         }
     }
 }

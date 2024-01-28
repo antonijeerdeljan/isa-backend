@@ -1,8 +1,10 @@
 ﻿using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities;
+using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 
@@ -24,6 +26,15 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
                                .Where(c => c.State == ReservationState.Pending && c.Appointment.EndingDateTime < DateTime.UtcNow)
                                .ToListAsync();
         
+    }
+
+    public async Task<bool> EquipmentCanBeDeleted(Guid id)
+    {
+        bool e =  _dbSet.Include(r => r.Appointment)
+                     .Include(r => r.Equipments)
+                     .Where(r => r.State == ReservationState.Pending && r.Equipments.Any(r => r.EquipmentId == id))
+                     .Count() == 0;
+        return e;             
     }
 
     public async Task<List<Reservation>> GetAllCompanyReservations(Guid companyId)

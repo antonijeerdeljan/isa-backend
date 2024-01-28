@@ -28,13 +28,13 @@
 
         new public async Task<Company?> GetByIdAsync(Guid Id)
         {
-            return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).Include(t => t.Equipment).FirstOrDefaultAsync(); ;
+            return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).Include(t => t.Equipment.Where(e => !e.IsDeleted)).FirstOrDefaultAsync(); ;
         }
 
 
         public async Task<IEnumerable<Company>> GetAllCompanies(int page)
         {
-            return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment).Include(c => c.Appointments).ToListAsync();
+            return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment.Where(e => !e.IsDeleted)).Include(c => c.Appointments).ToListAsync();
         }
 
     }
