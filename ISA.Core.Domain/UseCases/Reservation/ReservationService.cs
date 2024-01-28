@@ -7,6 +7,7 @@ using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Dtos.Company;
+using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
@@ -129,15 +130,15 @@ public class ReservationService
     {
         await _isaUnitOfWork.StartTransactionAsync();
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        if (reservation.State != ReservationState.Pending) throw new KeyNotFoundException("Rezervacija je istekla ili je vec preuzeta");
         var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId) ?? throw new KeyNotFoundException();
         var customer = await _userService.GetCustomerById(reservation.Customer.UserId) ?? throw new KeyNotFoundException();
         var company = await _companyService.GetCompanyAsync(appointment.Company.Id) ?? throw new KeyNotFoundException();
-        if (reservation.State != ReservationState.Pending) throw new KeyNotFoundException("Rezervacija je istekla ili je vec preuzeta");
         if (appointment.CompanyAdmin.UserId == userId)
             reservation.SetAsFinished();
         else
         {
-            throw new KeyNotFoundException("Nemate pravo predaje ove rezervacije ili je ");
+            throw new KeyNotFoundException("Nemate pravo predaje ove rezervacije.");
         }
         
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
@@ -150,6 +151,14 @@ public class ReservationService
         var reservations = await _reservationRepository.GetAllCompanyReservations(admin.Company.Id);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
+    }
+
+    public async Task<ReservationDto> GetReservation(Guid reservationId, Guid userId)
+    {
+        var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        if ((reservation.Customer.UserId != userId && reservation.Appointment.CompanyAdmin.UserId != userId) is true) throw new KeyNotFoundException("Nemate pravo pristupa rezervaciji");
+        return _mapper.Map<ReservationDto>(reservation);
+
     }
 
     private bool IsAppointmentWithin24Hours(Reservation reservation)

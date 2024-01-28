@@ -7,5 +7,7 @@
     {
         public AppointmentDto Appointment { get; set; }
         public ReservationState State { get; set; }
+
+        public List<EquipmentDto>? Equipments { get; set; }
     }
 }

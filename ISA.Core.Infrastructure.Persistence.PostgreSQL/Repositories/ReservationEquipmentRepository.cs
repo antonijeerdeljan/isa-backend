@@ -3,6 +3,7 @@
     using ISA.Core.Domain.Contracts.Repositories;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.Reservation;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -15,6 +16,13 @@
         public ReservationEquipmentRepository(IsaDbContext isaDbContext) : base(isaDbContext)
         {
             _isaDbContext = isaDbContext;
+        }
+
+        public override async Task<ReservationEquipment?> GetByIdAsync(Guid Id)
+        {
+            return await _dbSet.Include(c => c.Equipment)
+                               .Where(i => i.ReservationId == Id)
+                               .FirstOrDefaultAsync();
         }
     }
 }

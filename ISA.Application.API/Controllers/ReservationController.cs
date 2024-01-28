@@ -1,14 +1,8 @@
 ﻿namespace ISA.Application.API.Controllers
 {
     using ISA.Application.API.Models.Requests;
-    using ISA.Core.Domain.Contracts.Services;
     using ISA.Core.Domain.Dtos;
-    using ISA.Core.Domain.Dtos.Company;
-    using ISA.Core.Domain.Entities.Reservation;
-    using ISA.Core.Domain.Entities.User;
-    using ISA.Core.Domain.UseCases.Company;
     using ISA.Core.Domain.UseCases.Reservation;
-    using ISA.Core.Domain.UseCases.User;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -37,7 +31,7 @@
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("cancel")]
+        [HttpPost("Cancel")]
         [Authorize(Policy = "customerPolicy")]
         public async Task CancelReservation([FromBody] Guid reservationId)
         {
@@ -57,7 +51,7 @@
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("ReservationPickedUp/{reservationId}")]
+        [HttpPost("PickedUp/{reservationId}")]
         [Authorize(Policy = "corpAdminPolicy")]
         public async Task ReservationPickedUp([FromRoute] Guid reservationId)
         {
@@ -65,7 +59,17 @@
             await _reservationService.ReservationPickedUp(adminId, reservationId);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("{reservationId}")]
+        //[Authorize(Policy = "corpAdminPolicy")]
+        //[Authorize(Policy = "customerPolicy")]
+        public async Task<ReservationDto> GetReservation([FromRoute] Guid reservationId)
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _reservationService.GetReservation(reservationId, userId);
+        }
+
     }
 }
-    
+
 

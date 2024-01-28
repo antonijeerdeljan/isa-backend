@@ -1,16 +1,15 @@
 ﻿namespace ISA.Core.Domain.Entities.Company;
 
 using ISA.Core.Domain.Entities.User;
-using Microsoft.VisualBasic.FileIO;
 
 public class Appointment : Entity<Guid>
 {
     public CompanyAdmin CompanyAdmin { get; set; }
     public DateTime StartingDateTime { get; set; }
     public DateTime EndingDateTime { get; set; }
-    public Company Company {  get; set; }
+    public Company Company { get; set; }
     public bool AlreadyTaken { get; set; } = false;
-    public Appointment() {}
+    public Appointment() { }
 
     public Appointment(Company company, CompanyAdmin companyAdmin, DateTime startingDateTime, DateTime endingDateTime)
     {
@@ -25,8 +24,8 @@ public class Appointment : Entity<Guid>
     {
         Id = Guid.NewGuid();
         CompanyAdmin = appointment.CompanyAdmin;
-        StartingDateTime= appointment.StartingDateTime;
-        EndingDateTime= appointment.EndingDateTime;
+        StartingDateTime = appointment.StartingDateTime;
+        EndingDateTime = appointment.EndingDateTime;
         Company = appointment.Company;
     }
 
@@ -39,5 +38,5 @@ public class Appointment : Entity<Guid>
     {
         AlreadyTaken = false;
     }
-    
+
 }

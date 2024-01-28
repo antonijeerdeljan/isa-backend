@@ -40,6 +40,8 @@ using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     var userService = serviceProvider.GetRequiredService<UserService>();
+
+
     await userService.CheckForSystemAdmin();
 }
 

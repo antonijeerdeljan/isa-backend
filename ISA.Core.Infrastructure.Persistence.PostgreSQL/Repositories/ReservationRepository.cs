@@ -37,8 +37,8 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
     public override async Task<Reservation?> GetByIdAsync(Guid Id)
     {
         return await _dbSet.Include(c => c.Customer)
-                           .Include(c => c.Appointment)
-                           .Include(c => c.Equipments)
+                           .Include(c => c.Appointment).ThenInclude(a => a.CompanyAdmin)
+                           .Include(c => c.Equipments).ThenInclude(e => e.Equipment)
                            .Where(i => i.AppointmentId == Id)
                            .FirstOrDefaultAsync();
     }
