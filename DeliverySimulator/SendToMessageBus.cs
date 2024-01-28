@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MassTransit.Configuration;
+using Newtonsoft.Json;
 using PolylineEncoder.Net.Models;
 using RabbitMQ.Client;
 using System;
@@ -6,32 +7,41 @@ using System.Text;
 
 namespace DeliverySimulator;
 
-public static class SendToMessageBus
+public class SendToMessageBus
 {
-    public static void Send(IGeoCoordinate cors)
+    private readonly IEventBus _eventBus;
+    public SendToMessageBus(IEventBus eventBus)
+    {
+        _eventBus = eventBus;
+    }
+
+    public async void Send(IGeoCoordinate cord)
     {
         try
         {
+            //var bus = BusConfiguratior
+            //await _eventBus.PublishAsync(cord);
+
+
             var factory = new ConnectionFactory() { HostName = "localhost", UserName = "guest", Password = "guest", Port = 5672, VirtualHost = "/" };
 
-            // Create a connection and open a channel, dispose them when done
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
                 // Declare a queue
-                channel.QueueDeclare(queue: "hello",
+                channel.QueueDeclare(queue: "Cooridantes",
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
 
                 // Serialize the IGeoCoordinate object to JSON
-                string message = JsonConvert.SerializeObject(cors);
+                string message = JsonConvert.SerializeObject(cord);
                 var body = Encoding.UTF8.GetBytes(message);
 
                 // Publish the message to the queue
                 channel.BasicPublish(exchange: "",
-                                     routingKey: "hello",
+                                     routingKey: "Cooridantes",
                                      basicProperties: null,
                                      body: body);
 

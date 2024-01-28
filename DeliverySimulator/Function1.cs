@@ -11,10 +11,16 @@ using NetTopologySuite.Geometries;
 
 namespace DeliverySimulator
 {
-    public static class Function1
+    public class Function1
     {
+        private readonly SendToMessageBus _sendToMessage;
+        public Function1(SendToMessageBus sendToMessage)
+        {
+            _sendToMessage = sendToMessage;
+        }
+
         [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -36,7 +42,7 @@ namespace DeliverySimulator
 
             foreach (var c in cors)
             {
-                SendToMessageBus.Send(c);
+                _sendToMessage.Send(c);
                 await Task.Delay(5000); // Delay for 5 seconds
             }
 

@@ -12,6 +12,7 @@ using ISA.Core.Domain.UseCases.LoyaltyProgram;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.Reservation;
 using ISA.Core.Domain.UseCases.Contract;
+using ISA.Core.Domain.BackgroundTasks;
 
 namespace ISA.Application.API.Startup.DI;
 
@@ -42,6 +43,7 @@ public static class DIConfig
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
         services.AddTransient<EquipmentService>();
+        services.AddTransient<DeliverySimulatorService>();
         services.AddTransient<ReservationService>();
         services.AddTransient<ContractService>();
         services.AddTransient<UserManager<ApplicationUser>>();
