@@ -29,7 +29,9 @@
                                           company.EndWorkingHour,
                                           company.Description,
                                           company.Country,
-                                          company.City);
+                                          company.City,
+                                          company.Street,
+                                          company.Number);
 
 
 

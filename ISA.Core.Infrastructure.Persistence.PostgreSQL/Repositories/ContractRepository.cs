@@ -28,4 +28,13 @@ public class ContractRepository : GenericRepository<Contract, Guid>, IContractRe
         var contract = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
         _dbSet.Remove(contract);
     }
+
+    public async Task<List<Contract>> GetTodaysContract()
+    {
+        return await _dbSet.Include(c => c.Company)
+                   .ThenInclude(company => company.Address)  // Include the Address from Company
+                   .Where(c => c.DeliveryDate.Day == DateTime.Now.Day)
+                   .ToListAsync();
+
+    }
 }

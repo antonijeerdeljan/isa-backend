@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
+using System.Collections.Generic;
+using PolylineEncoder.Net.Models;
 
 namespace DeliverySimulator
 {
@@ -21,36 +23,64 @@ namespace DeliverySimulator
 
         [FunctionName("Function1")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+    [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+    ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            Coordinate cord = new Coordinate(40.7128, -74.0060); 
-            Point point = new Point(cord);
+            double? latitude = data?.coordinates?.x;
+            double? longitude = data?.coordinates?.y;
+            string? companyId = data?.companyId;
 
-            Coordinate cord1 = new Coordinate(41.7128, -74.0060); 
-            Point point2 = new Point(cord1);
-
-            var cors = await PositionSimulator.GetNewComplexCoordinates(point, point2);
-
-            foreach (var c in cors)
+            Point pointDestination = null;
+            if (latitude.HasValue && longitude.HasValue)
             {
-                _sendToMessage.Send(c);
-                await Task.Delay(5000); // Delay for 5 seconds
+                Coordinate destination = new Coordinate(latitude.Value, longitude.Value);
+                pointDestination = new Point(destination);
             }
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            Coordinate cord = new Coordinate(45.32648081639368, 20.447827235451125);
+            Point point = new Point(cord);
+
+            string responseMessage;
+            List<IGeoCoordinate> cors = new();
+
+            if (pointDestination != null)
+            {
+                cors = await PositionSimulator.GetNewComplexCoordinates(point, pointDestination);
+                responseMessage = $"Received and processed coordinates: ({latitude}, {longitude}).";
+
+                int totalCors = cors.Count;
+                int currentCors = 0;
+
+                foreach (var c in cors)
+                {
+                    currentCors++;
+                    Message message = new(c, companyId, "driving");
+                    _sendToMessage.Send(message);
+
+                    // If it's the last item in the loop, send "done" status
+                    if (currentCors == totalCors)
+                    {
+                        Message doneMessage = new(c, companyId, "done");
+                        _sendToMessage.Send(doneMessage);
+                    }
+                    else
+                    {
+                        await Task.Delay(5000); // Delay for 5 seconds between messages
+                    }
+                }
+            }
+            else
+            {
+                responseMessage = "No valid destination coordinates provided.";
+            }
 
             return new OkObjectResult(responseMessage);
         }
+
     }
 }

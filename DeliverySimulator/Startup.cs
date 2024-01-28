@@ -12,7 +12,6 @@ namespace DeliverySimulator
         public override void Configure(IFunctionsHostBuilder builder)
         {
             
-            builder.Services.AddTransient<IEventBus, EventBus>();
             builder.Services.AddTransient<SendToMessageBus>();
         }
     }

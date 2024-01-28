@@ -9,13 +9,7 @@ namespace DeliverySimulator;
 
 public class SendToMessageBus
 {
-    private readonly IEventBus _eventBus;
-    public SendToMessageBus(IEventBus eventBus)
-    {
-        _eventBus = eventBus;
-    }
-
-    public async void Send(IGeoCoordinate cord)
+    public async void Send(Message cord)
     {
         try
         {
@@ -28,18 +22,15 @@ public class SendToMessageBus
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                // Declare a queue
                 channel.QueueDeclare(queue: "Cooridantes",
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
 
-                // Serialize the IGeoCoordinate object to JSON
                 string message = JsonConvert.SerializeObject(cord);
                 var body = Encoding.UTF8.GetBytes(message);
 
-                // Publish the message to the queue
                 channel.BasicPublish(exchange: "",
                                      routingKey: "Cooridantes",
                                      basicProperties: null,
@@ -48,8 +39,7 @@ public class SendToMessageBus
                 Console.WriteLine(" [x] Sent {0}", message);
             }
 
-            // The connection is automatically closed when exiting the using block
-            //Console.WriteLine("Connection closed.");
+
         }
         catch (Exception ex)
         {

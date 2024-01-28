@@ -6,6 +6,7 @@ using ISA.Core.Domain.Entities.Delivery;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ISA.Core.Domain.UseCases.Contract;
 
@@ -14,14 +15,17 @@ public class ContractService
 	private readonly IContractRepository _contractRepository;
 	private readonly UserService _userService;
 	private readonly EquipmentService _equipmentService;
+    private readonly CompanyService _companyService;
 	private readonly IISAUnitOfWork _unitOfWork;
-    public ContractService(IContractRepository contractRepository, UserService userService, EquipmentService equipmentService, IISAUnitOfWork unitOfWork)
+    public ContractService(IContractRepository contractRepository, UserService userService, EquipmentService equipmentService, CompanyService companyService, IISAUnitOfWork unitOfWork)
 	{
 		_contractRepository = contractRepository;
 		_userService = userService;
 		_equipmentService = equipmentService;
 		_unitOfWork = unitOfWork;
-	}
+        _companyService = companyService;
+
+    }
 
 	public async Task AddContract(DateTime deliveryDate, List<GeneralEquipment> equipment, Guid userId)
 	{
@@ -82,6 +86,25 @@ public class ContractService
         }
 
         return newEquipments;
+    }
+    public async Task<Entities.Delivery.Contract> GetContractById(Guid id)
+    {
+        return await _contractRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+    }
+    public async Task TransferEquipment(Guid companyId)
+    {
+        var contract = await _contractRepository.GetContractByCompanyAsync(companyId) ?? throw new KeyNotFoundException();
+        foreach(var equipment in contract.Equipments)
+        {
+            var waitingEquipment = await _equipmentService.GetById(equipment.EquipmentId);
+            waitingEquipment.Company = await _companyService.GetCompanyAsync(companyId);
+            await _equipmentService.UpdateAsync(waitingEquipment);
+        }
+    }
+
+    public async Task<List<Entities.Delivery.Contract?>> GetTodaysContract()
+    {
+        return await _contractRepository.GetTodaysContract() ?? throw new KeyNotFoundException();
     }
 
 

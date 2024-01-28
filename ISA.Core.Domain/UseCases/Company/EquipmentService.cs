@@ -117,6 +117,12 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
         _equipmentRepository.UpdateAndSaveChanges(newEquipment);
     }
 
+
+    public async Task UpdateAsync(Equipment equipment)
+    {
+        _equipmentRepository.UpdateAndSaveChanges(equipment);
+    }
+
     public async Task ReturnEqupment(IEnumerable<ReservationEquipment> equipment)
     {
         foreach (var equipmentItem in equipment)

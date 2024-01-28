@@ -4,7 +4,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
-
+using Newtonsoft.Json;
 
 namespace ISA.Core.Domain.BackgroundTasks;
 
@@ -28,17 +28,17 @@ public class DeliverySimulatorService : BackgroundService
         {
             try
             {
-                var rabbitmqHost = "localhost"; // Replace with your RabbitMQ server hostname or IP address
-                var rabbitmqQueue = "Cooridantes"; // Replace with your queue name
-                var rabbitmqUser = "guest"; // Replace with your RabbitMQ username
-                var rabbitmqPassword = "guest"; // Replace with your RabbitMQ password
+                var rabbitmqHost = "localhost"; 
+                var rabbitmqQueue = "Cooridantes"; 
+                var rabbitmqUser = "guest"; 
+                var rabbitmqPassword = "guest";
 
                 var factory = new ConnectionFactory()
                 {
                     HostName = rabbitmqHost,
                     UserName = rabbitmqUser,
                     Password = rabbitmqPassword,
-                    DispatchConsumersAsync = true // Enable asynchronous event handlers
+                    DispatchConsumersAsync = true
                 };
 
                 using (var connection = factory.CreateConnection())
@@ -51,17 +51,35 @@ public class DeliverySimulatorService : BackgroundService
                                          arguments: null);
 
                     var consumer = new AsyncEventingBasicConsumer(channel);
+
                     consumer.Received += async (model, ea) =>
                     {
                         var body = ea.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine($"Received message: {message}");
-                        _logger.LogInformation(message);
-                        await Task.Yield(); // To ensure asynchronous execution
+                        var messageJson = Encoding.UTF8.GetString(body);
+                        Console.WriteLine($"Received message: {messageJson}");
+                        _logger.LogInformation(messageJson);
+
+                        try
+                        {
+                            var messageObject = JsonConvert.DeserializeObject<Message>(messageJson);
+
+                            if (messageObject != null)
+                            {
+
+                                _logger.LogInformation($"Parsed message with companyId: {messageObject.companyId}");
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            _logger.LogError($"Error deserializing message: {ex.Message}");
+                        }
+
+                        await Task.Yield();
                     };
 
+
                     channel.BasicConsume(queue: rabbitmqQueue,
-                                         autoAck: true, // Set to true if you want to acknowledge messages automatically
+                                         autoAck: true, 
                                          consumer: consumer);
 
                     Console.WriteLine("Waiting for messages. To exit, press Ctrl+C");

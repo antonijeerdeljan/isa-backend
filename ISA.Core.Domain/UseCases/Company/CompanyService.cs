@@ -21,14 +21,14 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         _mapper = mapper;
     }
 
-    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city)
+    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city,string street, int number)
     {
         
 
         
         await _isaUnitOfWork.StartTransactionAsync();
 
-        Address address = new(country,city);
+        Address address = new(country,city,street,number);
         address.Id = Guid.NewGuid();
 
         Company newCompany = new Company(name, address, description, startWorkingHour, endWorkingHour);
@@ -60,7 +60,6 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         {
 
             _companyRepository.Update(nova);
-            //_addressRepository.Update(nova.Address);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
 
         }
