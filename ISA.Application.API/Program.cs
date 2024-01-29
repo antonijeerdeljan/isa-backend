@@ -35,10 +35,8 @@ builder.Services.AddAuthorization();
 builder.Services.MapperConfig();
 builder.Services.AddHostedService<ReservationOverdueService>();
 builder.Services.AddHostedService<DeliverySimulationService>();
-
-
 builder.Services.AddSignalR();
-
+builder.Services.AddCorsConfig();
 
 
 var app = builder.Build();
@@ -58,6 +56,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("frontend-policy");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -65,7 +65,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseMiddleware<GlobalExceptionMiddleware>(true);
 
 app.MapHub<SignalRHub>("delivery");
 
