@@ -1,12 +1,10 @@
 ﻿using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.Company;
+using ISA.Core.Domain.UseCases.Delivery;
 using ISA.Core.Domain.UseCases.Reservation;
 using ISA.Core.Domain.UseCases.User;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace ISA.Core.Domain.BackgroundTasks;
+namespace ISA.Application.API.BackgroundServices;
 
 public class ReservationOverdueService : IHostedService, IDisposable
 {
@@ -51,13 +49,18 @@ public class ReservationOverdueService : IHostedService, IDisposable
             var userService = scope.ServiceProvider.GetRequiredService<UserService>();
             var equipmentService = scope.ServiceProvider.GetRequiredService<EquipmentService>();
 
+            //test for delivery
+
+            var deliverySrvice = scope.ServiceProvider.GetRequiredService<DeliveryService>();
 
             await unitOfWork.StartTransactionAsync();
 
+            await deliverySrvice.Delivery();
+
             var overdueReservations = await reservationService.OverdueReservations();
-            if(overdueReservations is not null)
+            if (overdueReservations is not null)
             {
-                foreach(var reservation in overdueReservations)
+                foreach (var reservation in overdueReservations)
                 {
                     await userService.GivePenaltyPoints(reservation.Customer.UserId, 2); // give user two penalty points
                     await equipmentService.ReturnEqupment(reservation.Equipments);

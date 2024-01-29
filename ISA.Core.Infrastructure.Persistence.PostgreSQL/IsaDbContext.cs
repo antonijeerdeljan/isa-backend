@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Delivery;
 using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
@@ -21,6 +22,7 @@ public class IsaDbContext : DbContext
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
     public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
+    public DbSet<Contract> Contracts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -35,6 +37,19 @@ public class IsaDbContext : DbContext
         modelBuilder.Entity<ReservationEquipment>()
             .HasOne(ae => ae.Equipment)
             .WithMany() 
+            .HasForeignKey(ae => ae.EquipmentId);
+
+        modelBuilder.Entity<ContractEquipment>()
+        .HasKey(ae => new { ae.ContractId, ae.EquipmentId });
+
+        modelBuilder.Entity<ContractEquipment>()
+            .HasOne(ae => ae.Contract)
+            .WithMany(a => a.Equipments)
+            .HasForeignKey(ae => ae.ContractId);
+
+        modelBuilder.Entity<ContractEquipment>()
+            .HasOne(ae => ae.Equipment)
+            .WithMany()
             .HasForeignKey(ae => ae.EquipmentId);
 
     }

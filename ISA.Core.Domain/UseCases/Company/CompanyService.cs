@@ -1,6 +1,7 @@
 ﻿namespace ISA.Core.Domain.UseCases.Company;
 
 using AutoMapper;
+using ceTe.DynamicPDF.PageElements;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos.Company;
@@ -14,21 +15,21 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
     private readonly IMapper _mapper;
 
     
-public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper) : base(mapper)
+    public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper) : base(mapper)
     {
         _companyRepository = companyRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
 
-    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city)
+    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city,string street, int number)
     {
         
 
         
         await _isaUnitOfWork.StartTransactionAsync();
 
-        Address address = new(country,city);
+        Address address = new(country,city,street,number);
         address.Id = Guid.NewGuid();
 
         Company newCompany = new Company(name, address, description, startWorkingHour, endWorkingHour);
@@ -60,7 +61,6 @@ public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUn
         {
 
             _companyRepository.Update(nova);
-            //_addressRepository.Update(nova.Address);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
 
         }
@@ -91,6 +91,11 @@ public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUn
         company.Equipment.RemoveAll(e => e.Quantity <= 0);
         return _mapper.Map(company, companyDto);
 
+    }
+
+    public async Task<List<Guid>> GetCompanyAdmins(Guid compnayId)
+    {
+        return await _companyRepository.GetAdmins(compnayId);
     }
 
 
