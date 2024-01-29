@@ -1,6 +1,7 @@
 ﻿namespace ISA.Core.Domain.UseCases.Company;
 
 using AutoMapper;
+using ceTe.DynamicPDF.PageElements;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos.Company;
@@ -90,6 +91,11 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         company.Equipment.RemoveAll(e => e.Quantity <= 0);
         return _mapper.Map(company, companyDto);
 
+    }
+
+    public async Task<List<Guid>> GetCompanyAdmins(Guid compnayId)
+    {
+        return await _companyRepository.GetAdmins(compnayId);
     }
 
 

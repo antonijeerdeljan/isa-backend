@@ -44,7 +44,7 @@ public static class DIConfig
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
         services.AddTransient<EquipmentService>();
-        services.AddTransient<DeliverySimulatorService>();
+        //services.AddTransient<DeliverySimulatorService>();
         services.AddTransient<DeliveryService>();
         services.AddTransient<ReservationService>();
         services.AddTransient<ContractService>();

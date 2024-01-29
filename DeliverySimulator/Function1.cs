@@ -42,7 +42,7 @@ namespace DeliverySimulator
                 pointDestination = new Point(destination);
             }
 
-            Coordinate cord = new Coordinate(45.32648081639368, 20.447827235451125);
+            Coordinate cord = new Coordinate(45.12948958198261, 20.73281288601865);
             Point point = new Point(cord);
 
             string responseMessage;
@@ -62,7 +62,6 @@ namespace DeliverySimulator
                     Message message = new(c, companyId, "driving");
                     _sendToMessage.Send(message);
 
-                    // If it's the last item in the loop, send "done" status
                     if (currentCors == totalCors)
                     {
                         Message doneMessage = new(c, companyId, "done");
@@ -70,7 +69,7 @@ namespace DeliverySimulator
                     }
                     else
                     {
-                        await Task.Delay(5000); // Delay for 5 seconds between messages
+                        await Task.Delay(5000); 
                     }
                 }
             }

@@ -1,24 +1,36 @@
-﻿using Microsoft.Extensions.Hosting;
-using RabbitMQ.Client;
+﻿using ISA.Application.API.SignalRServer;
+using ISA.Core.Domain.BackgroundTasks;
+using ISA.Core.Domain.Connections;
+using ISA.Core.Domain.Contracts.Services;
+using ISA.Core.Domain.UseCases.Company;
+using PolylineEncoder.Net.Models;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client;
+using Microsoft.AspNetCore.SignalR;
 using System.Text;
-using System.Threading.Channels;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.AspNet.SignalR;
+using IConnection = RabbitMQ.Client.IConnection;
 
-namespace ISA.Core.Domain.BackgroundTasks;
+namespace ISA.Application.API.BackgroundServices;
 
-public class DeliverySimulatorService : BackgroundService
+public class DeliverySimulationService : BackgroundService
 {
     private IConnection _connection;
     private IModel _channel;
     private string _queueName = "Coordinates";
 
-    private readonly ILogger<DeliverySimulatorService> _logger;
+    private readonly ILogger<DeliverySimulationService> _logger;
+    private IServiceScopeFactory _serviceScopeFactory;
+    private readonly Microsoft.AspNetCore.SignalR.IHubContext<SignalRHub> _hubContext;
 
-    public DeliverySimulatorService(ILogger<DeliverySimulatorService> logger)
+
+
+    public DeliverySimulationService(ILogger<DeliverySimulationService> logger, IServiceScopeFactory serviceScopeFactory, Microsoft.AspNetCore.SignalR.IHubContext<SignalRHub> hubContext)
     {
         _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
+        _hubContext = hubContext;
     }
 
 
@@ -28,9 +40,9 @@ public class DeliverySimulatorService : BackgroundService
         {
             try
             {
-                var rabbitmqHost = "localhost"; 
-                var rabbitmqQueue = "Cooridantes"; 
-                var rabbitmqUser = "guest"; 
+                var rabbitmqHost = "localhost";
+                var rabbitmqQueue = "Cooridantes";
+                var rabbitmqUser = "guest";
                 var rabbitmqPassword = "guest";
 
                 var factory = new ConnectionFactory()
@@ -67,6 +79,7 @@ public class DeliverySimulatorService : BackgroundService
                             {
 
                                 _logger.LogInformation($"Parsed message with companyId: {messageObject.companyId}");
+                                await ProcessMessageAsync(messageObject);
                             }
                         }
                         catch (JsonException ex)
@@ -79,7 +92,7 @@ public class DeliverySimulatorService : BackgroundService
 
 
                     channel.BasicConsume(queue: rabbitmqQueue,
-                                         autoAck: true, 
+                                         autoAck: true,
                                          consumer: consumer);
 
                     Console.WriteLine("Waiting for messages. To exit, press Ctrl+C");
@@ -97,11 +110,44 @@ public class DeliverySimulatorService : BackgroundService
 
 
 
-    private async Task ProcessMessageAsync(string message)
+    private async Task ProcessMessageAsync(Message message)
     {
         // Implement your message processing logic here
         // Ensure all asynchronous operations within this method are awaited properly
+
+        //nadji sve idjeve ko je sve admin kompanije
+        //
+
+        using (IServiceScope scope = _serviceScopeFactory.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IISAUnitOfWork>();
+            var companyService = scope.ServiceProvider.GetRequiredService<CompanyService>();
+
+            var admins = companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
+
+            var adminIds = await companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
+
+            foreach (var adminId in adminIds)
+            {
+                var connectionId = ConnectionMapping.GetConnectionId(adminId);
+                if (connectionId != null)
+                {
+                    await SendMessageToSpecificClient(connectionId, message.coordinate);
+                }
+            }
+            await unitOfWork.SaveAndCommitChangesAsync();
+        }
+
         Console.WriteLine($"Received and processed: {message}");
     }
-}
 
+    public async Task SendMessageToSpecificClient(string connectionId, IGeoCoordinate message)
+    {
+        var messageToString = message.ToString();
+        if (!string.IsNullOrEmpty(connectionId))
+        {
+            await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
+        }
+    }
+
+}

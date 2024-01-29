@@ -13,7 +13,7 @@ public static class HttpConfig
         services.AddHttpClient<HttpClientService>("AzureFunction1", client =>
         {
             client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Add("x-functions-key", builder.Configuration.GetSection("AzureFunction1Settings:Key").Value);
+            client.DefaultRequestHeaders.Add("x-functions-key", builder.Configuration.GetSection("AzureEmailFunctionSettings:Key").Value);
         });
 
         // Configuration for Azure Function 2

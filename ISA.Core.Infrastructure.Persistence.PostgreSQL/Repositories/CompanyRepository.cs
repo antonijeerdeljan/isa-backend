@@ -37,5 +37,13 @@
             return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment).Include(c => c.Appointments).ToListAsync();
         }
 
+        public async Task<List<Guid>> GetAdmins(Guid companyId)
+        {
+            return await _dbSet.Where(c => c.Id == companyId)
+                               .SelectMany(c => c.Admins)
+                               .Select(a => a.UserId)
+                               .ToListAsync();
+        }
+
     }
 }
