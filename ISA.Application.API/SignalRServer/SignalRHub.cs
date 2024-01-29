@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using ISA.Core.Domain.Connections;
 
 namespace ISA.Application.API.SignalRServer;
 
-public class SignalRHub : Microsoft.AspNetCore.SignalR.Hub
+public class SignalRHub : Hub
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public override async Task OnConnectedAsync()

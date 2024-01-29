@@ -1,7 +1,4 @@
 ﻿using ISA.Application.API.SignalRServer;
-using ISA.Core.Domain.BackgroundTasks;
-using ISA.Core.Domain.Connections;
-using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.Company;
 using PolylineEncoder.Net.Models;
 using RabbitMQ.Client.Events;
@@ -9,21 +6,17 @@ using RabbitMQ.Client;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
 using Newtonsoft.Json;
-using Microsoft.AspNet.SignalR;
-using IConnection = RabbitMQ.Client.IConnection;
 using ISA.Core.Domain.UseCases.Contract;
 
 namespace ISA.Application.API.BackgroundServices;
 
 public class DeliverySimulationService : BackgroundService
 {
-    private IConnection _connection;
-    private IModel _channel;
-    private string _queueName = "Coordinates";
+
 
     private readonly ILogger<DeliverySimulationService> _logger;
     private IServiceScopeFactory _serviceScopeFactory;
-    private readonly Microsoft.AspNetCore.SignalR.IHubContext<SignalRHub> _hubContext;
+    private readonly IHubContext<SignalRHub> _hubContext;
 
 
 

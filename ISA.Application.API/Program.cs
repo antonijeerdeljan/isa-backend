@@ -1,10 +1,10 @@
 
 using ISA.Application.API.BackgroundServices;
+using ISA.Application.API.Middleware;
 using ISA.Application.API.SignalRServer;
 using ISA.Application.API.Startup;
 using ISA.Application.API.Startup.DBConfiguration;
 using ISA.Application.API.Startup.DI;
-using ISA.Core.Domain.BackgroundTasks;
 using ISA.Core.Domain.UseCases.Delivery;
 using ISA.Core.Domain.UseCases.User;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,6 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.MapperConfig();
 builder.Services.AddHostedService<ReservationOverdueService>();
-//builder.Services.AddHostedService<DeliverySimulatorService>();
 builder.Services.AddHostedService<DeliverySimulationService>();
 
 
@@ -68,6 +67,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapHub<SignalRHub>("delivery");
 

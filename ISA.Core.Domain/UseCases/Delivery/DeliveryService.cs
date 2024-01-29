@@ -20,27 +20,29 @@ public class DeliveryService
     {
         var todaysContracts = await _contractService.GetTodaysContract();
 
-        foreach (var todaysContract in todaysContracts)
+        if(todaysContracts != null)
         {
-            var contract = todaysContracts.FirstOrDefault() ?? throw new KeyNotFoundException();
-            var address = contract.Company.Address;
-
-            DateTime now = DateTime.Now;
-            DateTime noon = now.Date.AddHours(12);
-
-            if (now > noon)
+            foreach (var todaysContract in todaysContracts)
             {
-                var companyCord = await _httpClientService.GetCoordinatesFromAddress(
-                    address.Street,
-                    address.City,
-                    address.Country,
-                    address.Number.ToString()) ?? throw new KeyNotFoundException();
+                var contract = todaysContracts.FirstOrDefault() ?? throw new KeyNotFoundException();
+                var address = contract.Company.Address;
 
-                Point companyPoint = new Point(companyCord); 
-                await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);
-                await _contractService.UpdateDeliveryTime(contract.Id);
+                DateTime now = DateTime.Now;
+                DateTime noon = now.Date.AddHours(12);
+
+                if (now > noon)
+                {
+                    var companyCord = await _httpClientService.GetCoordinatesFromAddress(
+                        address.Street,
+                        address.City,
+                        address.Country,
+                        address.Number.ToString()) ?? throw new KeyNotFoundException();
+
+                    Point companyPoint = new Point(companyCord); 
+                    await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);
+                    await _contractService.UpdateDeliveryTime(contract.Id);
+                }
             }
         }
-
     }
 }

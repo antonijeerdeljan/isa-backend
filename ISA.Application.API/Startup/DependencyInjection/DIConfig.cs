@@ -9,10 +9,8 @@ using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.AspNetCore.Identity;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.UseCases.LoyaltyProgram;
-using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.Reservation;
 using ISA.Core.Domain.UseCases.Contract;
-using ISA.Core.Domain.BackgroundTasks;
 using ISA.Core.Domain.UseCases.Delivery;
 
 namespace ISA.Application.API.Startup.DI;
@@ -44,7 +42,6 @@ public static class DIConfig
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
         services.AddTransient<EquipmentService>();
-        //services.AddTransient<DeliverySimulatorService>();
         services.AddTransient<DeliveryService>();
         services.AddTransient<ReservationService>();
         services.AddTransient<ContractService>();
