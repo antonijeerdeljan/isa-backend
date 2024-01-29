@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240126160340_init")]
-    partial class init
+    [Migration("20240128213156_Init2")]
+    partial class Init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,6 +97,9 @@ namespace ISA.Application.API.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -148,9 +151,6 @@ namespace ISA.Application.API.Migrations
 
                     b.Property<Guid>("CustomerUserId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("State")
                         .HasColumnType("integer");

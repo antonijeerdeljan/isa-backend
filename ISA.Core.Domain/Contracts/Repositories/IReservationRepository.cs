@@ -1,4 +1,5 @@
-﻿using ISA.Core.Domain.Entities.Reservation;
+﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Reservation;
 
 namespace ISA.Core.Domain.Contracts.Repositories;
 
@@ -9,4 +10,9 @@ public interface IReservationRepository
     public Task SaveAsync();
     public void Update(Reservation reservation);
     Task<List<Reservation>> CheckForOverdueReservations();
+
+    Task<List<Reservation>> GetAllCompanyReservations(Guid companyId);
+
+    Task<bool> EquipmentCanBeDeleted(Guid id);
+
 }

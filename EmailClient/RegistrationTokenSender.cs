@@ -27,6 +27,11 @@ namespace EmailClient
 
             try
             {
+                //string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
+                //string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
+                string fromMail = "ftngrupa7@gmail.com";
+                string fromPassword = "xowmkegadzjpwdrj";
+
                 var token = WebUtility.UrlEncode(body);
                 string baseString = "https://localhost:7109/Users/VerifyEmail?email="+email+"&token="+token;
 

@@ -3,6 +3,7 @@ using System;
 using ISA.Core.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240128151815_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,21 +244,21 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "cc46b130-f099-40cb-adfc-0ef185d4217a",
+                            ConcurrencyStamp = "46c91935-cb7b-4310-91d2-10dfc455f4bd",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "57afe8fd-dde4-4c6c-a274-e0017bdc53dd",
+                            ConcurrencyStamp = "d5f7ade0-c361-4b0f-9d5d-b2278a40b6a6",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "64bc3332-c457-4a39-94ff-22d546175c20",
+                            ConcurrencyStamp = "41c4d929-dfe0-4850-aa9a-7a1c54a9683c",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });

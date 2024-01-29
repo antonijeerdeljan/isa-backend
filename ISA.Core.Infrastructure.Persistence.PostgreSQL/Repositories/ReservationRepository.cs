@@ -1,8 +1,10 @@
 ﻿using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Entities;
+using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
 
@@ -26,12 +28,28 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
         
     }
 
+    public async Task<bool> EquipmentCanBeDeleted(Guid id)
+    {
+        bool e =  _dbSet.Include(r => r.Appointment)
+                     .Include(r => r.Equipments)
+                     .Where(r => r.State == ReservationState.Pending && r.Equipments.Any(r => r.EquipmentId == id))
+                     .Count() == 0;
+        return e;             
+    }
+
+    public async Task<List<Reservation>> GetAllCompanyReservations(Guid companyId)
+    {
+        return await _dbSet.Include(r => r.Appointment)
+                            .Include(r => r.Equipments)
+                            .Where(r => r.Appointment.Company.Id == companyId)
+                            .ToListAsync();
+    }
 
     public override async Task<Reservation?> GetByIdAsync(Guid Id)
     {
         return await _dbSet.Include(c => c.Customer)
-                           .Include(c => c.Appointment)
-                           .Include(c => c.Equipments)
+                           .Include(c => c.Appointment).ThenInclude(a => a.CompanyAdmin)
+                           .Include(c => c.Equipments).ThenInclude(e => e.Equipment)
                            .Where(i => i.AppointmentId == Id)
                            .FirstOrDefaultAsync();
     }

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -167,9 +167,9 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "dae2ebd3-5792-4b61-8c41-ef5af05ad702", "ApplicationRole", "Corpadmin", "CORPADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "157cac0d-7afe-4419-b577-d2940fe37eab", "ApplicationRole", "Sysadmin", "SYSADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "11e52311-9330-4681-bdf4-6027a5e7bd95", "ApplicationRole", "Customer", "CUSTOMER" }
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "d5f7ade0-c361-4b0f-9d5d-b2278a40b6a6", "ApplicationRole", "Corpadmin", "CORPADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "41c4d929-dfe0-4850-aa9a-7a1c54a9683c", "ApplicationRole", "Sysadmin", "SYSADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "46c91935-cb7b-4310-91d2-10dfc455f4bd", "ApplicationRole", "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

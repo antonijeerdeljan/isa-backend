@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -191,7 +191,6 @@ namespace ISA.Application.API.Migrations
                 columns: table => new
                 {
                     AppointmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsFinished = table.Column<bool>(type: "boolean", nullable: false),
                     CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     State = table.Column<int>(type: "integer", nullable: false)
                 },

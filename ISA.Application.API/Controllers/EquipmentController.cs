@@ -42,6 +42,7 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("/{id}")]
         [Authorize(Policy = "corpAdminPolicy")]
+        
         public async Task RemoveEquipment([FromRoute] Guid id) => await _equipmentService.RemoveAsync(id);
 
 
@@ -66,6 +67,7 @@
 
             return equipmentList;
         }
+
 
 
     }

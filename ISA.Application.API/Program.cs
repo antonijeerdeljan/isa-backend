@@ -49,9 +49,6 @@ using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     var userService = serviceProvider.GetRequiredService<UserService>();
-    var deliveryService = serviceProvider.GetRequiredService<DeliveryService>();
-
-    await deliveryService.Delivery();
     await userService.CheckForSystemAdmin();
 }
 

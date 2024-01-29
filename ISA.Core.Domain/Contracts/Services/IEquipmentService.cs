@@ -8,7 +8,7 @@
     public interface IEquipmentService
     {
         Task AddAsync(string equpmentName, int quantity, Guid userId);
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(Guid id, Guid userId);
         Task UpdateAsync(Guid id, string name, int quantity, Guid userId);
         Task ReturnEqupment(IEnumerable<ReservationEquipment> equipment);
     }
