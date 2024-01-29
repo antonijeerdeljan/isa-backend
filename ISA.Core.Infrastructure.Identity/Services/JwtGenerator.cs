@@ -12,7 +12,7 @@ namespace ISA.Core.Infrastructure.Identity.Services;
 
 public class JwtGenerator : ITokenGenerator
 {
-    private readonly string key = Environment.GetEnvironmentVariable("secret") ?? "secretqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
+    private readonly string key = Environment.GetEnvironmentVariable("secret") ?? "default_secret_keydefault_secret_key";
     private readonly string issuer = Environment.GetEnvironmentVariable("validIssuer") ?? "localhost";
     private readonly string audience = Environment.GetEnvironmentVariable("validAudience") ?? "localhost";
 

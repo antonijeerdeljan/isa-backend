@@ -3,6 +3,7 @@
     using ISA.Core.Domain.Contracts.Repositories;
     using ISA.Core.Domain.Contracts.Services;
     using ISA.Core.Domain.Entities.Company;
+    using ISA.Core.Infrastructure.Persistence.PostgreSQL.QueryExtensionMethods;
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
@@ -30,11 +31,22 @@
 
         public async Task <bool> ExistEnough(Guid id, int quantity)
         {
-
             return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.Quantity >= quantity) is not null;
-            
-
         }
+
+        public async Task<List<Equipment>> GetGeneralEquipment(int page)
+        {
+            return await _dbSet.GetPaged(page)
+                               .Where(c => c.Quantity == null && c.Company == null)
+                               .ToListAsync();
+        }
+
+        public async Task DeleteContract(Guid id)
+        {
+            var equipment = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
+            _dbSet.Remove(equipment);
+        }
+
 
         public new async Task<Equipment?> GetByIdAsync(Guid id)
         {

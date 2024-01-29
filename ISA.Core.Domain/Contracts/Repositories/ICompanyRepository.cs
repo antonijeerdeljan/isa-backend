@@ -10,4 +10,6 @@ public interface ICompanyRepository
     void Update(Company company);
     bool Exist(Guid id);
     Task<IEnumerable<Company>> GetAllCompanies(int page);
+
+    Task<List<Guid>> GetAdmins(Guid companyId);
 }

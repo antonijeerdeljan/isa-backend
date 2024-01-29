@@ -20,5 +20,8 @@
         Task<bool> ExistEnough(Guid id, int quantity);
 
         Task EquipmentSold(Guid id, int quantity);
+
+        Task DeleteContract(Guid id);
+        Task<List<Equipment>> GetGeneralEquipment(int page);
     }
 }

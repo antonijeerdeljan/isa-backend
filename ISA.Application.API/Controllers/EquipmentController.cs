@@ -29,8 +29,7 @@
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
             await _equipmentService.AddAsync(equipment.Name, equipment.Quantity, userId);
         }
-
-
+        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
         [Authorize(Policy = "corpAdminPolicy")]
@@ -43,10 +42,37 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("/{id}")]
         [Authorize(Policy = "corpAdminPolicy")]
-        public async Task RemoveEquipment([FromRoute] Guid id)
+
+        public async Task RemoveEquipment([FromRoute] Guid id) {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+
+            await _equipmentService.RemoveAsync(id, userId);
+        } 
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("add-general-equipment")]
+        [Authorize(Policy = "superAdminPolicy")]
+        public async Task AddGeneralEquipment([FromBody] AddGeneralEquipmentRequest equipment)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
-            await _equipmentService.RemoveAsync(id, userId);
+            await _equipmentService.AddGeneralAsync(equipment.Name);
         }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("get-general-equipment")]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public async Task<List<GeneralEquipmentDto>> GetGeneralEquipment(int page)
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+
+            var equipmentList = await _equipmentService.GetGeneralEquipment(page);
+
+            return equipmentList;
+        }
+
+
+
     }
 }
