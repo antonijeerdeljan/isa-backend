@@ -43,7 +43,7 @@ public class HttpClientService : IHttpClientService
 
         try
         {
-            var response = await _httpClient.PostAsync("Function3", content);
+            var response = await _emailHttpClient.PostAsync("Function3", content);
         }
         catch (Exception ex)
         {

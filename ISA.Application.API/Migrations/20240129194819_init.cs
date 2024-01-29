@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,9 @@ namespace ISA.Application.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Country = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false)
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Street = table.Column<string>(type: "text", nullable: true),
+                    Number = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,13 +90,35 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Contracts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DeliveredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contracts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Contracts_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Equipments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Quantity = table.Column<int>(type: "integer", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,8 +127,7 @@ namespace ISA.Application.API.Migrations
                         name: "FK_Equipments_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -154,6 +177,31 @@ namespace ISA.Application.API.Migrations
                         name: "FK_Customers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContractEquipment",
+                columns: table => new
+                {
+                    ContractId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EquipmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContractEquipment", x => new { x.ContractId, x.EquipmentId });
+                    table.ForeignKey(
+                        name: "FK_ContractEquipment_Contracts_ContractId",
+                        column: x => x.ContractId,
+                        principalTable: "Contracts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ContractEquipment_Equipments_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -257,6 +305,16 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContractEquipment_EquipmentId",
+                table: "ContractEquipment",
+                column: "EquipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contracts_CompanyId",
+                table: "Contracts",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_LoyaltyProgramId",
                 table: "Customers",
                 column: "LoyaltyProgramId");
@@ -286,7 +344,13 @@ namespace ISA.Application.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ContractEquipment");
+
+            migrationBuilder.DropTable(
                 name: "ReservationEquipment");
+
+            migrationBuilder.DropTable(
+                name: "Contracts");
 
             migrationBuilder.DropTable(
                 name: "Equipments");

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Application.API.Migrations
 {
     [DbContext(typeof(IsaDbContext))]
-    [Migration("20240128213156_Init2")]
-    partial class Init2
+    [Migration("20240129194819_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,7 +94,7 @@ namespace ISA.Application.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CompanyId")
+                    b.Property<Guid?>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
@@ -104,7 +104,7 @@ namespace ISA.Application.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -112,6 +112,49 @@ namespace ISA.Application.API.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Equipments");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Contracts");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.ContractEquipment", b =>
+                {
+                    b.Property<Guid>("ContractId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EquipmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ContractId", "EquipmentId");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("ContractEquipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.LoyaltyProgram.LoyaltyProgram", b =>
@@ -192,6 +235,12 @@ namespace ISA.Application.API.Migrations
 
                     b.Property<string>("Country")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Street")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -312,11 +361,39 @@ namespace ISA.Application.API.Migrations
                 {
                     b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
                         .WithMany("Equipment")
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
+                        .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.ContractEquipment", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Delivery.Contract", "Contract")
+                        .WithMany("Equipments")
+                        .HasForeignKey("ContractId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Equipment", "Equipment")
+                        .WithMany()
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contract");
+
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
@@ -411,6 +488,11 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Equipment");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
+                {
+                    b.Navigation("Equipments");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>

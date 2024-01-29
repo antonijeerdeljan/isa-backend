@@ -6,7 +6,7 @@ public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly bool _isDevelopment;
-    public ExceptionMiddleware(RequestDelegate next, bool isDevelopment)
+    public GlobalExceptionMiddleware(RequestDelegate next, bool isDevelopment)
     {
         _next = next;
         _isDevelopment = isDevelopment;

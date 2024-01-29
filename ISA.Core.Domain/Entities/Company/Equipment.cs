@@ -21,9 +21,6 @@ public class Equipment : Entity<Guid>
     {
         Id = new Guid();
     }
-
-
-
     public Equipment(string name)
     {
         Name = name;
@@ -37,28 +34,23 @@ public class Equipment : Entity<Guid>
         Company = company;
     }
 
-        public void ReturnEquipment(int quantity)
-        {
+    public void ReturnEquipment(int quantity)
+    {
         Quantity = Quantity + quantity;
-        }
-        
-        public Equipment(Guid id, string name, int quantity, Company company, bool deleted)
-        {
-            Id = id;
-            Name = name;
-            Quantity = quantity;
-            Company = company;
-            IsDeleted = deleted;
-        }
-
-        public void ReturnEquipment(int quantity)
-        {
-            Quantity = Quantity + quantity;
-        }
-
-        public void Delete()
-        {
-            IsDeleted = true;
-        }
     }
+        
+    public Equipment(Guid id, string name, int quantity, Company company, bool deleted)
+    {
+        Id = id;
+        Name = name;
+        Quantity = quantity;
+        Company = company;
+        IsDeleted = deleted;
+    }
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
+
+
 }

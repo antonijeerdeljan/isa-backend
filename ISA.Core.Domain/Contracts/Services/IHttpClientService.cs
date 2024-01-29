@@ -13,9 +13,9 @@ public interface IHttpClientService
   
     Task<Coordinate> GetCoordinatesFromAddress(string street,string city, string country, string number);
   
-    public Task SendReservationConfirmation(string email, string message, Document document);
+    //public Task SendReservationConfirmation(string email, string message, Document document);
   
-    public Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string Name, string Id, string time);
+    public Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string name, string id, string time);
 
     public Task SendPickUpConfirmation(string email, string message, string Name, string time, string companyName);
 }

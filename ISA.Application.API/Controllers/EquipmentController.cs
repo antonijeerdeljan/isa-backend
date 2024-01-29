@@ -42,8 +42,12 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("/{id}")]
         [Authorize(Policy = "corpAdminPolicy")]
-        
-        public async Task RemoveEquipment([FromRoute] Guid id) => await _equipmentService.RemoveAsync(id);
+
+        public async Task RemoveEquipment([FromRoute] Guid id) {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+
+            await _equipmentService.RemoveAsync(id, userId);
+        } 
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
