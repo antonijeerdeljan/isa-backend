@@ -67,7 +67,7 @@ public class HttpClientService : IHttpClientService
         }
     }
 
-    public Task CreateDelivery(Point companyCoordinate, Guid companyId)
+    public async Task CreateDelivery(Point companyCoordinate, Guid companyId)
     {
         var payload = new
         {
@@ -84,13 +84,11 @@ public class HttpClientService : IHttpClientService
         try
         {
             _ = _deliveryHttpClient.PostAsync("Function1", content);
-            return Task.CompletedTask;
 
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return Task.CompletedTask;
         }
     }
 

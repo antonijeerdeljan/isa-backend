@@ -1,28 +1,28 @@
-﻿using MassTransit.Configuration;
-using Newtonsoft.Json;
-using PolylineEncoder.Net.Models;
+﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
 using System.Text;
 
-namespace DeliverySimulator;
+namespace DeliverySimulator.MessageAndEventBus;
 
-public class SendToMessageBus
+public class MessageBus
 {
     public async void Send(Message cord)
     {
         try
         {
-            //var bus = BusConfiguratior
-            //await _eventBus.PublishAsync(cord);
 
+            var host = Environment.GetEnvironmentVariable("host", EnvironmentVariableTarget.Process);
+            var username = Environment.GetEnvironmentVariable("user", EnvironmentVariableTarget.Process);
+            var password = Environment.GetEnvironmentVariable("password", EnvironmentVariableTarget.Process);
+            var queueName = Environment.GetEnvironmentVariable("queueName", EnvironmentVariableTarget.Process);
 
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "guest", Password = "guest", Port = 5672, VirtualHost = "/" };
+            var factory = new ConnectionFactory() { HostName = host, UserName = username, Password = password, Port = 5672, VirtualHost = "/" };
 
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "Cooridantes",
+                channel.QueueDeclare(queue: queueName,
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
@@ -32,7 +32,7 @@ public class SendToMessageBus
                 var body = Encoding.UTF8.GetBytes(message);
 
                 channel.BasicPublish(exchange: "",
-                                     routingKey: "Cooridantes",
+                                     routingKey: queueName,
                                      basicProperties: null,
                                      body: body);
 

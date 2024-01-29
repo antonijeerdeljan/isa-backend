@@ -1,7 +1,6 @@
-﻿using MassTransit;
+﻿using DeliverySimulator.MessageAndEventBus;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 [assembly: FunctionsStartup(typeof(DeliverySimulator.Startup))]
 
@@ -12,7 +11,7 @@ namespace DeliverySimulator
         public override void Configure(IFunctionsHostBuilder builder)
         {
             
-            builder.Services.AddTransient<SendToMessageBus>();
+            builder.Services.AddTransient<MessageBus>();
         }
     }
 }

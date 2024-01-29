@@ -41,7 +41,7 @@ public class DeliverySimulationService : BackgroundService
         {
             try
             {
-                var rabbitmqHost = "localhost";
+                var rabbitmqHost = "172.206.250.97";
                 var rabbitmqQueue = "Cooridantes";
                 var rabbitmqUser = "guest";
                 var rabbitmqPassword = "guest";

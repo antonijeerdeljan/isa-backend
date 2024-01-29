@@ -34,11 +34,11 @@ public class DeliveryService
                     address.Street,
                     address.City,
                     address.Country,
-                    address.Number.ToString());
+                    address.Number.ToString()) ?? throw new KeyNotFoundException();
 
                 Point companyPoint = new Point(companyCord); 
                 await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);
-                await _contractService.UpdateDeliveryTime(contract.Company.Id);
+                await _contractService.UpdateDeliveryTime(contract.Id);
             }
         }
 

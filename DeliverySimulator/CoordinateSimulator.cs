@@ -9,10 +9,10 @@ using System.Linq;
 
 namespace DeliverySimulator;
 
-public static class PositionSimulator
+public static class CoordinateSimulator
 {
     private static readonly Decoder _decoder = new Decoder();
-    public static async Task<List<IGeoCoordinate>> GetNewComplexCoordinates(Point vehicleLocation, Point userLocation)
+    public static async Task<List<IGeoCoordinate>> GetCoordinates(Point vehicleLocation, Point userLocation)
     {
         var polylineToUser = await HttpClientService.GetPolyline(vehicleLocation, userLocation);
         return await GetNewCoordinates(polylineToUser);

@@ -10,13 +10,14 @@ using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using PolylineEncoder.Net.Models;
+using DeliverySimulator.MessageAndEventBus;
 
 namespace DeliverySimulator
 {
-    public class Function1
+    public class DeliveryCoordinateSimulator
     {
-        private readonly SendToMessageBus _sendToMessage;
-        public Function1(SendToMessageBus sendToMessage)
+        private readonly MessageBus _sendToMessage;
+        public DeliveryCoordinateSimulator(MessageBus sendToMessage)
         {
             _sendToMessage = sendToMessage;
         }
@@ -42,7 +43,7 @@ namespace DeliverySimulator
                 pointDestination = new Point(destination);
             }
 
-            Coordinate cord = new Coordinate(45.12948958198261, 20.73281288601865);
+            Coordinate cord = new Coordinate(45.24402765011596, 19.841881760213614); //init position Novi sad Promenada
             Point point = new Point(cord);
 
             string responseMessage;
@@ -50,7 +51,7 @@ namespace DeliverySimulator
 
             if (pointDestination != null)
             {
-                cors = await PositionSimulator.GetNewComplexCoordinates(point, pointDestination);
+                cors = await CoordinateSimulator.GetCoordinates(point, pointDestination);
                 responseMessage = $"Received and processed coordinates: ({latitude}, {longitude}).";
 
                 int totalCors = cors.Count;
