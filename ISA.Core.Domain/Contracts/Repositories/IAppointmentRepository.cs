@@ -14,5 +14,7 @@
         void Update(Appointment appointment);
 
         Task<IEnumerable<Appointment>> GetAllCompanyAppointments(int page, Guid companyId);
+
+        Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date);
     }
 }

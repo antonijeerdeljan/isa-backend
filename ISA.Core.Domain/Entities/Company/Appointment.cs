@@ -11,6 +11,7 @@ public class Appointment : Entity<Guid>
     public bool AlreadyTaken { get; set; } = false;
     public Appointment() { }
 
+
     public Appointment(Company company, CompanyAdmin companyAdmin, DateTime startingDateTime, DateTime endingDateTime)
     {
         Id = Guid.NewGuid();

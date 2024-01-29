@@ -21,12 +21,21 @@
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [Authorize(Policy = "customerPolicy")]
         public async Task AddReservation([FromBody] ReservationRequest reservation)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
             await _reservationService.AddAsync(userId, reservation.AppointmentId, reservation.Equipments);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("AddExtraordinary")]
+        [Authorize(Policy = "customerPolicy")]
+        public async Task AddReservationWithExtraordinaryAppointment([FromBody] ExtraordinaryReservationRequest reservation)
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            await _reservationService.AddExtraordinaryAsync(userId, reservation.CompanyId, reservation.Appointment.StartingDateTime, reservation.Appointment.EndingDateTime, reservation.Equipments);
         }
 
 

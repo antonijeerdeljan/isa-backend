@@ -87,6 +87,52 @@ public class ReservationService
         }
     }
 
+    public async Task AddExtraordinaryAsync(Guid userId, Guid companyId, DateTime start, DateTime end , List<ReservationEquipmentRequest> requests)
+    {
+        await _isaUnitOfWork.StartTransactionAsync();
+        
+        var customer = await _userService.GetCustomerById(userId);
+
+        var appointmentId = await _appointmentService.TryCreateAppointment(companyId, start, end);
+        var appointment = await _appointmentService.GetAppointmentById(appointmentId) ?? throw new KeyNotFoundException();
+        var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
+        List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
+        if (customer is null || appointment is null || reserved is not null)
+        {
+            throw new ArgumentNullException("Not good appointment");
+        }
+
+        appointment.SetAsTaken();
+
+        try
+        {
+            foreach (var r in requests)
+            {
+                if (await _equipmentService.ExistEnough(r.EquipmentId, r.Quantity) is false)
+                {
+                    throw new ArgumentException("No enough equipment");
+                }
+                ReservationEquipment re = new ReservationEquipment(appointment.Id, r.EquipmentId, r.Quantity);
+                reservationEquipment.Add(re);
+            }
+
+            Reservation reservation = new Reservation(appointment, customer, reservationEquipment);
+            await _reservationRepository.AddAsync(reservation);
+            foreach (var r in reservation.Equipments)
+            {
+                await _reservationEquipmentRepository.AddAsync(r);
+                await _equipmentService.EquipmentSold(r.EquipmentId, r.Quantity);
+            }
+            //await _isaUnitOfWork.SaveAndCommitChangesAsync();
+            await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", reservation.Equipments, customer.User.Firstname, reservation.AppointmentId.ToString(), appointment.StartingDateTime.ToString());
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
 
 
     public async Task<List<Reservation>> OverdueReservations()

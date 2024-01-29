@@ -1,8 +1,6 @@
 ﻿namespace ISA.Application.API.Controllers
 {
-    using ISA.Core.Domain.Contracts.Services;
     using ISA.Core.Domain.Dtos;
-    using ISA.Core.Domain.Dtos.Company;
     using ISA.Core.Domain.UseCases.Company;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -30,8 +28,8 @@
             await _appointmentService.AddAsync(appointment, userId);
 
         }
-        
-        
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("CompanyAppointments")]
         [Authorize(Policy = "corpAdminPolicy")]
@@ -41,6 +39,15 @@
             return await _appointmentService.GetAllCompanyAppointments(page, adminId);
         }
 
+
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("PossibleCompanyAppointments")]
+        //[Authorize(Policy = "customerPolicy")]
+        public async Task<IEnumerable<AppointmentRequestModel>> GetPossibleAppointments(Guid companyId)
+        {
+            DateOnly.TryParse("31.01.2024", out DateOnly result);
+            return await _appointmentService.GetPossibleAppointments(result, companyId);
+        }
 
 
     }
