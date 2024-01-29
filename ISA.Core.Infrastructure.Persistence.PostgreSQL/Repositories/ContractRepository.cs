@@ -33,7 +33,7 @@ public class ContractRepository : GenericRepository<Contract, Guid>, IContractRe
     {
         return await _dbSet.Include(c => c.Company)
                    .ThenInclude(company => company.Address)  // Include the Address from Company
-                   .Where(c => c.DeliveryDate.Day == DateTime.Now.Day)
+                   .Where(c => c.DeliveryDate.Day == DateTime.Now.Day && c.DeliveredAt.Day != DateTime.Now.Day)
                    .ToListAsync();
 
     }

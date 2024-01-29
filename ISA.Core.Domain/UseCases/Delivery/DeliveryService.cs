@@ -6,9 +6,7 @@ namespace ISA.Core.Domain.UseCases.Delivery;
 
 public class DeliveryService
 {
-    //treba da proveri da li je datum i vreme za dostavu kada ovaj treba da krene
-    //ako jeste treba da napravi Point od kompanije i tako sto ce da gadja api
-    //kada dobije point treba da gadja azure funkciju sa kordinatom i id-em
+
     private readonly ContractService _contractService;
     private readonly IHttpClientService _httpClientService;
 
@@ -21,22 +19,28 @@ public class DeliveryService
     public async Task Delivery()
     {
         var todaysContracts = await _contractService.GetTodaysContract();
-        var comapny = todaysContracts.FirstOrDefault();
-        var address = comapny.Company.Address;
 
-        DateTime now = DateTime.Now;
-
-        DateTime noon = now.Date.AddHours(12); 
-
-        var companyCord = await _httpClientService.GetCoordinatesFromAddress(address.Street, address.City,address.Country,address.Number.ToString());
-
-        Point companyPoint = new(companyCord);
-
-        await _httpClientService.CreateDelivery(companyPoint, comapny.Company.Id);
-
-        if (now > noon)
+        foreach (var todaysContract in todaysContracts)
         {
+            var contract = todaysContracts.FirstOrDefault() ?? throw new KeyNotFoundException();
+            var address = contract.Company.Address;
+
+            DateTime now = DateTime.Now;
+            DateTime noon = now.Date.AddHours(12);
+
+            if (now > noon)
+            {
+                var companyCord = await _httpClientService.GetCoordinatesFromAddress(
+                    address.Street,
+                    address.City,
+                    address.Country,
+                    address.Number.ToString());
+
+                Point companyPoint = new Point(companyCord); 
+                await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);
+                await _contractService.UpdateDeliveryTime(contract.Company.Id);
+            }
         }
-        
+
     }
 }

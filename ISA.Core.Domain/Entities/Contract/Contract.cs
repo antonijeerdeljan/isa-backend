@@ -6,6 +6,7 @@ public class Contract : Entity<Guid>
     public List<ContractEquipment> Equipments { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime DeliveryDate { get; set; }
+    public DateTime DeliveredAt { get; set; }
 
     public Contract()
     {
@@ -18,5 +19,6 @@ public class Contract : Entity<Guid>
         Equipments = equipments;
         CreatedAt = createdAt;
         DeliveryDate = deliveryDate;
+        DeliveredAt = createdAt;
     }
 }

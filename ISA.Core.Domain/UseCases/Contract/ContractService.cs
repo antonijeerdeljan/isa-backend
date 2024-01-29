@@ -107,6 +107,12 @@ public class ContractService
         return await _contractRepository.GetTodaysContract() ?? throw new KeyNotFoundException();
     }
 
+    public async Task UpdateDeliveryTime(Guid contractId)
+    {
+        var contract = await _contractRepository.GetByIdAsync(contractId) ?? throw new KeyNotFoundException();
+        contract.DeliveredAt = DateTime.UtcNow;
+        _contractRepository.Update(contract);
+    }
 
 
 

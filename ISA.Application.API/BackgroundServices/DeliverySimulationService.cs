@@ -11,6 +11,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Microsoft.AspNet.SignalR;
 using IConnection = RabbitMQ.Client.IConnection;
+using ISA.Core.Domain.UseCases.Contract;
 
 namespace ISA.Application.API.BackgroundServices;
 
@@ -103,7 +104,6 @@ public class DeliverySimulationService : BackgroundService
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                // Handle the exception (log, etc.)
             }
         }
     }
@@ -112,20 +112,19 @@ public class DeliverySimulationService : BackgroundService
 
     private async Task ProcessMessageAsync(Message message)
     {
-        // Implement your message processing logic here
-        // Ensure all asynchronous operations within this method are awaited properly
-
-        //nadji sve idjeve ko je sve admin kompanije
-        //
 
         using (IServiceScope scope = _serviceScopeFactory.CreateScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IISAUnitOfWork>();
+        { 
             var companyService = scope.ServiceProvider.GetRequiredService<CompanyService>();
 
             var admins = companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
-
             var adminIds = await companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
+
+            if(message.status == "done")
+            {
+                var contractService = scope.ServiceProvider.GetRequiredService<ContractService>();
+                await contractService.TransferEquipment(Guid.Parse(message.companyId));
+            }
 
             foreach (var adminId in adminIds)
             {
@@ -135,7 +134,6 @@ public class DeliverySimulationService : BackgroundService
                     await SendMessageToSpecificClient(connectionId, message.coordinate);
                 }
             }
-            await unitOfWork.SaveAndCommitChangesAsync();
         }
 
         Console.WriteLine($"Received and processed: {message}");
