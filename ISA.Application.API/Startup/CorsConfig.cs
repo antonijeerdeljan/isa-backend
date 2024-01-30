@@ -3,7 +3,7 @@
 public static class CorsConfig
 {
 
-    public static IServiceCollection AddCors(this IServiceCollection services)
+    public static IServiceCollection AddCorsConfig(this IServiceCollection services)
     {
         services.AddCors(options =>
         {

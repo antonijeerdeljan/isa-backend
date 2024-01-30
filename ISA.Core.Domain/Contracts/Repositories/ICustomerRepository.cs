@@ -8,6 +8,6 @@ public interface ICustomerRepository
     public Task AddAsync(Customer userToAdd);
     public Task<Customer?> GetByIdAsync(Guid id);
     public Task SaveAsync();
-
+    Task RemovePenaltyPoints();
     public void Update(Customer customer);
 }

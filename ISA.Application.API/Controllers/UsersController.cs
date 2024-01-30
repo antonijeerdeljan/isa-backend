@@ -57,10 +57,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("VerifyEmail")]
-    public async Task VerifyEmail(string email, string token)
+    public async Task<IActionResult> VerifyEmail(string email, string token)
     {
         await _userService.VerifyEmail(email, token);
+        return Redirect("https://localhost:4200/login"); //izmeniti
     }
+
 
     [HttpPost("EditProfile")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -74,6 +76,17 @@ public class UsersController : ControllerBase
                                            editProfileRequestModel.Lastname,
                                            editProfileRequestModel.PhoneNumber,
                                            editProfileRequestModel.DateOfBirth);
+        return Ok();
+    }
+
+    [HttpPost("ChangePassword")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "allowAllPolicy")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel changePassword)
+    {
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value); 
+        await _userService.ChangePassword(id,changePassword.currentPassword,changePassword.newPassword);
+
         return Ok();
     }
 
@@ -93,7 +106,22 @@ public class UsersController : ControllerBase
         return await _userService.GetAllCompanyAdmins(companyId, page);
     }
 
+    [HttpGet("GetCustomerPoints/{companyId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "customerPolicy")]
+    public async Task<int> GetCustomerPoints()
+    {
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        return await _userService.GetUserPoints(id);
+    }
 
-
+    [HttpGet("GetCustomerPenaltyPoints/{companyId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "customerPolicy")]
+    public async Task<int> GetCustomerPenaltyPoints()
+    {
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        return await _userService.GetUserPenaltyPoints(id);
+    }
 
 };

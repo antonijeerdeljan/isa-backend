@@ -36,7 +36,12 @@ public class DeliveryService
                         address.Street,
                         address.City,
                         address.Country,
-                        address.Number.ToString()) ?? throw new KeyNotFoundException();
+                        address.Number.ToString());
+
+
+                    if(companyCord is null) {
+                        companyCord = new Coordinate(45.259832216479296, 19.807517841677335); //just in case of failure
+                    }
 
                     Point companyPoint = new Point(companyCord); 
                     await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);

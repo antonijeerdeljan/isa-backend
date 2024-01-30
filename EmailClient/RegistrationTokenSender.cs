@@ -27,18 +27,63 @@ namespace EmailClient
 
             try
             {
-                //string fromMail = Environment.GetEnvironmentVariable("email", EnvironmentVariableTarget.Process);
-                //string fromPassword = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
-                string fromMail = "ftngrupa7@gmail.com";
-                string fromPassword = "xowmkegadzjpwdrj";
-
                 var token = WebUtility.UrlEncode(body);
-                string baseString = "https://localhost:7109/Users/VerifyEmail?email="+email+"&token="+token;
+                string baseString = "https://localhost:7109/Users/VerifyEmail?email=" + email + "&token=" + token;
 
                 MailMessage message = new MailMessage();
-                message.Subject = $"Thank for registering!";
+                message.Subject = "Thank You for Registering!";
                 message.To.Add(new MailAddress(email));
-                message.Body = baseString;
+
+                // Enhanced HTML content
+                string htmlBody = @"
+    <html>
+        <head>
+            <style>
+                .email-container {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                    text-align: center;
+                }
+                .email-content {
+                    background-color: #ffffff;
+                    padding: 40px;
+                    margin: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+                }
+                .button {
+                    background-color: #007bff; 
+                    border: none;
+                    color: white;
+                    padding: 15px 32px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 20px 0;
+                    cursor: pointer;
+                    border-radius: 4px;
+                    transition: background-color 0.3s ease;
+                }
+                .button:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='email-container'>
+                <div class='email-content'>
+                    <h1>Welcome!</h1>
+                    <p>Thank you for registering. Please click the button below to verify your email address and get started:</p>
+                    <a href='" + baseString + @"' class='button'>Verify Email</a>
+                </div>
+            </div>
+        </body>
+    </html>";
+
+                message.Body = htmlBody;
+                message.IsBodyHtml = true;
 
                 SmtpMailClient.Send(message);
 
@@ -48,6 +93,8 @@ namespace EmailClient
             {
                 return new BadRequestObjectResult(ex);
             }
+
+
 
         }
     }

@@ -91,7 +91,7 @@ public class DeliverySimulationService : BackgroundService
 
                     Console.WriteLine("Waiting for messages. To exit, press Ctrl+C");
 
-                    await Task.Delay(Timeout.Infinite, stoppingToken); // Keep the method running
+                    await Task.Delay(Timeout.Infinite, stoppingToken);
                 }
             }
             catch (Exception ex)

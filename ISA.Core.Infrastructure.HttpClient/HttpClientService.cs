@@ -2,13 +2,10 @@
 using ISA.Core.Infrastructure.HttpClients.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using ceTe.DynamicPDF;
 using System.Text;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using ISA.Core.Domain.Entities.Reservation;
-using Nest;
-using System.Xml.Linq;
 
 
 namespace ISA.Core.Infrastructure.HttpClients;
@@ -65,11 +62,15 @@ public class HttpClientService : IHttpClientService
         try
         {
             var response = await _emailHttpClient.PostAsync("Function1", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ArgumentException("Registration failed with status code: " + response.StatusCode);
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-        }       
+            throw new ArgumentException("Registration failed");
+        }
     }
 
     public async Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string name, string id, string time)
@@ -129,8 +130,6 @@ public class HttpClientService : IHttpClientService
             Console.WriteLine(ex.Message);
         }
     }
-
-    
 
     public async Task<Coordinate> GetCoordinatesFromAddress(string street, string city, string country, string number)
     {
