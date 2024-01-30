@@ -8,6 +8,7 @@ using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
 using NetTopologySuite.Geometries;
+using PolylineEncoder.Net.Models;
 
 public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanyService { 
     
@@ -80,13 +81,20 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
     }
 
 
-    public async Task<Coordinate> GetComapnyCoordinate(Guid companyId)
+    public async Task<GeoCoordinate> GetComapnyCoordinate(Guid companyId)
     {
         var comapny = await _companyRepository.GetByIdAsync(companyId) ?? throw new KeyNotFoundException(); 
-        return await _httpClientService.GetCoordinatesFromAddress(comapny.Address.Street,
+        var coordinate = await _httpClientService.GetCoordinatesFromAddress(comapny.Address.Street,
                                                            comapny.Address.City,
                                                            comapny.Address.Country,
                                                            comapny.Address.Number.ToString());
+
+        var geoCoordinate = new GeoCoordinate();
+        geoCoordinate.Latitude = coordinate.Y;   
+        geoCoordinate.Longitude = coordinate.X; 
+
+
+        return geoCoordinate;
     }
 
 
