@@ -12,9 +12,9 @@ public interface IHttpClientService
     Task CreateDelivery(Point companyCoordinate, Guid companyId);
   
     Task<Coordinate> GetCoordinatesFromAddress(string street,string city, string country, string number);
-  
+
     //public Task SendReservationConfirmation(string email, string message, Document document);
-  
+    Task SendTempPassword(string email, string name, string password);
     public Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string name, string id, string time);
 
     public Task SendPickUpConfirmation(string email, string message, string Name, string time, string companyName);

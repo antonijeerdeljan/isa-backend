@@ -21,8 +21,8 @@ public class UsersController : ControllerBase
     private readonly IHttpContextAccessor _contextAccessor;
     public UsersController(UserService userService, IHttpContextAccessor contextAccessor)
     {
-        _userService= userService;
-        _contextAccessor= contextAccessor;
+        _userService = userService;
+        _contextAccessor = contextAccessor;
     }
 
     [HttpPost("Register")]
@@ -42,15 +42,15 @@ public class UsersController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel)
     {
-        
+
         var authToken = await _userService.LoginAsync(loginRequestModel.Email, loginRequestModel.Password);
-        
+
         var cookieOptions = new CookieOptions
         {
             Path = "/",
             HttpOnly = true,
-            IsEssential = true, 
-            Expires = authToken.RefreshToken.ExpirationDate 
+            IsEssential = true,
+            Expires = authToken.RefreshToken.ExpirationDate
         };
 
         Response.Cookies.Append("RefreshToken", authToken.RefreshToken.Id.ToString(), cookieOptions);
@@ -85,9 +85,20 @@ public class UsersController : ControllerBase
     [Authorize(Policy = "allowAllPolicy")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel changePassword)
     {
-        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value); 
-        await _userService.ChangePassword(id,changePassword.currentPassword,changePassword.newPassword);
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        await _userService.ChangePassword(id, changePassword.currentPassword, changePassword.newPassword);
 
+        return Ok();
+    }
+
+
+    [HttpPost("InitialPasswordChange")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "allowAllPolicy")]
+    public async Task<IActionResult> ChangePasswordFirstTime([FromBody] InitialPasswordChangeModel changePassword)
+    {
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        await _userService.ChangePasswordFirstTime(changePassword.email, changePassword.oldPassword, changePassword.newPassword);
         return Ok();
     }
 
@@ -96,7 +107,9 @@ public class UsersController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = "adminsPolicy")]
     public async Task RegisterCompanyAdmin([FromBody] CorpAdminRegistrationDto corpAdmin)
-=> await _userService.AddNewCorpAdmin(corpAdmin);
+    {
+        await _userService.AddNewCorpAdmin(corpAdmin);
+    }
 
 
     [HttpGet("CompanyAdmins")]

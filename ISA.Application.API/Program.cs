@@ -83,7 +83,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<GlobalExceptionMiddleware>(true);
+app.UseMiddleware<GlobalExceptionMiddleware>(false);
 
 app.MapHub<SignalRHub>("delivery");
 

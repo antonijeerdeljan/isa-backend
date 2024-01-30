@@ -6,6 +6,7 @@ using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Dtos.Customer;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
+using ISA.Core.Domain.UseCases.PasswordGenerators;
 using MassTransit.Initializers;
 
 namespace ISA.Core.Domain.UseCases.User;
@@ -20,9 +21,10 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly ICompanyService _companyService;
     private readonly IMapper _mapper;
+    private readonly IHttpClientService _httpClientService;
 
 
-    public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository, IMapper mapper) : base(mapper)
+    public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository, IMapper mapper, IHttpClientService httpClientService) : base(mapper)
     {
         _identityService = identityServices;
         _userRepository = userRepository;
@@ -32,6 +34,7 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
         _companyAdminRepository = companyAdminRepository;
         _reservationRepository = reservationRepository;
         _mapper = mapper; 
+        _httpClientService = httpClientService;
     }
 
     public async Task VerifyEmail(string email, string token)
@@ -62,6 +65,10 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
 
         try
         {
+            if(userRole == "Corpadmin" || userRole == "Sysadmin")
+            {
+                password = RandomStringGenerator.GenerateRandomString(10);
+            }
             await _identityService.RegisterUserAsync(newUserId, email, password, userRole);
             await _userRepository.AddAsync(newUser);
 
@@ -69,6 +76,11 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
             {
                 Entities.User.Customer customer = new(newUserId,profession, companyInfo,newUser);
                 await _customerRepository.AddAsync(customer);
+            }
+
+            if (userRole == "Corpadmin" || userRole == "Sysadmin")
+            {
+                await _httpClientService.SendTempPassword(email, firstName, password);
             }
 
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
@@ -178,9 +190,11 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
 
         try
         {
-            await _identityService.RegisterUserAsync(newUserId, corpAdmin.Email, corpAdmin.Password, "Corpadmin");
+            var password = RandomStringGenerator.GenerateRandomString(10);
+            await _identityService.RegisterUserAsync(newUserId, corpAdmin.Email, password, "Corpadmin");
             await _userRepository.AddAsync(newUser);
             await _companyAdminRepository.AddAsync(newCompanyAdmin);
+            await _httpClientService.SendTempPassword(corpAdmin.Email, corpAdmin.Firstname, password);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
         catch (Exception ex)
@@ -229,8 +243,17 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
 
     public async Task ChangePassword(Guid userId, string currentPassword, string newPassword)
     {
+        await _isaUnitOfWork.StartTransactionAsync();
         var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException();
         await _identityService.ChangePasswordAsync(user.Email, currentPassword, newPassword);
+        await _isaUnitOfWork.SaveAndCommitChangesAsync();
+    }
+
+    public async Task ChangePasswordFirstTime(string email, string currentPassword, string newPassword)
+    {
+        await _isaUnitOfWork.StartTransactionAsync();
+        await _identityService.ChangePasswordAsync(email, currentPassword, newPassword);
+        await _isaUnitOfWork.SaveAndCommitChangesAsync();
     }
 
     public async Task<int> GetUserPoints(Guid userId)
