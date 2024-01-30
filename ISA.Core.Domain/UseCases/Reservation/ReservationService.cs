@@ -186,7 +186,7 @@ public class ReservationService
     public async Task<IEnumerable<ReservationDto>> GetAllCompanyReservations(Guid adminId)
     {
         var admin = await _companyAdminRepository.GetByIdAsync(adminId);
-        var reservations = await _reservationRepository.GetAllCompanyReservations(admin.Company.Id);
+        var reservations = await _reservationRepository.GetAllCompanyReservations(admin.CompanyId);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
     }
@@ -230,7 +230,7 @@ public class ReservationService
         {
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
             var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId);
-            if (appointment.Company.Id == companyAdmin.Company.Id) return true;
+            if (appointment.Company.Id == companyAdmin.CompanyId) return true;
         }
         return false;
         

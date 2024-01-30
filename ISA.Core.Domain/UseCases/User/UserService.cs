@@ -174,7 +174,7 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
         Address address = new(corpAdmin.Country, corpAdmin.City);
         var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
         Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
-        CompanyAdmin newCompanyAdmin = new(newUserId, company);
+        CompanyAdmin newCompanyAdmin = new(newUserId, company.Id);
 
         try
         {
@@ -197,13 +197,13 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid adminId, int page)
     {
         var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
-        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.Company.Id, page);
+        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.CompanyId, page);
     }
 
     public async Task<IEnumerable<CustomerProfileDto>> GetAllCompanyCustomers(Guid adminId)
     {
         var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
-        var reservations = await _reservationRepository.GetAllCompanyCustomers(compAdmin.Company.Id);
+        var reservations = await _reservationRepository.GetAllCompanyCustomers(compAdmin.CompanyId);
         List<Customer> customers = reservations.Select(obj => obj.Customer).ToList();
         //var customers =  _customerRepository.GetAllCompanyCustomers(idList);
         var customerProfiles = customers.Select(customer => _mapper.Map<CustomerProfileDto>(customer));

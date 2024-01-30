@@ -18,14 +18,16 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly ICompanyAdminRepository _companyAdminRepository;
     private readonly IReservationRepository _reservationRepository;
+    private readonly ICompanyRepository _companyRepository;
     private readonly IMapper _mapper;
 
-    public EquipmentService(IEquipmentRepository equipmentRepository,ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository ,IISAUnitOfWork isaUnitOfWork, IMapper mapper)  : base(mapper)
+    public EquipmentService(IEquipmentRepository equipmentRepository,ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository, ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper)  : base(mapper)
 
     {
         _equipmentRepository = equipmentRepository;
         _companyAdminRepository = companyAdminRepository;
         _reservationRepository = reservationRepository;
+        _companyRepository = companyRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
     }
@@ -34,8 +36,9 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     {
         
         var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        Equipment equipment = new(equipmentName,quantity,companyAdmin.Company);
-        if (companyAdmin.Company is not null)
+        var company = await _companyRepository.GetByIdAsync(companyAdmin.CompanyId);
+        Equipment equipment = new(equipmentName,quantity, company.Id);
+        if (company is not null)
         {
             await _isaUnitOfWork.StartTransactionAsync();
             try
@@ -117,7 +120,8 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     public async Task UpdateAsync(Guid id, string name, int quantity, Guid userId)
     {
         var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        Equipment newEquipment = new Equipment(id, name, quantity, companyAdmin.Company);
+        var company = await _companyRepository.GetByIdAsync(companyAdmin.CompanyId);
+        Equipment newEquipment = new Equipment(id, name, quantity, company.Id);
         _equipmentRepository.UpdateAndSaveChanges(newEquipment);
     }
 

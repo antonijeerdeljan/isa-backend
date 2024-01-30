@@ -33,17 +33,17 @@ public class AppointmentService
     public async Task AddAsync(AppointmentRequestModel appointment, Guid userId)
     {
         var compAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, compAdmin.Company.Id) is false)
+        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, compAdmin.CompanyId) is false)
         {
             throw new ArgumentException();
         }
-        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, compAdmin.Company.Id) is false)
+        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, compAdmin.CompanyId) is false)
         {
             throw new ArgumentException();
         }
         {
             await _isaUnitOfWork.StartTransactionAsync();
-            var company = await _companyService.GetCompanyAsync(compAdmin.Company.Id);
+            var company = await _companyService.GetCompanyAsync(compAdmin.CompanyId);
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
             var appointments =  await _appointmentRepository.GetAllAdminAppointments(userId);
 
@@ -127,7 +127,7 @@ public class AppointmentService
     public async Task<IEnumerable<AppointmentDto>> GetAllCompanyAppointments(int page, Guid adminId)
     {
         var admin = await _companyAdminRepository.GetByIdAsync(adminId);
-        var appointments = _appointmentRepository.GetAllCompanyAppointments(page, admin.Company.Id);
+        var appointments = _appointmentRepository.GetAllCompanyAppointments(page, admin.CompanyId);
         return appointments.Result.Select(appointment => _mapper.Map<AppointmentDto>(appointment));
     }
 
