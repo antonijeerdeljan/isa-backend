@@ -40,13 +40,12 @@
         }
 
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("PossibleCompanyAppointments")]
-        //[Authorize(Policy = "customerPolicy")]
-        public async Task<IEnumerable<AppointmentRequestModel>> GetPossibleAppointments(Guid companyId)
+        [Authorize(Policy = "customerPolicy")]
+        public async Task<IEnumerable<AppointmentRequestModel>> GetPossibleAppointments(Guid companyId, string date)
         {
-            DateOnly.TryParse("31.01.2024", out DateOnly result);
-            return await _appointmentService.GetPossibleAppointments(result, companyId);
+            return await _appointmentService.GetPossibleAppointments(date, companyId);
         }
 
 

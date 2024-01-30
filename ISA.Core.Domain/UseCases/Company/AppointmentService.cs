@@ -136,9 +136,11 @@ public class AppointmentService
         return await _appointmentRepository.GetAllCompanyAppointmentsForDate(page, companyId, date);
     }
 
-    public async Task<IEnumerable<AppointmentRequestModel>> GetPossibleAppointments(DateOnly date, Guid companyId)
+    public async Task<IEnumerable<AppointmentRequestModel>> GetPossibleAppointments(string dateString, Guid companyId)
     {
-       
+        if (DateOnly.TryParse(dateString, out DateOnly date) is false) throw new Exception();
+
+
         try
         {
             if (IsWorkingDay(date) is false) throw new Exception();
