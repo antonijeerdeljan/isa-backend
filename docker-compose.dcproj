@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>a71ef7f4-c0f5-4d36-8d43-adcc17ffa557</ProjectGuid>
+    <ProjectGuid>38e1db1b-4a9a-4bbf-b0cb-b4c356f7cc93</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>isa.application.api</DockerServiceName>
