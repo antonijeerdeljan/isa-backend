@@ -45,7 +45,7 @@ public class AppointmentService
             await _isaUnitOfWork.StartTransactionAsync();
             var company = await _companyService.GetCompanyAsync(compAdmin.CompanyId);
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
-            var appointments =  await _appointmentRepository.GetAllAdminAppointments(userId);
+            var appointments =  await _appointmentRepository.GetAllAdminAppointments(appointment.AdminId);
 
             if (await CheckAdminAvailability(appointments, appointment) is false) throw new ArgumentException();
             
@@ -247,7 +247,7 @@ public class AppointmentService
 
     public async Task<bool> CheckAdminAvailability(IEnumerable<Appointment> appointments, AppointmentRequestModel appointment)
     {
-        var adminAppointments = appointments.ToList();
+        var adminAppointments = appointments.OrderBy(a => a.StartingDateTime).ToList();
 
         // Check if the administrator has any appointments
         if (adminAppointments.Count == 0)
