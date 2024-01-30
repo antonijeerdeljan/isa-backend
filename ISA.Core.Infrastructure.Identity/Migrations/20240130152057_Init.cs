@@ -167,9 +167,9 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "24404f38-ce49-4ccb-82f6-2b8150250e4b", "ApplicationRole", "Corpadmin", "CORPADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "2d009bd6-e963-4a45-a0f1-4be287b789a8", "ApplicationRole", "Sysadmin", "SYSADMIN" },
-                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "143b860f-df38-4781-a2e6-29a072daa69e", "ApplicationRole", "Customer", "CUSTOMER" }
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"), "2dbadc0e-ea7f-40e8-a5ab-ccfa2334aa2a", "ApplicationRole", "Corpadmin", "CORPADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"), "37ffe2e3-20eb-4b17-9961-ca68383983d8", "ApplicationRole", "Sysadmin", "SYSADMIN" },
+                    { new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"), "4110cb6f-12dd-4e16-b1d4-ba92c9c6d781", "ApplicationRole", "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

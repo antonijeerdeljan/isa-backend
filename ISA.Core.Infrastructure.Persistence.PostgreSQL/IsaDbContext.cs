@@ -23,6 +23,7 @@ public class IsaDbContext : DbContext
     public DbSet<CompanyAdmin> CompanyAdmins { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Contract> Contracts { get; set; }
+    public DbSet<Grade> Grades { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 

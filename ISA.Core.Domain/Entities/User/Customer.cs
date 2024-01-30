@@ -1,5 +1,6 @@
 ﻿namespace ISA.Core.Domain.Entities.User;
 
+using ISA.Core.Domain.Entities.Company;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +15,8 @@ public class Customer
     public int? Points { get; set; } = 0;
     [ForeignKey(nameof(UserId))]
     public User User { get; set; }
+
+    public List<Grade>? Grades {  get; set; }
 
     public Customer()
     {

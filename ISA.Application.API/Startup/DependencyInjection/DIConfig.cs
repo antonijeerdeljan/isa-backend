@@ -32,6 +32,7 @@ public static class DIConfig
         services.AddTransient<ILoyaltyProgramRepository, LoyaltyProgramRepository>();
         services.AddTransient<ILoyaltyProgramService, LoyaltyProgramService>();
         services.AddTransient<ICompanyService, CompanyService>();
+        services.AddTransient<IGradeService, GradeService>();
         services.AddTransient<ICompanyAdminRepository, CompanyAdminRepository>();
         services.AddTransient<IAppointmentRepository, AppointmentRepository>();
         services.AddTransient<ICompanyService, CompanyService>();
@@ -39,6 +40,7 @@ public static class DIConfig
         services.AddTransient<IReservationRepository, ReservationRepository>();
         services.AddTransient<IReservationEquipmentRepository, ReservationEquipmentRepository>();
         services.AddTransient<IContractRepository, ContractRepository>();
+        services.AddTransient<IGradeRepository, GradeRepository>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
@@ -46,6 +48,7 @@ public static class DIConfig
         services.AddTransient<DeliveryService>();
         services.AddTransient<ReservationService>();
         services.AddTransient<ContractService>();
+        services.AddTransient<GradeService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

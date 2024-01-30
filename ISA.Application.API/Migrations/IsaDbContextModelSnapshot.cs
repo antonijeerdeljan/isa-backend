@@ -111,6 +111,38 @@ namespace ISA.Application.API.Migrations
                     b.ToTable("Equipments");
                 });
 
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Grade", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CustomerUserId");
+
+                    b.ToTable("Grades");
+                });
+
             modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
                 {
                     b.Property<Guid>("Id")
@@ -356,11 +388,24 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Equipment", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
                         .WithMany("Equipment")
                         .HasForeignKey("CompanyId");
+                });
 
-                    b.Navigation("Company");
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Grade", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
+                        .WithMany("Grades")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ISA.Core.Domain.Entities.User.Customer", null)
+                        .WithMany("Grades")
+                        .HasForeignKey("CustomerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
@@ -433,7 +478,7 @@ namespace ISA.Application.API.Migrations
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.User.CompanyAdmin", b =>
                 {
-                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", "Company")
+                    b.HasOne("ISA.Core.Domain.Entities.Company.Company", null)
                         .WithMany("Admins")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,8 +489,6 @@ namespace ISA.Application.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
 
                     b.Navigation("User");
                 });
@@ -485,6 +528,8 @@ namespace ISA.Application.API.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Equipment");
+
+                    b.Navigation("Grades");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
@@ -495,6 +540,11 @@ namespace ISA.Application.API.Migrations
             modelBuilder.Entity("ISA.Core.Domain.Entities.Reservation.Reservation", b =>
                 {
                     b.Navigation("Equipments");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.User.Customer", b =>
+                {
+                    b.Navigation("Grades");
                 });
 #pragma warning restore 612, 618
         }

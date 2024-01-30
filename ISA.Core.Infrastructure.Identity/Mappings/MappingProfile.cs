@@ -21,6 +21,7 @@
             CreateMap<Reservation, ReservationDto>().ReverseMap();
             CreateMap<Customer, CustomerProfileDto>().ReverseMap();
             CreateMap<User, UserProfileDto>().ReverseMap();
+            CreateMap<Grade, GradeDto>().ReverseMap();
             CreateMap<ReservationEquipment, EquipmentDto>().ForMember(d => d.Name, opt => opt.MapFrom(s => s.Equipment.Name)).ReverseMap();
             
         }
