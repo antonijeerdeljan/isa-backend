@@ -31,5 +31,10 @@
         {
             return await _dbSet.GetPaged(page).Where(a => a.Company.Id == companyId).ToListAsync();
         }
+
+        public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date)
+        {
+            return await _dbSet.GetPaged(page).Where(a => a.Company.Id == companyId && a.StartingDateTime.Date.DayOfYear == date.DayOfYear).ToListAsync();
+        }
     }
 }
