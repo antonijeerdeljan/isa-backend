@@ -74,7 +74,7 @@ public class CompanyController : ControllerBase
         return await _companyService.GetAllCompanies(page);
     }
 
-    [HttpGet("getCompnayLocation")]
+    [HttpGet("getCompanyLocation/{companyId}")]
     public async Task<GeoCoordinate> GetCompanyCoordinate(Guid companyId)
     {
         return await _companyService.GetComapnyCoordinate(companyId);
