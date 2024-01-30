@@ -33,7 +33,7 @@ public class ContractService
         await _unitOfWork.StartTransactionAsync();
 		var companyAdmin = await _userService.GetCompanyAdmin(userId);
 
-		if(await _contractRepository.CompanyAlreadyHaveContract(companyAdmin.Company.Id) is true)
+		if(await _contractRepository.CompanyAlreadyHaveContract(companyAdmin.CompanyId) is true)
 		{
             await DeleteOldContract(companyAdmin);
         }
@@ -59,13 +59,13 @@ public class ContractService
         contract.DeliveryDate = deliveryDate;
         contract.CreatedAt = DateTime.Now.ToUniversalTime();
         contract.Equipments = contractEquipment;
-        contract.Company = companyAdmin.Company;
+        contract.Company = await _companyService.GetCompanyAsync(companyAdmin.CompanyId);
 
         await _contractRepository.AddAsync(contract);
     }
     private async Task DeleteOldContract(CompanyAdmin companyAdmin)
     {
-        var contract = await _contractRepository.GetContractByCompanyAsync(companyAdmin.Company.Id);
+        var contract = await _contractRepository.GetContractByCompanyAsync(companyAdmin.CompanyId);
         foreach (var equipmentItem in contract.Equipments)
         {
             await _equipmentService.DeleteEquipment(equipmentItem.EquipmentId);
@@ -97,7 +97,7 @@ public class ContractService
         foreach(var equipment in contract.Equipments)
         {
             var waitingEquipment = await _equipmentService.GetById(equipment.EquipmentId);
-            waitingEquipment.Company = await _companyService.GetCompanyAsync(companyId);
+            waitingEquipment.CompanyId = companyId;
             await _equipmentService.UpdateAsync(waitingEquipment);
         }
     }

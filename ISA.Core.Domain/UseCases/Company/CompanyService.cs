@@ -95,6 +95,7 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         CompanyProfileDto companyDto = new CompanyProfileDto();
         var company = await _companyRepository.GetByIdAsync(id) ?? throw new ArgumentException();
         company.Equipment.RemoveAll(e => e.Quantity <= 0);
+        //company.Appointments.RemoveAll(a => a.StartingDateTime <= DateTime.Now);
         return _mapper.Map(company, companyDto);
 
     }

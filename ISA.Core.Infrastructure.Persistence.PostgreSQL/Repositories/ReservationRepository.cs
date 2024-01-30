@@ -4,6 +4,7 @@ using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL.Repositories;
@@ -40,8 +41,24 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
     public async Task<List<Reservation>> GetAllCompanyReservations(Guid companyId)
     {
         return await _dbSet.Include(r => r.Appointment)
-                            .Include(r => r.Equipments)
+                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
                             .Where(r => r.Appointment.Company.Id == companyId)
+                            .ToListAsync();
+    }
+
+    public async Task<List<Reservation>> GetAllCustomerReservations(Guid userId)
+    {
+        return await _dbSet.Include(r => r.Appointment)
+                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
+                            .Where(r => r.Customer.UserId == userId)
+                            .ToListAsync();
+    }
+
+    public async Task<List<Reservation>> GetAllScheduledCustomerReservations(Guid userId)
+    {
+        return await _dbSet.Include(r => r.Appointment)
+                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
+                            .Where(r => r.Customer.UserId == userId && r.State == ReservationState.Pending)
                             .ToListAsync();
     }
 
@@ -54,8 +71,16 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
                            .FirstOrDefaultAsync();
     }
 
+    public async Task<List<Reservation>> GetHistoryOfCustomerReservations(Guid customerId)
+    {
+        return await _dbSet.Include(r => r.Appointment).Where(a => a.State != ReservationState.Pending)
+                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
+                            .Where(r => r.Customer.UserId == customerId)
+                            .ToListAsync();
+    }
 
-
-
-
+    public async Task<IEnumerable<Reservation>> GetAllCompanyCustomers(Guid companyId)
+    {
+        return await _dbSet.Where(a => a.Appointment.Company.Id == companyId).Include(a => a.Customer).ThenInclude(c => c.User).ThenInclude(u => u.Address).ToListAsync();
+    }
 }

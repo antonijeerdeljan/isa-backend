@@ -10,4 +10,6 @@ public interface ICustomerRepository
     public Task SaveAsync();
     Task RemovePenaltyPoints();
     public void Update(Customer customer);
+
+    Task<IEnumerable<Customer>> GetAllCompanyCustomers(List<Guid> usersId);
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ISA.Application.API.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -235,6 +235,34 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Grades",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Rate = table.Column<int>(type: "integer", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Grades", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Grades_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Grades_Customers_CustomerUserId",
+                        column: x => x.CustomerUserId,
+                        principalTable: "Customers",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reservations",
                 columns: table => new
                 {
@@ -325,6 +353,16 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Grades_CompanyId",
+                table: "Grades",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Grades_CustomerUserId",
+                table: "Grades",
+                column: "CustomerUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ReservationEquipment_EquipmentId",
                 table: "ReservationEquipment",
                 column: "EquipmentId");
@@ -345,6 +383,9 @@ namespace ISA.Application.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ContractEquipment");
+
+            migrationBuilder.DropTable(
+                name: "Grades");
 
             migrationBuilder.DropTable(
                 name: "ReservationEquipment");

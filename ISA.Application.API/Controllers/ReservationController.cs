@@ -60,6 +60,35 @@
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("CustomerReservations")]
+        [Authorize(Policy = "customerPolicy")]
+        public async Task<IEnumerable<ReservationDto>> GetAllCustomerReservations()
+        {
+            Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _reservationService.GetAllCustomerReservations(adminId);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("CustomerHistoryOfReservations/{customerId}")]
+        [Authorize(Policy = "corpAdminPolicy")]
+        public async Task<IEnumerable<ReservationDto>> GetAllCustomerReservations([FromRoute] Guid customerId)
+        {
+            Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _reservationService.GetHistoryOfCustomerReservations(adminId, customerId);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("CustomerScheduledReservations")]
+        [Authorize(Policy = "customerPolicy")]
+        public async Task<IEnumerable<ReservationDto>> GetAllScheduledCustomerReservations()
+        {
+            Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _reservationService.GetAllScheduledCustomerReservations(adminId);
+        }
+
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("PickedUp/{reservationId}")]
         [Authorize(Policy = "corpAdminPolicy")]
         public async Task ReservationPickedUp([FromRoute] Guid reservationId)
@@ -70,8 +99,7 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{reservationId}")]
-        //[Authorize(Policy = "corpAdminPolicy")]
-        //[Authorize(Policy = "customerPolicy")]
+        [Authorize(Policy = "CorpAdminAndCustomerPolicy")]
         public async Task<ReservationDto> GetReservation([FromRoute] Guid reservationId)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);

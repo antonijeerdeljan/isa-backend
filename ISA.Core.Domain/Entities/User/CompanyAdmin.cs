@@ -11,15 +11,17 @@ public class CompanyAdmin
 
     [ForeignKey(nameof(UserId))]
     public User User { get; set; }
-    public Company.Company Company { get; set; }
+
+    [Required]
+    public Guid CompanyId { get; set; }
 
     public CompanyAdmin()
     {
     }
 
-    public CompanyAdmin(Guid userId, Company.Company company)
+    public CompanyAdmin(Guid userId, Guid companyId)
     {
         UserId = userId;
-        Company = company;
+        CompanyId = companyId;
     }
 }

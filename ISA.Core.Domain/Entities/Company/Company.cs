@@ -14,6 +14,8 @@
         public List<CompanyAdmin>? Admins { get; set; }
         public List<Equipment>? Equipment { get; set; }
 
+        public List<Grade>? Grades {  get; set; }
+
 
 
         public Company() {}

@@ -16,16 +16,16 @@ public class CompanyAdminRepository : GenericRepository<CompanyAdmin, Guid>, ICo
 
     new public async Task<CompanyAdmin?> GetByIdAsync(Guid Id)
     {
-        return await _dbSet.Where(t => t.UserId == Id).Include(t => t.Company).FirstOrDefaultAsync(); ;
+        return await _dbSet.Where(t => t.UserId == Id).FirstOrDefaultAsync(); 
     }
 
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
     {
-        return await _dbSet.GetPaged(page).Where(c => c.Company.Id == id).Include(c => c.User).Include(c => c.User.Address).ToListAsync(); 
+        return await _dbSet.GetPaged(page).Where(c => c.CompanyId == id).Include(c => c.User).Include(c => c.User.Address).ToListAsync(); 
     }
     public async Task<bool> CheckIfAdmin(Guid companyId, Guid userId)
     {
-        return await _dbSet.AnyAsync(c => c.UserId == userId && c.Company.Id == companyId);
+        return await _dbSet.AnyAsync(c => c.UserId == userId && c.CompanyId == companyId);
     }
 
 }

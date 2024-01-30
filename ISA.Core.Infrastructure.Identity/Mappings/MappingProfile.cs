@@ -3,6 +3,7 @@
     using AutoMapper;
     using ISA.Core.Domain.Dtos;
     using ISA.Core.Domain.Dtos.Company;
+    using ISA.Core.Domain.Dtos.Customer;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.Reservation;
     using ISA.Core.Domain.Entities.User;
@@ -18,6 +19,9 @@
             CreateMap<Equipment, EquipmentDto>().ReverseMap();
             CreateMap<Appointment, AppointmentDto>().ReverseMap();
             CreateMap<Reservation, ReservationDto>().ReverseMap();
+            CreateMap<Customer, CustomerProfileDto>().ReverseMap();
+            CreateMap<User, UserProfileDto>().ReverseMap();
+            CreateMap<Grade, GradeDto>().ReverseMap();
             CreateMap<ReservationEquipment, EquipmentDto>().ForMember(d => d.Name, opt => opt.MapFrom(s => s.Equipment.Name)).ReverseMap();
             
         }

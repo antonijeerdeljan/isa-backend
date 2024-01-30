@@ -1,29 +1,37 @@
-﻿using ISA.Core.Domain.Contracts.Repositories;
+﻿using AutoMapper;
+using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
+using ISA.Core.Domain.Dtos.Company;
+using ISA.Core.Domain.Dtos.Customer;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
+using MassTransit.Initializers;
 
 namespace ISA.Core.Domain.UseCases.User;
 
-public class UserService
+public class UserService : BaseService<UserProfileDto, Entities.User.User>
 {
     private readonly IIdentityServices _identityService;
     private readonly IUserRepository _userRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly ICompanyAdminRepository _companyAdminRepository;
+    private readonly IReservationRepository _reservationRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly ICompanyService _companyService;
+    private readonly IMapper _mapper;
 
 
-	public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, ICompanyAdminRepository companyAdminRepository)
-	{
+    public UserService(IIdentityServices identityServices, IUserRepository userRepository,ICustomerRepository customerRepository, ICompanyService companyService, IISAUnitOfWork isaUnitOfWork, ICompanyAdminRepository companyAdminRepository, IReservationRepository reservationRepository, IMapper mapper) : base(mapper)
+    {
         _identityService = identityServices;
         _userRepository = userRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _customerRepository = customerRepository;
         _companyService = companyService;
         _companyAdminRepository = companyAdminRepository;
+        _reservationRepository = reservationRepository;
+        _mapper = mapper; 
     }
 
     public async Task VerifyEmail(string email, string token)
@@ -166,7 +174,7 @@ public class UserService
         Address address = new(corpAdmin.Country, corpAdmin.City);
         var company = await _companyService.GetCompanyAsync(corpAdmin.CompanyId);
         Entities.User.User newUser = new(newUserId, corpAdmin.Firstname, corpAdmin.Lastname, address, corpAdmin.Email, corpAdmin.PhoneNumber,corpAdmin.DateOfBirth);
-        CompanyAdmin newCompanyAdmin = new(newUserId, company);
+        CompanyAdmin newCompanyAdmin = new(newUserId, company.Id);
 
         try
         {
@@ -186,9 +194,20 @@ public class UserService
         return await _companyAdminRepository.CheckIfAdmin(companyId, userId);
     }
 
-    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
+    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid adminId, int page)
     {
-        return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
+        var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
+        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.CompanyId, page);
+    }
+
+    public async Task<IEnumerable<CustomerProfileDto>> GetAllCompanyCustomers(Guid adminId)
+    {
+        var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
+        var reservations = await _reservationRepository.GetAllCompanyCustomers(compAdmin.CompanyId);
+        List<Customer> customers = reservations.Select(obj => obj.Customer).ToList();
+        //var customers =  _customerRepository.GetAllCompanyCustomers(idList);
+        var customerProfiles = customers.Select(customer => _mapper.Map<CustomerProfileDto>(customer));
+        return (IEnumerable<CustomerProfileDto>)customerProfiles;
     }
 
     public async Task GivePenaltyPoints(Guid id,int points)
