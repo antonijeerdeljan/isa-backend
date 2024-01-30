@@ -30,7 +30,7 @@
 
         public async Task<IEnumerable<Appointment>> GetAllCompanyAppointments(int page, Guid companyId)
         {
-            return await _dbSet.GetPaged(page).Where(a => a.Company.Id == companyId).ToListAsync();
+            return await _dbSet.GetPaged(page).Where(a => a.Company.Id == companyId).Where(a => a.EndingDateTime >= DateTime.UtcNow).ToListAsync();
         }
 
         public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date)
@@ -42,5 +42,6 @@
         {
             return await _dbSet.Where(a => a.CompanyAdmin.UserId == adminId).ToListAsync();
         }
+
     }
 }

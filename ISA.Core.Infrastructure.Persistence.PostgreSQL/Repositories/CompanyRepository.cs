@@ -34,7 +34,7 @@
 
         public async Task<IEnumerable<Company>> GetAllCompanies(int page)
         {
-            return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment.Where(e => !e.IsDeleted)).Include(c => c.Appointments).ToListAsync();
+            return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment.Where(e => !e.IsDeleted)).Include(c => c.Appointments.Where(a => a.StartingDateTime >= DateTime.UtcNow)).ToListAsync();
         }
 
         public async Task<List<Guid>> GetAdmins(Guid companyId)

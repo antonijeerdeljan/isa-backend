@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Dtos;
+using ISA.Core.Domain.Dtos.Customer;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.User;
@@ -92,6 +93,15 @@ public class UsersController : ControllerBase
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _userService.GetAllCompanyAdmins(adminId, page);
+    }
+
+    [HttpGet("CompanyCustomersProfile")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "corpAdminPolicy")]
+    public async Task<IEnumerable<CustomerProfileDto>> GettAllCompanyCustomers()
+    {
+        Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        return await _userService.GetAllCompanyCustomers(adminId);
     }
 
 

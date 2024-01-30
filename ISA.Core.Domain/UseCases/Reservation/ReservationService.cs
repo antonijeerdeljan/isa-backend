@@ -191,12 +191,49 @@ public class ReservationService
         return reservationDtos;
     }
 
+    public async Task<IEnumerable<ReservationDto>> GetAllCustomerReservations(Guid userId)
+    {
+        var reservations = await _reservationRepository.GetAllCustomerReservations(userId);
+        var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
+        return reservationDtos;
+    }
+
+    public async Task<IEnumerable<ReservationDto>> GetHistoryOfCustomerReservations(Guid adminId, Guid customerId)
+    {
+        if (await CheckIfHavePolicy(adminId, customerId) is false) throw new KeyNotFoundException();
+        var reservations = await _reservationRepository.GetHistoryOfCustomerReservations(customerId);
+        var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
+        return reservationDtos;
+        
+        
+    }
+
+    public async Task<IEnumerable<ReservationDto>> GetAllScheduledCustomerReservations(Guid userId)
+    {
+        var reservations = await _reservationRepository.GetAllScheduledCustomerReservations(userId);
+        var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
+        return reservationDtos;
+    }
+
     public async Task<ReservationDto> GetReservation(Guid reservationId, Guid userId)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
         if ((reservation.Customer.UserId != userId && reservation.Appointment.CompanyAdmin.UserId != userId) is true) throw new KeyNotFoundException("Nemate pravo pristupa rezervaciji");
         return _mapper.Map<ReservationDto>(reservation);
 
+    }
+
+    public async Task<bool> CheckIfHavePolicy(Guid adminId, Guid customerId)
+    {
+        var reservations = await _reservationRepository.GetAllCustomerReservations(customerId);
+        foreach (var reservation in reservations)
+        {
+            var companyAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
+            var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId);
+            if (appointment.Company.Id == companyAdmin.Company.Id) return true;
+        }
+        return false;
+        
     }
 
     private bool IsAppointmentWithin24Hours(Reservation reservation)
