@@ -4,6 +4,7 @@ using ISA.Core.Domain.Exceptions.UserExceptions;
 using ISA.Core.Domain.Entities.Token;
 using FluentResults;
 using ISA.Core.Domain.Contracts.Services;
+using System.Web;
 
 namespace ISA.Core.Infrastructure.Identity.Services
 {
@@ -62,6 +63,51 @@ namespace ISA.Core.Infrastructure.Identity.Services
             return (user.RefreshToken == Guid.Parse(refreshToken)) ? true : false;
         }
 
+        public async Task ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        {
+            ApplicationUser? userToResetPassword = await FindUserByEmail(email);
+            IdentityResult resetPasswordResult = await _userManager.ChangePasswordAsync(userToResetPassword,
+                                                                                       currentPassword,
+                                                                                       newPassword);
+
+
+
+
+            if (!resetPasswordResult.Succeeded) throw new ArgumentException(resetPasswordResult.ToString());
+        }
+
+        public async Task<string> GeneratePasswordResetUrlAsync(string email, string redirectUrl)
+        {
+            ApplicationUser? userForResettingPassword = await FindUserByEmail(email);
+
+            string passwordToken = await _userManager.GeneratePasswordResetTokenAsync(userForResettingPassword);
+            string resetPasswordUrl = $"{redirectUrl}?token={HttpUtility.UrlEncode(passwordToken)}&email={email}";
+            return resetPasswordUrl;
+        }
+
+
+        public async Task ResetPasswordAsync(string email, string passwordToken, string newPassword)
+        {
+            ApplicationUser? userToResetPassword = await FindUserByEmail(email);
+            IdentityResult resetPasswordResult = await _userManager.ResetPasswordAsync(userToResetPassword,
+                                                                                       passwordToken,
+                                                                                       newPassword);
+
+            if (!resetPasswordResult.Succeeded) throw new ArgumentException(resetPasswordResult.ToString());
+        }
+
+
+
+
+        private async Task<ApplicationUser> FindUserByEmail(string email)
+        {
+            ApplicationUser? foundUser = await _userManager.FindByEmailAsync(email);
+
+            if (foundUser is null)
+                throw new ArgumentException($"User with {email} email does not exist.");
+            return foundUser;
+        }
+
         public AuthenticationTokens GenerateNewJWT(string userId, string userRole)
         {
             return _tokenGenerator.GenerateAccessToken(userId, userRole);
@@ -108,6 +154,7 @@ namespace ISA.Core.Infrastructure.Identity.Services
             var refreshToken = GenerateRefreshToken();
             userToSignIn.RefreshToken = refreshToken.Id;
             userToSignIn.RefreshTokenExpirationDate = refreshToken.ExpirationDate;
+
 
             try
             {

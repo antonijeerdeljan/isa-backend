@@ -42,7 +42,7 @@
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Cancel")]
         [Authorize(Policy = "customerPolicy")]
-        public async Task CancelReservation([FromBody] Guid reservationId)
+        public async Task CancelReservation(Guid reservationId)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
             await _reservationService.CancelReservation(userId, reservationId);

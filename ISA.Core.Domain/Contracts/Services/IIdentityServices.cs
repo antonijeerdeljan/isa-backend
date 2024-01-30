@@ -10,5 +10,6 @@ public interface IIdentityServices
     public Task<bool> VerifyRefreshToken(string id, string token);
     public Task VerifyEmail(string email, string token);
     public AuthenticationTokens GenerateNewJWT(string userId, string userRole);
+    public Task ChangePasswordAsync(string email, string passwordToken, string newPassword);
 
 }

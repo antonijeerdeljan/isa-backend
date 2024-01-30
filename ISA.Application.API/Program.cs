@@ -7,6 +7,8 @@ using ISA.Application.API.Startup.DBConfiguration;
 using ISA.Application.API.Startup.DI;
 using ISA.Core.Domain.UseCases.Delivery;
 using ISA.Core.Domain.UseCases.User;
+using ISA.Core.Infrastructure.Identity;
+using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -35,6 +37,7 @@ builder.Services.AddAuthorization();
 builder.Services.MapperConfig();
 builder.Services.AddHostedService<ReservationOverdueService>();
 builder.Services.AddHostedService<DeliverySimulationService>();
+builder.Services.AddHostedService<PenaltyPointsRemoveService>();
 builder.Services.AddSignalR();
 builder.Services.AddCorsConfig();
 
@@ -48,6 +51,12 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
     var userService = serviceProvider.GetRequiredService<UserService>();
     await userService.CheckForSystemAdmin();
+
+    var IsaDbContext = serviceProvider.GetRequiredService<IsaDbContext>();
+    var IdentityDbContext = serviceProvider.GetRequiredService<IdentityDbContext>();
+
+    IsaDbContext.Database.Migrate();
+    IdentityDbContext.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())

@@ -217,10 +217,40 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
         _customerRepository.Update(customer);
     }
 
+    public async Task RemovePenaltyPoints()
+    {
+        await _customerRepository.RemovePenaltyPoints();
+    }
+
     public async Task<CompanyAdmin> GetCompanyAdmin(Guid id)
     {
         return await _companyAdminRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
     }
+
+    public async Task ChangePassword(Guid userId, string currentPassword, string newPassword)
+    {
+        var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException();
+        await _identityService.ChangePasswordAsync(user.Email, currentPassword, newPassword);
+    }
+
+    public async Task<int> GetUserPoints(Guid userId)
+    {
+        var customer = await _customerRepository.GetByIdAsync(userId)
+                       ?? throw new KeyNotFoundException("Customer not found with given userId.");
+
+        return customer.Points ?? 0;
+    }
+
+    public async Task<int> GetUserPenaltyPoints(Guid userId)
+    {
+        var customer = await _customerRepository.GetByIdAsync(userId)
+                       ?? throw new KeyNotFoundException("Customer not found with given userId.");
+
+        return customer.PenaltyPoints ?? 0;
+    }
+
+
+
 
 
 }

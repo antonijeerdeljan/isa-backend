@@ -24,4 +24,9 @@ public class CustomerRepository : GenericRepository<Customer, Guid>, ICustomerRe
         return await _dbSet.Where(t => t.UserId == Id).Include(t => t.User).FirstOrDefaultAsync(); ;
     }
 
+    public async Task RemovePenaltyPoints()
+    {
+        await _isaDbContext.Database.ExecuteSqlRawAsync("UPDATE Customers SET PenaltyPoints = 0");
+    }
+
 }

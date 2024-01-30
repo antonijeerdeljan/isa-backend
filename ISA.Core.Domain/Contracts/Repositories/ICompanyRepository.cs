@@ -11,5 +11,6 @@ public interface ICompanyRepository
     bool Exist(Guid id);
     Task<IEnumerable<Company>> GetAllCompanies(int page);
 
+    Task<Company> GetCompanyByAdminIdAsync(Guid adminId);
     Task<List<Guid>> GetAdmins(Guid companyId);
 }

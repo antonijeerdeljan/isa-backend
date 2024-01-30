@@ -39,26 +39,14 @@ public static class SendReservationConfirmation
 
         try
         {
-            string subject = Environment.GetEnvironmentVariable("key", EnvironmentVariableTarget.Process);
-            string fromMail = "ftngrupa7@gmail.com";
-            string fromPassword = "xowmkegadzjpwdrj";
-
 
             MailMessage message = new MailMessage();
-            message.From = new MailAddress(fromMail);
             message.Subject = $"Potvrda porudzbine";
             message.To.Add(new MailAddress(email));
             message.Body = "U prilogu se nalazi dokument sa detaljima porudzbine.";
             message.Attachments.Add(attachment);
 
-            var smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential(fromMail, fromPassword),
-                EnableSsl = true
-            };
-
-            smtpClient.Send(message);
+            SmtpMailClient.Send(message);
 
             return new OkObjectResult(true);
         }

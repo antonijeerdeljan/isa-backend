@@ -7,19 +7,22 @@ using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
+using NetTopologySuite.Geometries;
 
 public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanyService { 
     
     private readonly ICompanyRepository _companyRepository;
     private readonly IISAUnitOfWork _isaUnitOfWork;
     private readonly IMapper _mapper;
+    private readonly IHttpClientService _httpClientService;
 
-    
-    public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper) : base(mapper)
+
+    public CompanyService(ICompanyRepository companyRepository, IISAUnitOfWork isaUnitOfWork, IMapper mapper, IHttpClientService httpClientService) : base(mapper)
     {
         _companyRepository = companyRepository;
         _isaUnitOfWork = isaUnitOfWork;
         _mapper = mapper;
+        _httpClientService = httpClientService;
     }
 
     public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city,string street, int number)
@@ -47,28 +50,21 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         }
 
     }
-    public async Task UpdateAsync(CompanyUpdateDto company)
+    public async Task UpdateAsync(Guid id, string name, string city, string country, string street, int number, string description)
     {
-        var nova = await _companyRepository.GetByIdAsync(company.Id);
-        _mapper.Map(company, nova);
-        nova.Address.City = company.City;
-        nova.Address.Country = company.Country;
 
+        var updatedCompany = await _companyRepository.GetCompanyByAdminIdAsync(id);
+
+        updatedCompany.Address.City = city;
+        updatedCompany.Address.Country = country;
+        updatedCompany.Address.Street= street;
+        updatedCompany.Address.Number = number;
+        updatedCompany.Name = name;
+        updatedCompany.Description = description;
 
         await _isaUnitOfWork.StartTransactionAsync();
-
-        try
-        {
-
-            _companyRepository.Update(nova);
-            await _isaUnitOfWork.SaveAndCommitChangesAsync();
-
-        }
-        catch (Exception ex)
-        {
-
-        }
-
+        _companyRepository.Update(updatedCompany);
+        await _isaUnitOfWork.SaveAndCommitChangesAsync();
     }
 
     public async Task<Company> GetCompanyAsync(Guid id)
@@ -81,6 +77,16 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         var companies = await _companyRepository.GetAllCompanies(page);
         var companyProfiles = companies.Select(company => _mapper.Map<CompanyProfileDto>(company));
         return companyProfiles;
+    }
+
+
+    public async Task<Coordinate> GetComapnyCoordinate(Guid companyId)
+    {
+        var comapny = await _companyRepository.GetByIdAsync(companyId) ?? throw new KeyNotFoundException(); 
+        return await _httpClientService.GetCoordinatesFromAddress(comapny.Address.Street,
+                                                           comapny.Address.City,
+                                                           comapny.Address.Country,
+                                                           comapny.Address.Number.ToString());
     }
 
 
@@ -98,9 +104,6 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
     {
         return await _companyRepository.GetAdmins(compnayId);
     }
-
-
-
 
     public async Task<bool> IsAppointmentInWorkingHours(DateTime start, DateTime end, Guid id)
     {
