@@ -154,7 +154,7 @@ public class HttpClientService : IHttpClientService
         double latitude = (double)location["lat"];
         double longitude = (double)location["lng"];
 
-        return new Coordinate(latitude, longitude);
+        return new Coordinate(longitude, latitude);
     }
 
 

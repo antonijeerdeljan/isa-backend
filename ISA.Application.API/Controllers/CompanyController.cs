@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
+using PolylineEncoder.Net.Models;
 
 [ApiController]
 [Route("[controller]")]
@@ -60,7 +61,6 @@ public class CompanyController : ControllerBase
         return _companyService.GetCompanyAsync(id).Result;
     }
 
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("Profile/{id}")]
     [Authorize(Policy = "allowAllPolicy")]
     public ActionResult<CompanyProfileDto> GetCompanyProfile([FromRoute] Guid id)
@@ -74,7 +74,7 @@ public class CompanyController : ControllerBase
         return await _companyService.GetAllCompanies(page);
     }
 
-    [HttpGet("getCompnayLocation/{companyId}")]
+    [HttpGet("getCompanyLocation/{companyId}")]
     public async Task<Coordinate> GetCompanyCoordinate(Guid companyId)
     {
         return await _companyService.GetComapnyCoordinate(companyId);
