@@ -7,6 +7,7 @@ using ISA.Core.Domain.UseCases.User;
 using ISA.Core.Domain.Entities.User;
 using Nest;
 using ceTe.DynamicPDF;
+using System.ComponentModel.Design;
 
 namespace ISA.Core.Domain.UseCases.Company;
 
@@ -44,6 +45,10 @@ public class AppointmentService
             await _isaUnitOfWork.StartTransactionAsync();
             var company = await _companyService.GetCompanyAsync(compAdmin.Company.Id);
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
+            var appointments =  await _appointmentRepository.GetAllAdminAppointments(userId);
+
+            if (await CheckAdminAvailability(appointments, appointment) is false) throw new ArgumentException();
+            
             Appointment newAppointment = new Appointment(company, companyAdmin, appointment.StartingDateTime, appointment.EndingDateTime);
             try
             {
@@ -71,7 +76,7 @@ public class AppointmentService
             var companyAdmins = await _companyAdminRepository.GetAllCompanyAdmins(companyId, 1);
             var appointments = await _appointmentRepository.GetAllCompanyAppointments(1, companyId);
 
-            var newAppointment = CheckAdminAvailability(appointments, companyAdmins, company, start, end).Result;
+            var newAppointment = CheckAdminsAvailability(appointments, companyAdmins, company, start, end).Result;
 
             if (newAppointment is not null)
             {
@@ -238,7 +243,48 @@ public class AppointmentService
                                  .ToList(); ;
      }
 
-    public async Task<Appointment> CheckAdminAvailability(IEnumerable<Appointment> appointments, IEnumerable<CompanyAdmin> admins, Entities.Company.Company company, DateTime start, DateTime end)
+    public async Task<bool> CheckAdminAvailability(IEnumerable<Appointment> appointments, AppointmentRequestModel appointment)
+    {
+        var adminAppointments = appointments.ToList();
+
+        // Check if the administrator has any appointments
+        if (adminAppointments.Count == 0)
+        {
+            return true;
+        }
+        else
+        {
+            // Check for gaps between appointments
+            for (int i = 0; i < adminAppointments.Count - 1; i++)
+            {
+                var gapStart = adminAppointments[i].EndingDateTime;
+                var gapEnd = adminAppointments[i + 1].StartingDateTime;
+        
+                if (gapEnd >= appointment.EndingDateTime && gapStart <= appointment.StartingDateTime)
+                {
+                    return true;
+                }
+                
+            }
+            // Check if there's a gap at the beginning of the day
+            if (adminAppointments[0].StartingDateTime >= appointment.EndingDateTime)
+            {
+                return true;
+            }
+        
+            // Check if there's a gap at the end of the day
+            if (adminAppointments.Last().EndingDateTime <= appointment.StartingDateTime)
+            {
+                return true;
+        
+            }
+        }
+        
+        return false;
+        
+    }
+
+    public async Task<Appointment> CheckAdminsAvailability(IEnumerable<Appointment> appointments, IEnumerable<CompanyAdmin> admins,  Entities.Company.Company company, DateTime start, DateTime end)
     {
         appointments = appointments.OrderBy(a => a.StartingDateTime).ToList();
         foreach (var admin in admins)
@@ -258,12 +304,12 @@ public class AppointmentService
                     var gapStart = adminAppointments[i].EndingDateTime;
                     var gapEnd = adminAppointments[i + 1].StartingDateTime;
 
-                    if (gapEnd >= end  && gapStart <= start)
+                    if (gapEnd >= end && gapStart <= start)
                     {
                         Appointment appointment = new Appointment(company, admin, start, end);
                         return appointment;
                     }
-                    
+
                 }
                 // Check if there's a gap at the beginning of the day
                 if (adminAppointments[0].StartingDateTime >= end)
@@ -282,7 +328,7 @@ public class AppointmentService
             }
         }
         return null;
-        
+
     }
 
 }

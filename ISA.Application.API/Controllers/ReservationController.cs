@@ -70,8 +70,7 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{reservationId}")]
-        //[Authorize(Policy = "corpAdminPolicy")]
-        //[Authorize(Policy = "customerPolicy")]
+        [Authorize(Policy = "CorpAdminAndCustomerPolicy")]
         public async Task<ReservationDto> GetReservation([FromRoute] Guid reservationId)
         {
             Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);

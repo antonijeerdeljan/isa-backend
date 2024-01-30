@@ -158,6 +158,14 @@ namespace ISA.Application.API.Startup
                         context.User.IsInRole("Sysadmin")
                     );
                 });
+                // Policy exclusive to company admin and customer
+                options.AddPolicy("CorpAdminAndCustomerPolicy", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                        context.User.IsInRole("Corpadmin") ||
+                        context.User.IsInRole("Customer")
+                    );
+                });
             });
         }
     }

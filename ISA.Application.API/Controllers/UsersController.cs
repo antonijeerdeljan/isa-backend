@@ -85,12 +85,13 @@ public class UsersController : ControllerBase
 => await _userService.AddNewCorpAdmin(corpAdmin);
 
 
-    [HttpGet("CompanyAdmins/{companyId}")]
+    [HttpGet("CompanyAdmins")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = "adminsPolicy")]
-    public async Task<IEnumerable<CompanyAdmin>> GettAllCompanyAdmins(Guid companyId, int page)
+    public async Task<IEnumerable<CompanyAdmin>> GettAllCompanyAdmins(int page)
     {
-        return await _userService.GetAllCompanyAdmins(companyId, page);
+        Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        return await _userService.GetAllCompanyAdmins(adminId, page);
     }
 
 

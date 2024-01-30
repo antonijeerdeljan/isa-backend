@@ -7,6 +7,7 @@
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -35,6 +36,11 @@
         public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date)
         {
             return await _dbSet.GetPaged(page).Where(a => a.Company.Id == companyId && a.StartingDateTime.Date.DayOfYear == date.DayOfYear).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetAllAdminAppointments(Guid adminId)
+        {
+            return await _dbSet.Where(a => a.CompanyAdmin.UserId == adminId).ToListAsync();
         }
     }
 }

@@ -40,7 +40,7 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
     public async Task<List<Reservation>> GetAllCompanyReservations(Guid companyId)
     {
         return await _dbSet.Include(r => r.Appointment)
-                            .Include(r => r.Equipments)
+                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
                             .Where(r => r.Appointment.Company.Id == companyId)
                             .ToListAsync();
     }

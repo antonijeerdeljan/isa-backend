@@ -186,9 +186,10 @@ public class UserService
         return await _companyAdminRepository.CheckIfAdmin(companyId, userId);
     }
 
-    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page)
+    public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid adminId, int page)
     {
-        return await _companyAdminRepository.GetAllCompanyAdmins(id, page);
+        var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
+        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.Company.Id, page);
     }
 
     public async Task GivePenaltyPoints(Guid id,int points)
