@@ -76,7 +76,7 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
 
     public async Task<List<Reservation>> GetHistoryOfCustomerReservations(Guid customerId)
     {
-        return await _dbSet.Include(r => r.Appointment).Where(a => a.State != ReservationState.Pending)
+        return await _dbSet.Include(r => r.Appointment).ThenInclude(a => a.Company).Where(a => a.State != ReservationState.Pending)
                             .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
                             .Where(r => r.Customer.UserId == customerId)
                             .ToListAsync();
