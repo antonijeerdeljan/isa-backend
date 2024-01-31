@@ -8,6 +8,7 @@
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.Reservation;
     using ISA.Core.Domain.Entities.User;
+    using Nest;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -42,6 +43,7 @@
             try
             {
                 await _gradeRepository.AddAsync(newGrade);
+                await CalculateAverageGrade(companyId, rate);
                 await _isaUnitOfWork.SaveAndCommitChangesAsync();
             }
             catch (Exception ex)
@@ -59,8 +61,11 @@
 
         public async Task<bool> CanRate(Guid userId, Guid companyId)
         {
-            var reservations = await _reservationRepository.GetHistoryOfCustomerReservations(userId);
+            var reservations = await _reservationRepository.GetHistoryOfCustomerReservations(userId) ?? throw new KeyNotFoundException();
+            if (reservations.Count() == 0) return false;
             return (reservations.Where(r => r.Appointment.Company.Id == companyId).Count() > 0);
+            
+            
         }
 
         public async Task<IEnumerable<GradeDto>> GetAllCompanyGrades(Guid companyId)
@@ -84,6 +89,20 @@
             grade.Rate = rate; grade.Text = text; grade.Reason = reason;
             _gradeRepository.UpdateAndSaveChanges(grade);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        }
+
+        public async Task CalculateAverageGrade(Guid companyId, int rate) 
+        {
+            double sum = rate;
+            var grades = await _gradeRepository.GetAllCompanyGrades(companyId);
+            foreach(var grade in grades)
+            {
+                sum += grade.Rate;
+            }
+            double avgGrade = sum / (grades.Count() + 1);
+            var company = await _companyRepository.GetByIdAsync(companyId);
+            company.AverageGrade = avgGrade;
+            _companyRepository.Update(company);
         }
     }
 }

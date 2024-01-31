@@ -9,7 +9,7 @@
         public string Description { get; set; }
         public TimeOnly StartingWorkingHour { get; set; }
         public TimeOnly EndWorkingHour { get; set; }
-        public double? AverageGrade {  get; set; }
+        public double? AverageGrade { get; set; } = 0;
         public List<Appointment>? Appointments { get; set; }
         public List<CompanyAdmin>? Admins { get; set; }
         public List<Equipment>? Equipment { get; set; }
