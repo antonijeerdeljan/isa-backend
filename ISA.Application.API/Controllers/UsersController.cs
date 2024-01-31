@@ -93,11 +93,8 @@ public class UsersController : ControllerBase
 
 
     [HttpPost("InitialPasswordChange")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Policy = "allowAllPolicy")]
     public async Task<IActionResult> ChangePasswordFirstTime([FromBody] InitialPasswordChangeModel changePassword)
     {
-        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         await _userService.ChangePasswordFirstTime(changePassword.email, changePassword.oldPassword, changePassword.newPassword);
         return Ok();
     }
