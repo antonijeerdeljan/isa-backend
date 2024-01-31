@@ -40,6 +40,7 @@ public class ISAUnitOfWork : IISAUnitOfWork
         }
         catch (Exception ex)
         {
+            throw new ArgumentException();
             Console.WriteLine(ex.ToString());
         }
         await _isaDbContext.Database.CommitTransactionAsync();
