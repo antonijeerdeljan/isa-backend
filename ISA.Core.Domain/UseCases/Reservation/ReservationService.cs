@@ -80,7 +80,7 @@ public class ReservationService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            throw new ArgumentException();
         }
     }
 
