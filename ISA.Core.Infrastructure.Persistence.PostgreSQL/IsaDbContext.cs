@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Complaint;
 using ISA.Core.Domain.Entities.Delivery;
 using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Entities.Reservation;
@@ -24,6 +25,8 @@ public class IsaDbContext : DbContext
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Contract> Contracts { get; set; }
     public DbSet<Grade> Grades { get; set; }
+
+    public DbSet<Complaint> Complaints { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 

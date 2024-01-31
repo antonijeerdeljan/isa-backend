@@ -14,6 +14,7 @@ using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
 using Nest;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel.Design;
 
 public class ReservationService
 {
@@ -191,11 +192,18 @@ public class ReservationService
         return reservationDtos;
     }
 
+
     public async Task<IEnumerable<ReservationDto>> GetAllCustomerReservations(Guid userId)
     {
-        var reservations = await _reservationRepository.GetAllCustomerReservations(userId);
+        var reservations = await GetAllCustomerReservationsDomain(userId);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
+    }
+
+
+    public async Task<List<Reservation>> GetAllCustomerReservationsDomain(Guid userId)
+    {
+        return await _reservationRepository.GetAllCustomerReservations(userId);
     }
 
     public async Task<IEnumerable<ReservationDto>> GetHistoryOfCustomerReservations(Guid adminId, Guid customerId)
@@ -204,8 +212,16 @@ public class ReservationService
         var reservations = await _reservationRepository.GetHistoryOfCustomerReservations(customerId);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
-        
-        
+    }
+
+    public async Task<bool> UserHasAtleastOneReservationWithCompany(Guid userId, Guid companyId)
+    {
+        return await _reservationRepository.UserHasAtleastOneReservationWithCompany(userId, companyId);
+    }
+
+    public async Task<bool> UserHasAtleastOneReservationWithAdmin(Guid userId, Guid adminId)
+    {
+        return await _reservationRepository.UserHasAtleastOneReservationWithAdmin(userId, adminId);
     }
 
     public async Task<IEnumerable<ReservationDto>> GetAllScheduledCustomerReservations(Guid userId)
@@ -225,7 +241,7 @@ public class ReservationService
 
     public async Task<bool> CheckIfHavePolicy(Guid adminId, Guid customerId)
     {
-        var reservations = await _reservationRepository.GetAllCustomerReservations(customerId);
+        var reservations = await GetAllCustomerReservationsDomain(customerId);
         foreach (var reservation in reservations)
         {
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(adminId);

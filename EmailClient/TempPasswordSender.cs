@@ -66,7 +66,7 @@ public static class TempPasswordSender
                 <div class='email-container'>
                     <div class='email-header'>Welcome!</div>
                     <div class='email-body'>
-                        <p>Postovani {name},</p>
+                        <p>Hello {name},</p>
                         <p>Your temporary password is: <strong>{tempPassword}</strong></p>
                         <p>Please change your password after your first login.</p>
                     </div>
