@@ -13,17 +13,17 @@ public class ComplaintRepository : GenericRepository<Complaint, Guid>, IComplain
 
     public async Task<List<Complaint>> GetAllCompanyComplaints(Guid companyId, int page)
     {
-        return await _dbSet.GetPaged(page).Where(c => c.SubjectComplaintId == companyId && c.Type == ComplaintType.Compnay).ToListAsync();
+        return await _dbSet.Where(c => c.SubjectComplaintId == companyId && c.Type == ComplaintType.Compnay).GetPaged(page).ToListAsync();
     }
 
     public async Task<List<Complaint>> GetUnansweredCompanyComplaints(Guid companyId,int page)
     {
-        return await _dbSet.GetPaged(page).Where(c => c.SubjectComplaintId == companyId && c.Resloved == false && c.Type == ComplaintType.Compnay).ToListAsync();
+        return await _dbSet.Where(c => c.SubjectComplaintId == companyId && c.Resloved == false && c.Type == ComplaintType.Compnay).GetPaged(page).ToListAsync();
     }
 
     public async Task<List<Complaint>> GetAnsweredCompanyComplaints(Guid companyId, int page)
     {
-        return await _dbSet.GetPaged(page).Where(c => c.SubjectComplaintId == companyId && c.Resloved == true && c.Type == ComplaintType.Compnay).ToListAsync();
+        return await _dbSet.Where(c => c.SubjectComplaintId == companyId && c.Resloved == true && c.Type == ComplaintType.Compnay).GetPaged(page).ToListAsync();
     }
 
 

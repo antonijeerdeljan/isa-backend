@@ -90,11 +90,9 @@ public class ReservationService
         
         var customer = await _userService.GetCustomerById(userId);
 
-        var appointmentId = await _appointmentService.TryCreateAppointment(companyId, start, end);
-        var appointment = await _appointmentService.GetAppointmentById(appointmentId) ?? throw new KeyNotFoundException();
-        var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
+        var appointment = await _appointmentService.TryCreateAppointment(companyId, start, end);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
-        if (customer is null || appointment is null || reserved is not null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
+        if (customer is null || appointment is null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
 
         appointment.SetAsTaken();
         try
@@ -116,7 +114,7 @@ public class ReservationService
                 await _reservationEquipmentRepository.AddAsync(r);
                 await _equipmentService.EquipmentSold(r.EquipmentId, r.Quantity);
             }
-            //await _isaUnitOfWork.SaveAndCommitChangesAsync();
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
             await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", reservation.Equipments, customer.User.Firstname, reservation.AppointmentId.ToString(), appointment.StartingDateTime.ToString());
 
         }

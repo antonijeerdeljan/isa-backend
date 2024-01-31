@@ -31,7 +31,7 @@ public class CompanyRepository : GenericRepository<Company, Guid>, ICompanyRepos
 
     public async Task<IEnumerable<Company>> GetAllCompanies(int page)
     {
-        return await _dbSet.GetPaged(page).Include(c => c.Address).Include(c => c.Equipment.Where(e => !e.IsDeleted)).Include(c => c.Appointments).ToListAsync();
+        return await _dbSet.Include(c => c.Address).Include(c => c.Equipment.Where(e => !e.IsDeleted)).Include(c => c.Appointments).GetPaged(page).ToListAsync();
     }
 
     public async Task<List<Guid>> GetAdmins(Guid companyId)

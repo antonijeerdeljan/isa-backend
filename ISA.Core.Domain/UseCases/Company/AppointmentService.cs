@@ -62,7 +62,7 @@ public class AppointmentService
         }
     }
 
-    public async Task<Guid> TryCreateAppointment(Guid companyId, DateTime start, DateTime end)
+    public async Task<Appointment> TryCreateAppointment(Guid companyId, DateTime start, DateTime end)
     {
         
         if (await _companyService.IsAppointmentInWorkingHours(start,end, companyId) is false)
@@ -76,20 +76,20 @@ public class AppointmentService
             var companyAdmins = await _companyAdminRepository.GetAllCompanyAdmins(companyId, 1);
             var appointments = await _appointmentRepository.GetAllCompanyAppointments(1, companyId);
 
-            var newAppointment = CheckAdminsAvailability(appointments, companyAdmins, company, start, end).Result;
+            var newAppointment = await CheckAdminsAvailability(appointments, companyAdmins, company, start, end);
 
             if (newAppointment is not null)
             {
                 await _appointmentRepository.AddAsync(newAppointment);
-                await _isaUnitOfWork.SaveAndCommitChangesAsync();
-                return newAppointment.Id;
+                //await _isaUnitOfWork.SaveAndCommitChangesAsync();
+                return newAppointment;
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
-        return Guid.Empty; 
+        return null; 
         
     }
 
