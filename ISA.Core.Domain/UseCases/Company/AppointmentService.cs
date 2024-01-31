@@ -57,7 +57,7 @@ public class AppointmentService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                throw new ArgumentException();
             }   
         }
     }
