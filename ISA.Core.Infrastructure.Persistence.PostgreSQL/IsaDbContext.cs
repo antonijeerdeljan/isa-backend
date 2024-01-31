@@ -59,6 +59,8 @@ public class IsaDbContext : DbContext
         modelBuilder.Entity<Equipment>().Property<uint>("Version").IsRowVersion();
         modelBuilder.Entity<Appointment>().Property<uint>("Version").IsRowVersion();
         modelBuilder.Entity<Reservation>().Property<uint>("Version").IsRowVersion();
+        modelBuilder.Entity<CompanyAdmin>().Property<uint>("Version").IsRowVersion();
+
 
 
 

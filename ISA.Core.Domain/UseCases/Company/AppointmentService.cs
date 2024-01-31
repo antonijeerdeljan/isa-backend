@@ -127,8 +127,8 @@ public class AppointmentService
     public async Task<IEnumerable<AppointmentDto>> GetAllCompanyAppointments(int page, Guid adminId)
     {
         var admin = await _companyAdminRepository.GetByIdAsync(adminId);
-        var appointments = _appointmentRepository.GetAllCompanyAppointments(page, admin.CompanyId);
-        return appointments.Result.Select(appointment => _mapper.Map<AppointmentDto>(appointment));
+        var appointments = await _appointmentRepository.GetAllCompanyAppointments(page, admin.CompanyId);
+        return appointments.Select(appointment => _mapper.Map<AppointmentDto>(appointment));
     }
 
     public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date)
