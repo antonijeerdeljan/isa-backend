@@ -1,6 +1,7 @@
 ﻿using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Dtos.Admin;
 using ISA.Core.Domain.Dtos.Company;
+using ISA.Core.Domain.Dtos.Complaint;
 using ISA.Core.Domain.Entities.Complaint;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Complaint;
@@ -61,7 +62,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-company")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnCompnay(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnCompnay(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAllCompanyComplaints(adminId, page);
@@ -70,7 +71,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-company-unanswered")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnCompnayUnAnswered(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnCompnayUnAnswered(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetUnansweredCompanyComplaints(adminId, page);
@@ -79,7 +80,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-company-answered")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnCompnayAnswered(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnCompnayAnswered(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAnsweredCompanyComplaints(adminId, page);
@@ -88,7 +89,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-admin")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnAdmin(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnAdmin(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAllAdminComplaints(adminId, page);
@@ -97,7 +98,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-admin-unanswered")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnAdminUnAnswered(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnAdminUnAnswered(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetUnansweredAdminComplaints(adminId, page);
@@ -106,7 +107,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("complaints-on-admin-answered")]
     [Authorize(Policy = "corpAdminPolicy")]
-    public async Task<List<Complaint>> GetAllComplaintsOnAdminAnswered(int page)
+    public async Task<List<ComplaintDto>> GetAllComplaintsOnAdminAnswered(int page)
     {
         Guid adminId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAnsweredAdminComplaints(adminId, page);
@@ -115,7 +116,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("sent-complaints")]
     [Authorize(Policy = "customerPolicy")]
-    public async Task<List<Complaint>> GetAllCustomerComplaints(int page)
+    public async Task<List<ComplaintDto>> GetAllCustomerComplaints(int page)
     {
         Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAllCustomerComplaints(userId, page);
@@ -124,7 +125,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("unanswered-complaints")]
     [Authorize(Policy = "customerPolicy")]
-    public async Task<List<Complaint>> GetUnansweredCustomerComplaints(int page)
+    public async Task<List<ComplaintDto>> GetUnansweredCustomerComplaints(int page)
     {
         Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetUnansweredCustomerComplaints(userId, page);
@@ -133,7 +134,7 @@ public class ComplaintController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("answered-complaints")]
     [Authorize(Policy = "customerPolicy")]
-    public async Task<List<Complaint>> GetAnsweredCustomerComplaints(int page)
+    public async Task<List<ComplaintDto>> GetAnsweredCustomerComplaints(int page)
     {
         Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
         return await _complaintService.GetAnsweredCustomerComplaints(userId, page);
