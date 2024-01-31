@@ -116,13 +116,14 @@ public class ReservationService
                 await _reservationEquipmentRepository.AddAsync(r);
                 await _equipmentService.EquipmentSold(r.EquipmentId, r.Quantity);
             }
-            //await _isaUnitOfWork.SaveAndCommitChangesAsync();
+
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
             await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", reservation.Equipments, customer.User.Firstname, reservation.AppointmentId.ToString(), appointment.StartingDateTime.ToString());
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            throw new ArgumentException();
         }
     }
 
