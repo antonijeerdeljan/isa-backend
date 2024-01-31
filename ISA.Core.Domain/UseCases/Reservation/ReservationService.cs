@@ -169,6 +169,7 @@ public class ReservationService
     {
         await _isaUnitOfWork.StartTransactionAsync();
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        if (reservation.Appointment.StartingDateTime.Date != DateTime.Now.Date) throw new KeyNotFoundException("Nije moguce ranije preuzeti rezervaciju");
         if (reservation.State != ReservationState.Pending) throw new KeyNotFoundException("Rezervacija je istekla ili je vec preuzeta");
         var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId) ?? throw new KeyNotFoundException();
         var customer = await _userService.GetCustomerById(reservation.Customer.UserId) ?? throw new KeyNotFoundException();
