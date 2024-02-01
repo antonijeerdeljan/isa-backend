@@ -1,4 +1,5 @@
 ﻿using ISA.Core.Domain.Entities.Company;
+using ISA.Core.Domain.Entities.Complaint;
 using ISA.Core.Domain.Entities.Delivery;
 using ISA.Core.Domain.Entities.LoyaltyProgram;
 using ISA.Core.Domain.Entities.Reservation;
@@ -24,6 +25,8 @@ public class IsaDbContext : DbContext
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Contract> Contracts { get; set; }
     public DbSet<Grade> Grades { get; set; }
+    public DbSet<Complaint> Complaints { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -52,6 +55,14 @@ public class IsaDbContext : DbContext
             .HasOne(ae => ae.Equipment)
             .WithMany()
             .HasForeignKey(ae => ae.EquipmentId);
+
+        modelBuilder.Entity<Equipment>().Property<uint>("Version").IsRowVersion();
+        modelBuilder.Entity<Appointment>().Property<uint>("Version").IsRowVersion();
+        modelBuilder.Entity<Reservation>().Property<uint>("Version").IsRowVersion();
+        modelBuilder.Entity<CompanyAdmin>().Property<uint>("Version").IsRowVersion();
+
+
+
 
     }
 

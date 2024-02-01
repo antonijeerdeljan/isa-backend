@@ -13,10 +13,10 @@
 
         void Update(Appointment appointment);
 
-        Task<IEnumerable<Appointment>> GetAllCompanyAppointments(int page, Guid companyId);
+        Task<IEnumerable<Appointment>> GetAllCompanyAppointments(Guid companyId);
 
         Task<IEnumerable<Appointment>> GetAllAdminAppointments(Guid adminId);
 
-        Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date);
+        Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(Guid companyId, DateOnly date);
     }
 }

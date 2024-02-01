@@ -2,18 +2,15 @@
 
 using AutoMapper;
 using ceTe.DynamicPDF;
+using FluentResults;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
-using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
-using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
-using Nest;
-using Newtonsoft.Json.Linq;
 
 public class ReservationService
 {
@@ -50,8 +47,9 @@ public class ReservationService
         var customer = await _userService.GetCustomerById(userId);
         var appointment = await _appointmentService.GetAppointmentById(appointmentId);
         var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
-        List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         if (customer is null || appointment is null || reserved is not null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
+        if (await CustomerIsAvailable(userId, appointment) is false) throw new ArgumentException("Already have appointment in that time");
+        List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         appointment.SetAsTaken();
 
         try
@@ -79,7 +77,7 @@ public class ReservationService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            throw new ArgumentException();
         }
     }
 
@@ -89,12 +87,10 @@ public class ReservationService
         
         var customer = await _userService.GetCustomerById(userId);
 
-        var appointmentId = await _appointmentService.TryCreateAppointment(companyId, start, end);
-        var appointment = await _appointmentService.GetAppointmentById(appointmentId) ?? throw new KeyNotFoundException();
-        var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
+        var appointment = await _appointmentService.TryCreateAppointment(companyId, start, end);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
-        if (customer is null || appointment is null || reserved is not null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
-
+        if (customer is null || appointment is null || customer.PenaltyPoints >= 3) throw new ArgumentException();
+        if (await CustomerIsAvailable(userId, appointment) is false) throw new ArgumentException("Already have appointment in that time");
         appointment.SetAsTaken();
         try
         {
@@ -115,13 +111,14 @@ public class ReservationService
                 await _reservationEquipmentRepository.AddAsync(r);
                 await _equipmentService.EquipmentSold(r.EquipmentId, r.Quantity);
             }
-            //await _isaUnitOfWork.SaveAndCommitChangesAsync();
+
+            await _isaUnitOfWork.SaveAndCommitChangesAsync();
             await _httpClientService.SendReservationConfirmation(customer.User.Email, "Reservation confirmation", reservation.Equipments, customer.User.Firstname, reservation.AppointmentId.ToString(), appointment.StartingDateTime.ToString());
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            throw new ArgumentException();
         }
     }
 
@@ -168,6 +165,7 @@ public class ReservationService
     {
         await _isaUnitOfWork.StartTransactionAsync();
         var reservation = await _reservationRepository.GetByIdAsync(reservationId) ?? throw new KeyNotFoundException();
+        if (reservation.Appointment.StartingDateTime.Date != DateTime.Now.Date) throw new KeyNotFoundException("Nije moguce ranije preuzeti rezervaciju");
         if (reservation.State != ReservationState.Pending) throw new KeyNotFoundException("Rezervacija je istekla ili je vec preuzeta");
         var appointment = await _appointmentService.GetAppointmentById(reservation.AppointmentId) ?? throw new KeyNotFoundException();
         var customer = await _userService.GetCustomerById(reservation.Customer.UserId) ?? throw new KeyNotFoundException();
@@ -181,6 +179,7 @@ public class ReservationService
         
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
         await _httpClientService.SendPickUpConfirmation(customer.User.Email, "Pick up confirmation", customer.User.Firstname, appointment.StartingDateTime.ToString(), company.Name);
+
     }
 
     public async Task<IEnumerable<ReservationDto>> GetAllCompanyReservations(Guid adminId)
@@ -191,11 +190,18 @@ public class ReservationService
         return reservationDtos;
     }
 
+
     public async Task<IEnumerable<ReservationDto>> GetAllCustomerReservations(Guid userId)
     {
-        var reservations = await _reservationRepository.GetAllCustomerReservations(userId);
+        var reservations = await GetAllCustomerReservationsDomain(userId);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
+    }
+
+
+    public async Task<List<Reservation>> GetAllCustomerReservationsDomain(Guid userId)
+    {
+        return await _reservationRepository.GetAllCustomerReservations(userId);
     }
 
     public async Task<IEnumerable<ReservationDto>> GetHistoryOfCustomerReservations(Guid adminId, Guid customerId)
@@ -204,8 +210,16 @@ public class ReservationService
         var reservations = await _reservationRepository.GetHistoryOfCustomerReservations(customerId);
         var reservationDtos = reservations.Select(reservation => _mapper.Map<ReservationDto>(reservation));
         return reservationDtos;
-        
-        
+    }
+
+    public async Task<bool> UserHasAtleastOneReservationWithCompany(Guid userId, Guid companyId)
+    {
+        return await _reservationRepository.UserHasAtleastOneReservationWithCompany(userId, companyId);
+    }
+
+    public async Task<bool> UserHasAtleastOneReservationWithAdmin(Guid userId, Guid adminId)
+    {
+        return await _reservationRepository.UserHasAtleastOneReservationWithAdmin(userId, adminId);
     }
 
     public async Task<IEnumerable<ReservationDto>> GetAllScheduledCustomerReservations(Guid userId)
@@ -225,7 +239,7 @@ public class ReservationService
 
     public async Task<bool> CheckIfHavePolicy(Guid adminId, Guid customerId)
     {
-        var reservations = await _reservationRepository.GetAllCustomerReservations(customerId);
+        var reservations = await GetAllCustomerReservationsDomain(customerId);
         foreach (var reservation in reservations)
         {
             var companyAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
@@ -239,5 +253,13 @@ public class ReservationService
     private bool IsAppointmentWithin24Hours(Reservation reservation)
     {
         return (reservation.Appointment.StartingDateTime > DateTime.UtcNow.AddHours(24)) ? true : false;
+    }
+
+    private async Task<bool> CustomerIsAvailable(Guid userId, Appointment appointment)
+    {
+        var customerAppointments = await _reservationRepository.GetAllCustomerReservations(userId);
+        customerAppointments.RemoveAll(a => a.Appointment.EndingDateTime <= appointment.StartingDateTime || a.Appointment.StartingDateTime >= appointment.EndingDateTime);
+        return customerAppointments.Count == 0;
+       
     }
 }

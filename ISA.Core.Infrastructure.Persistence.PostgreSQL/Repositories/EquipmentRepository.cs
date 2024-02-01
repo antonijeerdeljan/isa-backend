@@ -36,8 +36,8 @@
 
         public async Task<List<Equipment>> GetGeneralEquipment(int page)
         {
-            return await _dbSet.GetPaged(page)
-                               .Where(c => c.Quantity == null && c.CompanyId == null)
+            return await _dbSet.Where(c => c.Quantity == null && c.CompanyId == null)
+                               .GetPaged(page)
                                .ToListAsync();
         }
 

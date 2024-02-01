@@ -66,14 +66,19 @@ namespace ISA.Core.Infrastructure.Identity.Services
         public async Task ChangePasswordAsync(string email, string currentPassword, string newPassword)
         {
             ApplicationUser? userToResetPassword = await FindUserByEmail(email);
+
+
             IdentityResult resetPasswordResult = await _userManager.ChangePasswordAsync(userToResetPassword,
                                                                                        currentPassword,
                                                                                        newPassword);
 
-
-
-
             if (!resetPasswordResult.Succeeded) throw new ArgumentException(resetPasswordResult.ToString());
+
+            if (userToResetPassword != null && userToResetPassword.IsFirstLogin == true)
+            {
+                userToResetPassword.IsFirstLogin = false;
+            }
+
         }
 
         public async Task<string> GeneratePasswordResetUrlAsync(string email, string redirectUrl)
@@ -130,6 +135,11 @@ namespace ISA.Core.Infrastructure.Identity.Services
 
             if (await _userManager.IsInRoleAsync(userToSignIn, userRole[0]) is false)
                 throw new ArgumentException("Not allowed!");
+
+            if (userToSignIn.IsFirstLogin == true && (userRole[0] == "Corpadmin" || userRole[0] == "Sysadmin"))
+            {
+                throw new ArgumentException("You must change your password");
+            }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(
                                                         user: userToSignIn,

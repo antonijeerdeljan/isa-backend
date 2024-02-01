@@ -7,7 +7,9 @@ using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.User;
+using Nest;
 using NetTopologySuite.Geometries;
+using PolylineEncoder.Net.Models;
 
 public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanyService { 
     
@@ -25,7 +27,7 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         _httpClientService = httpClientService;
     }
 
-    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city,string street, int number)
+    public async Task AddAsync(string name, DateTime startWorkingHour, DateTime endWorkingHour, string description,string country, string city,string street, int number)
     {
         
 
@@ -50,19 +52,23 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         }
 
     }
+
+
+    public async Task<Company> GetCompanyByAdminIdAsync(Guid adminId)
+    {
+        return await _companyRepository.GetCompanyByAdminIdAsync(adminId);
+    }
+
     public async Task UpdateAsync(Guid id, string name, string city, string country, string street, int number, string description)
     {
-
-        var updatedCompany = await _companyRepository.GetCompanyByAdminIdAsync(id);
-
+        await _isaUnitOfWork.StartTransactionAsync();
+        var updatedCompany = await GetCompanyByAdminIdAsync(id);
         updatedCompany.Address.City = city;
         updatedCompany.Address.Country = country;
         updatedCompany.Address.Street= street;
         updatedCompany.Address.Number = number;
         updatedCompany.Name = name;
         updatedCompany.Description = description;
-
-        await _isaUnitOfWork.StartTransactionAsync();
         _companyRepository.Update(updatedCompany);
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
     }
@@ -80,13 +86,20 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
     }
 
 
-    public async Task<Coordinate> GetComapnyCoordinate(Guid companyId)
+    public async Task<PolylineEncoder.Net.Models.GeoCoordinate> GetComapnyCoordinate(Guid companyId)
     {
         var comapny = await _companyRepository.GetByIdAsync(companyId) ?? throw new KeyNotFoundException(); 
-        return await _httpClientService.GetCoordinatesFromAddress(comapny.Address.Street,
+        var coordinate = await _httpClientService.GetCoordinatesFromAddress(comapny.Address.Street,
                                                            comapny.Address.City,
                                                            comapny.Address.Country,
                                                            comapny.Address.Number.ToString());
+
+        var geoCoordinate = new PolylineEncoder.Net.Models.GeoCoordinate();
+        geoCoordinate.Latitude = coordinate.Y;   
+        geoCoordinate.Longitude = coordinate.X; 
+
+
+        return geoCoordinate;
     }
 
 

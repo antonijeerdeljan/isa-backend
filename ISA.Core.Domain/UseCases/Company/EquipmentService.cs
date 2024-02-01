@@ -119,17 +119,19 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
 
     public async Task UpdateAsync(Guid id, string name, int quantity, Guid userId)
     {
-        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        var company = await _companyRepository.GetByIdAsync(companyAdmin.CompanyId);
-        Equipment newEquipment = new Equipment(id, name, quantity, company.Id);
-        _equipmentRepository.UpdateAndSaveChanges(newEquipment);
+        await _isaUnitOfWork.StartTransactionAsync();
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException();
+        var equipment = await _equipmentRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException();
+        if (companyAdmin.CompanyId != equipment.CompanyId) throw new ArgumentException();
+        equipment.Name = name;
+        equipment.Quantity = quantity;
+        _equipmentRepository.Update(equipment);
+        await _isaUnitOfWork.SaveAndCommitChangesAsync();
+        
     }
 
 
-    public async Task UpdateAsync(Equipment equipment)
-    {
-        _equipmentRepository.UpdateAndSaveChanges(equipment);
-    }
+    
 
     public async Task ReturnEqupment(IEnumerable<ReservationEquipment> equipment)
     {
@@ -152,6 +154,11 @@ public class EquipmentService : BaseService<EquipmentDto, Equipment>, IEquipment
     public async Task<bool> ExistEnough(Guid id, int quantity)
     {
         return await _equipmentRepository.ExistEnough(id, quantity);
+    }
+
+    public async Task UpdateAsync(Equipment equipment)
+    {
+        _equipmentRepository.UpdateAndSaveChanges(equipment);
     }
 
 

@@ -51,11 +51,11 @@ public class ReservationOverdueService : IHostedService, IDisposable
 
             //test for delivery
 
-            var deliverySrvice = scope.ServiceProvider.GetRequiredService<DeliveryService>();
+            //var deliverySrvice = scope.ServiceProvider.GetRequiredService<DeliveryService>();
 
             await unitOfWork.StartTransactionAsync();
 
-            await deliverySrvice.Delivery();
+            //await deliverySrvice.Delivery();
 
             var overdueReservations = await reservationService.OverdueReservations();
             if (overdueReservations is not null)

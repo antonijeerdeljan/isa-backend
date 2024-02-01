@@ -6,7 +6,8 @@ using System.Text;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using ISA.Core.Domain.Entities.Reservation;
-
+using ISA.Core.Domain.Entities.Complaint;
+using ISA.Core.Domain.Entities.User;
 
 namespace ISA.Core.Infrastructure.HttpClients;
 
@@ -72,6 +73,63 @@ public class HttpClientService : IHttpClientService
             throw new ArgumentException("Registration failed");
         }
     }
+
+    public async Task SendTempPassword(string email, string name, string password)
+    {
+        var payload = new TempPasswordEmailPayload
+        {
+            Email = email,
+            Password = password,
+            Name = name
+        };
+
+        var json = JsonConvert.SerializeObject(payload);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _emailHttpClient.PostAsync("Function4", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ArgumentException("Registration failed with status code: " + response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException("Registration failed");
+        }
+    }
+
+
+    public async Task ComplaintSender(Complaint complaint, string answer, CompanyAdmin companyAdmin)
+    {
+        var payload = new ComplaintPayload
+        {
+            Email = complaint.Customer.User.Email,
+            Title = complaint.Title,
+            Description = complaint.Description,
+            Answer = complaint.Answer,
+            AdminName = companyAdmin.User.Firstname
+        };
+
+        var json = JsonConvert.SerializeObject(payload);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _emailHttpClient.PostAsync("Function5", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ArgumentException("Complaint not sent!: " + response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException("Complaint not sent!");
+        }
+    }
+
+
 
     public async Task SendReservationConfirmation(string email, string message, List<ReservationEquipment> reservations, string name, string id, string time)
     {
@@ -154,7 +212,7 @@ public class HttpClientService : IHttpClientService
         double latitude = (double)location["lat"];
         double longitude = (double)location["lng"];
 
-        return new Coordinate(latitude, longitude);
+        return new Coordinate(longitude, latitude);
     }
 
 

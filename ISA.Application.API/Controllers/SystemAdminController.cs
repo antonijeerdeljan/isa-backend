@@ -48,22 +48,6 @@ public class SystemAdminController : ControllerBase
                                        "Sysadmin");
     }
 
-    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
-    [HttpPost("Register")]
-    public async Task RegisterCompanyAdmin([FromBody] RegistrationRequestModel registrationRequestModel, Guid comapnyId)
-    {
-
-            await _userService.AddCompanyAdminAsync(registrationRequestModel.Email,
-                                       registrationRequestModel.Password,
-                                       registrationRequestModel.Firstname,
-                                       registrationRequestModel.Lastname,
-                                       registrationRequestModel.City,
-                                       registrationRequestModel.Country,
-                                       registrationRequestModel.DateOfBirth,
-                                       registrationRequestModel.PhoneNumber);
-    }*/
-
-
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "superAdminPolicy")]
     [HttpPost("DefineLoyaltyProgram")]
 

@@ -43,13 +43,19 @@ namespace ISA.Application.API.Migrations
                     b.Property<DateTime>("StartingDateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyAdminUserId");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Appointment");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Company.Company", b =>
@@ -104,6 +110,12 @@ namespace ISA.Application.API.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -141,6 +153,47 @@ namespace ISA.Application.API.Migrations
                     b.HasIndex("CustomerUserId");
 
                     b.ToTable("Grades");
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Complaint.Complaint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("AnsweredByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Resloved")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("SubjectComplaintId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnsweredByUserId");
+
+                    b.HasIndex("CustomerUserId");
+
+                    b.ToTable("Complaints");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>
@@ -227,6 +280,12 @@ namespace ISA.Application.API.Migrations
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("AppointmentId");
 
                     b.HasIndex("CustomerUserId");
@@ -284,6 +343,12 @@ namespace ISA.Application.API.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("UserId");
 
@@ -406,6 +471,23 @@ namespace ISA.Application.API.Migrations
                         .HasForeignKey("CustomerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ISA.Core.Domain.Entities.Complaint.Complaint", b =>
+                {
+                    b.HasOne("ISA.Core.Domain.Entities.User.CompanyAdmin", "AnsweredBy")
+                        .WithMany()
+                        .HasForeignKey("AnsweredByUserId");
+
+                    b.HasOne("ISA.Core.Domain.Entities.User.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AnsweredBy");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("ISA.Core.Domain.Entities.Delivery.Contract", b =>

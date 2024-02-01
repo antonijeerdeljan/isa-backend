@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "DeliverySimualtorV2": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7256",
-      "launchBrowser": false
-    }
-  }
-}
