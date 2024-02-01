@@ -206,9 +206,12 @@ public class ComplaintService
             _complaintRepository.Update(complaint);
             complaint = await _complaintRepository.GetByIdAsync(complaintId) ?? throw new KeyNotFoundException();
 
+            await _unitOfWork.SaveChangesAsync();
+
             await _httpClientService.ComplaintSender(complaint, answer, compnayAdmin);
 
-            await _unitOfWork.SaveAndCommitChangesAsync();
+            await _unitOfWork.CommitTransactionAsync();
+
         }catch(Exception ex)
         {
             throw new ArgumentException();
