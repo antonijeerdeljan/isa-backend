@@ -9,6 +9,7 @@ using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.Reservation;
 using ISA.Core.Domain.UseCases.User;
+using System.Net.Http.Headers;
 
 namespace ISA.Core.Domain.UseCases.Complaint;
 
@@ -196,16 +197,22 @@ public class ComplaintService
         var complaint = await _complaintRepository.GetByIdAsync(complaintId) ?? throw new KeyNotFoundException();
         var compnayAdmin = await _userService.GetCompanyAdmin(adminId);
 
-        complaint.AnswerComplaint(answer, compnayAdmin);
+        try
+        {
+            await _unitOfWork.StartTransactionAsync();
 
-        await _unitOfWork.StartTransactionAsync();
+            complaint.AnswerComplaint(answer, compnayAdmin);
 
-        _complaintRepository.Update(complaint);
-        complaint = await _complaintRepository.GetByIdAsync(complaintId) ?? throw new KeyNotFoundException();
+            _complaintRepository.Update(complaint);
+            complaint = await _complaintRepository.GetByIdAsync(complaintId) ?? throw new KeyNotFoundException();
 
-        await _httpClientService.ComplaintSender(complaint, answer, compnayAdmin);
+            await _httpClientService.ComplaintSender(complaint, answer, compnayAdmin);
 
-        await _unitOfWork.SaveAndCommitChangesAsync();
+            await _unitOfWork.SaveAndCommitChangesAsync();
+        }catch(Exception ex)
+        {
+            throw new ArgumentException();
+        }
     }
 
 
