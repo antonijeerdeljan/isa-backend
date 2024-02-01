@@ -28,14 +28,14 @@
                                .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllCompanyAppointments(int page, Guid companyId)
+        public async Task<IEnumerable<Appointment>> GetAllCompanyAppointments(Guid companyId)
         {
-            return await _dbSet.Where(a => a.Company.Id == companyId).Where(a => a.EndingDateTime >= DateTime.UtcNow).GetPaged(page).ToListAsync();
+            return await _dbSet.Where(a => a.Company.Id == companyId).Where(a => a.EndingDateTime >= DateTime.UtcNow).ToListAsync();
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(int page, Guid companyId, DateOnly date)
+        public async Task<IEnumerable<Appointment>> GetAllCompanyAppointmentsForDate(Guid companyId, DateOnly date)
         {
-            return await _dbSet.Where(a => a.Company.Id == companyId && a.StartingDateTime.Date.DayOfYear == date.DayOfYear).GetPaged(page).ToListAsync();
+            return await _dbSet.Where(a => a.Company.Id == companyId && a.StartingDateTime.Date.DayOfYear == date.DayOfYear).ToListAsync();
         }
 
         public async Task<IEnumerable<Appointment>> GetAllAdminAppointments(Guid adminId)

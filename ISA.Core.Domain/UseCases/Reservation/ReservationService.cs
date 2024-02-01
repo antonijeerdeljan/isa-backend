@@ -1,6 +1,8 @@
 ﻿namespace ISA.Core.Domain.UseCases.Reservation;
 
 using AutoMapper;
+using ceTe.DynamicPDF;
+using FluentResults;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
@@ -44,8 +46,9 @@ public class ReservationService
         var customer = await _userService.GetCustomerById(userId);
         var appointment = await _appointmentService.GetAppointmentById(appointmentId);
         var reserved = await _reservationRepository.GetByIdAsync(appointmentId);
-        List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         if (customer is null || appointment is null || reserved is not null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
+        if (await CustomerIsAvailable(userId, appointment) is false) throw new ArgumentException("Already have appointment in that time");
+        List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
         appointment.SetAsTaken();
 
         try
@@ -85,8 +88,8 @@ public class ReservationService
 
         var appointment = await _appointmentService.TryCreateAppointment(companyId, start, end);
         List<ReservationEquipment> reservationEquipment = new List<ReservationEquipment>();
-        if (customer is null || appointment is null || customer.PenaltyPoints >= 3) throw new ArgumentNullException();
-
+        if (customer is null || appointment is null || customer.PenaltyPoints >= 3) throw new ArgumentException();
+        if (await CustomerIsAvailable(userId, appointment) is false) throw new ArgumentException("Already have appointment in that time");
         appointment.SetAsTaken();
         try
         {
@@ -249,5 +252,13 @@ public class ReservationService
     private bool IsAppointmentWithin24Hours(Reservation reservation)
     {
         return (reservation.Appointment.StartingDateTime > DateTime.UtcNow.AddHours(24)) ? true : false;
+    }
+
+    private async Task<bool> CustomerIsAvailable(Guid userId, Appointment appointment)
+    {
+        var customerAppointments = await _reservationRepository.GetAllCustomerReservations(userId);
+        customerAppointments.RemoveAll(a => a.Appointment.EndingDateTime <= appointment.StartingDateTime || a.Appointment.StartingDateTime >= appointment.EndingDateTime);
+        return customerAppointments.Count == 0;
+       
     }
 }

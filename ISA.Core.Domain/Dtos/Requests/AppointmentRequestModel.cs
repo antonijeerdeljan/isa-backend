@@ -11,8 +11,8 @@
         public AppointmentRequestModel(DateTime startingDateTime, DateTime endingDateTime, Guid adminId)
         {
             AdminId = adminId;
-            StartingDateTime = startingDateTime;
-            EndingDateTime = endingDateTime;
+            StartingDateTime = new DateTime(startingDateTime.Year, startingDateTime.Month, startingDateTime.Day, startingDateTime.Hour, startingDateTime.Minute, 0).ToUniversalTime();
+            EndingDateTime = new DateTime(endingDateTime.Year, endingDateTime.Month, endingDateTime.Day, endingDateTime.Hour, endingDateTime.Minute, 0).ToUniversalTime();
         }
     }
 }
