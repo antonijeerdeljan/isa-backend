@@ -48,10 +48,13 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
 
     public async Task<List<Reservation>> GetAllCustomerReservations(Guid userId)
     {
-        return await _dbSet.Include(r => r.Appointment)
-                            .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
-                            .Where(r => r.Customer.UserId == userId)
-                            .ToListAsync();
+        return await _dbSet.Include(r => r.Appointment.Company)
+                           .Include(r => r.Appointment.CompanyAdmin.User) 
+                           .Include(r => r.Equipments)
+                           .ThenInclude(e => e.Equipment)
+                           .Where(r => r.Customer.UserId == userId)
+                           .ToListAsync();
+
     }
 
     public async Task<List<Reservation>> GetAllScheduledCustomerReservations(Guid userId)
@@ -73,7 +76,7 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
 
     public async Task<List<Reservation>> GetHistoryOfCustomerReservations(Guid customerId)
     {
-        return await _dbSet.Include(r => r.Appointment).Where(a => a.State != ReservationState.Pending)
+        return await _dbSet.Include(r => r.Appointment).ThenInclude(a => a.Company).Where(a => a.State != ReservationState.Pending)
                             .Include(r => r.Equipments).ThenInclude(e => e.Equipment)
                             .Where(r => r.Customer.UserId == customerId)
                             .ToListAsync();
@@ -83,4 +86,23 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
     {
         return await _dbSet.Where(a => a.Appointment.Company.Id == companyId).Include(a => a.Customer).ThenInclude(c => c.User).ThenInclude(u => u.Address).ToListAsync();
     }
+
+
+    public async Task<bool> UserHasAtleastOneReservationWithCompany(Guid userId, Guid companyId)
+    {
+        return await _dbSet.Include(c => c.Customer)
+                           .Include(r => r.Appointment.Company)
+                           .Where(a => a.Customer.UserId == userId && a.Appointment.Company.Id == companyId)
+                           .FirstOrDefaultAsync() != null;
+    }
+
+    public async Task<bool> UserHasAtleastOneReservationWithAdmin(Guid userId, Guid adminId)
+    {
+        return await _dbSet.Include(c => c.Customer)
+                           .Include(r => r.Appointment.CompanyAdmin)
+                           .Where(a => a.Customer.UserId == userId && a.Appointment.CompanyAdmin.UserId == adminId)
+                           .FirstOrDefaultAsync() != null;
+    }
+
+
 }

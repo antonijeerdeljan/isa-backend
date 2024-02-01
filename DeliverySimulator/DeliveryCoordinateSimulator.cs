@@ -11,6 +11,7 @@ using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using PolylineEncoder.Net.Models;
 using DeliverySimulator.MessageAndEventBus;
+using System.Linq;
 
 namespace DeliverySimulator
 {
@@ -32,54 +33,50 @@ namespace DeliverySimulator
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
 
-            double? latitude = data?.coordinates?.x;
-            double? longitude = data?.coordinates?.y;
+            double? latitude = data?.coordinates?.y;
+            double? longitude = data?.coordinates?.x;
             string? companyId = data?.companyId;
 
             Point pointDestination = null;
             if (latitude.HasValue && longitude.HasValue)
             {
-                Coordinate destination = new Coordinate(latitude.Value, longitude.Value);
+                Coordinate destination = new Coordinate((double)latitude, (double)longitude);
                 pointDestination = new Point(destination);
             }
 
             Coordinate cord = new Coordinate(45.24402765011596, 19.841881760213614); //init position Novi sad Promenada
             Point point = new Point(cord);
-
-            string responseMessage;
-            List<IGeoCoordinate> cors = new();
-
-            if (pointDestination != null)
+            try
             {
-                cors = await CoordinateSimulator.GetCoordinates(point, pointDestination);
-                responseMessage = $"Received and processed coordinates: ({latitude}, {longitude}).";
+                string responseMessage;
+                List<IGeoCoordinate> cors = new();
 
-                int totalCors = cors.Count;
-                int currentCors = 0;
-
-                foreach (var c in cors)
+                if (pointDestination != null)
                 {
-                    currentCors++;
-                    Message message = new(c, companyId, "driving");
-                    _sendToMessage.Send(message);
+                    cors = await CoordinateSimulator.GetCoordinates(point, pointDestination);
+                    responseMessage = $"Received and processed coordinates: ({latitude}, {longitude}).";
 
-                    if (currentCors == totalCors)
+                    foreach (var c in cors)
                     {
-                        Message doneMessage = new(c, companyId, "done");
-                        _sendToMessage.Send(doneMessage);
+                        Message message = new(c, companyId, "driving");
+                        _sendToMessage.Send(message);
+                        await Task.Delay(5000);
                     }
-                    else
-                    {
-                        await Task.Delay(5000); 
-                    }
+
+                    Message doneMessage = new(cors.LastOrDefault(), companyId, "done");
+                    _sendToMessage.Send(doneMessage);
+
                 }
-            }
-            else
+                else
+                {
+                    responseMessage = "No valid destination coordinates provided.";
+                }
+            }catch(Exception ex)
             {
-                responseMessage = "No valid destination coordinates provided.";
+                throw new ArgumentException();
             }
 
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult("ok");
         }
 
     }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISA.Core.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20240130152057_Init")]
-    partial class Init
+    [Migration("20240131142901_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,9 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsFirstLogin")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
@@ -244,21 +247,21 @@ namespace ISA.Core.Infrastructure.Identity.Migrations
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af2"),
-                            ConcurrencyStamp = "4110cb6f-12dd-4e16-b1d4-ba92c9c6d781",
+                            ConcurrencyStamp = "68b9e648-3a5c-4dae-a0cb-61aa807ed8b6",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af0"),
-                            ConcurrencyStamp = "2dbadc0e-ea7f-40e8-a5ab-ccfa2334aa2a",
+                            ConcurrencyStamp = "ce39f871-a81d-4a52-8435-143497bc4851",
                             Name = "Corpadmin",
                             NormalizedName = "CORPADMIN"
                         },
                         new
                         {
                             Id = new Guid("5310feb4-a1e1-4439-b511-fd2293f33af1"),
-                            ConcurrencyStamp = "37ffe2e3-20eb-4b17-9961-ca68383983d8",
+                            ConcurrencyStamp = "56f9500f-b02b-4bbf-bac4-8e44989ef55a",
                             Name = "Sysadmin",
                             NormalizedName = "SYSADMIN"
                         });

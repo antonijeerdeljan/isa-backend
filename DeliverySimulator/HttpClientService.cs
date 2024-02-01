@@ -9,7 +9,7 @@ namespace DeliverySimulator;
 public static class HttpClientService
 {
     private static readonly HttpClient _httpClient = new HttpClient();
-    private static readonly string apiKey = Environment.GetEnvironmentVariable("GoogleMapsAPIKey", EnvironmentVariableTarget.Process);
+    private static readonly string apiKey = Environment.GetEnvironmentVariable("GoogleMapsAPIKey", EnvironmentVariableTarget.Process) ?? "AIzaSyBvavxN88RLP-X5aWZvK5ofSbfKvYG6M1c";
 
     public static async Task<string> GetPolyline(Point origin, Point destination)
     {

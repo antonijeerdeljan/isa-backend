@@ -12,10 +12,10 @@ public class MessageBus
         try
         {
 
-            var host = Environment.GetEnvironmentVariable("host", EnvironmentVariableTarget.Process);
-            var username = Environment.GetEnvironmentVariable("user", EnvironmentVariableTarget.Process);
-            var password = Environment.GetEnvironmentVariable("password", EnvironmentVariableTarget.Process);
-            var queueName = Environment.GetEnvironmentVariable("queueName", EnvironmentVariableTarget.Process);
+            var host = Environment.GetEnvironmentVariable("host", EnvironmentVariableTarget.Process) ?? "172.206.250.97";
+            var username = Environment.GetEnvironmentVariable("user", EnvironmentVariableTarget.Process) ?? "guest";
+            var password = Environment.GetEnvironmentVariable("password", EnvironmentVariableTarget.Process) ?? "guest";
+            var queueName = Environment.GetEnvironmentVariable("queueName", EnvironmentVariableTarget.Process) ?? "Cooridantes";
 
             var factory = new ConnectionFactory() { HostName = host, UserName = username, Password = password, Port = 5672, VirtualHost = "/" };
 

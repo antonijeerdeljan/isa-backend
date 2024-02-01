@@ -15,6 +15,7 @@ using ISA.Core.Domain.UseCases.LoyaltyProgram;
 using ISA.Core.Domain.UseCases.Reservation;
 using ISA.Core.Domain.UseCases.Contract;
 using ISA.Core.Domain.UseCases.Delivery;
+using ISA.Core.Domain.UseCases.Complaint;
 
 namespace ISA.Application.API.Startup.DI;
 
@@ -41,6 +42,7 @@ public static class DIConfig
         services.AddTransient<IReservationEquipmentRepository, ReservationEquipmentRepository>();
         services.AddTransient<IContractRepository, ContractRepository>();
         services.AddTransient<IGradeRepository, GradeRepository>();
+        services.AddTransient<IComplaintRepository, ComplaintRepository>();
         services.AddTransient<UserService>();
         services.AddTransient<CompanyService>();
         services.AddTransient<AppointmentService>();
@@ -49,6 +51,7 @@ public static class DIConfig
         services.AddTransient<ReservationService>();
         services.AddTransient<ContractService>();
         services.AddTransient<GradeService>();
+        services.AddTransient<ComplaintService>();
         services.AddTransient<UserManager<ApplicationUser>>();
         services.AddScoped<RoleManager<ApplicationRole>>();
         services.AddTransient<SignInManager<ApplicationUser>>();

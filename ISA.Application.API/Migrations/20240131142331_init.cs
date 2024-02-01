@@ -235,6 +235,36 @@ namespace ISA.Application.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Complaints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    SubjectComplaintId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Resloved = table.Column<bool>(type: "boolean", nullable: false),
+                    Answer = table.Column<string>(type: "text", nullable: true),
+                    AnsweredByUserId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Complaints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Complaints_CompanyAdmins_AnsweredByUserId",
+                        column: x => x.AnsweredByUserId,
+                        principalTable: "CompanyAdmins",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_Complaints_Customers_CustomerUserId",
+                        column: x => x.CustomerUserId,
+                        principalTable: "Customers",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Grades",
                 columns: table => new
                 {
@@ -333,6 +363,16 @@ namespace ISA.Application.API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Complaints_AnsweredByUserId",
+                table: "Complaints",
+                column: "AnsweredByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Complaints_CustomerUserId",
+                table: "Complaints",
+                column: "CustomerUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContractEquipment_EquipmentId",
                 table: "ContractEquipment",
                 column: "EquipmentId");
@@ -381,6 +421,9 @@ namespace ISA.Application.API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Complaints");
+
             migrationBuilder.DropTable(
                 name: "ContractEquipment");
 

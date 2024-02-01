@@ -8,6 +8,7 @@ namespace ISA.Core.Infrastructure.Identity.Entities
 
         public Guid? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpirationDate { get; set; }
+        public bool IsFirstLogin { get; set; } = true;
 
         public ApplicationUser(Guid id, string email)
         {

@@ -10,7 +10,7 @@ public interface ICompanyAdminRepository
     void UpdateAndSaveChanges(CompanyAdmin companyAdmin);
     void Update(CompanyAdmin companyAdmin);
 
-    Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id, int page);
+    Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid id);
 
     Task<bool> CheckIfAdmin(Guid companyId, Guid userId);
 

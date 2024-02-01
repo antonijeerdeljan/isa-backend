@@ -11,14 +11,23 @@ using ISA.Core.Infrastructure.Identity;
 using ISA.Core.Infrastructure.Persistence.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
+
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    options.JsonSerializerOptions.Converters.Add(new NetTopologySuite.IO.Converters.GeoJsonConverterFactory());
+});
+
+
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Configuration.AddEnvironmentVariables()
@@ -74,7 +83,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<GlobalExceptionMiddleware>(true);
+app.UseMiddleware<GlobalExceptionMiddleware>(false);
 
 app.MapHub<SignalRHub>("delivery");
 

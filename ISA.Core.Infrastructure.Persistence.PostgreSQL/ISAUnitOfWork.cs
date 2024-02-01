@@ -1,5 +1,7 @@
 ﻿using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Infrastructure.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace ISA.Core.Infrastructure.Persistence.PostgreSQL;
 
@@ -16,8 +18,8 @@ public class ISAUnitOfWork : IISAUnitOfWork
 
     public async Task StartTransactionAsync()
     {
-        await _isaDbContext.Database.BeginTransactionAsync();
-        await _identityDbContext.Database.BeginTransactionAsync();
+        await _isaDbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+        await _identityDbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
     }
 
     public async Task CommitTransactionAsync()
@@ -40,7 +42,7 @@ public class ISAUnitOfWork : IISAUnitOfWork
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            throw new ArgumentException();
         }
         await _isaDbContext.Database.CommitTransactionAsync();
         await _identityDbContext.Database.CommitTransactionAsync();

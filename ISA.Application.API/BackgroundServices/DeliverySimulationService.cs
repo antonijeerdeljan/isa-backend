@@ -110,7 +110,7 @@ public class DeliverySimulationService : BackgroundService
         { 
             var companyService = scope.ServiceProvider.GetRequiredService<CompanyService>();
 
-            var admins = companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
+            var admins = await companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
             var adminIds = await companyService.GetCompanyAdmins(Guid.Parse(message.companyId));
 
             if(message.status == "done")
