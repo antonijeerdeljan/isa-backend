@@ -21,14 +21,14 @@
         public Company() {}
 
 
-        public Company(string name, Address address, string description, TimeOnly startWorkingHour, TimeOnly endWorkingHour)
+        public Company(string name, Address address, string description, DateTime startWorkingHour, DateTime endWorkingHour)
         {
             Id = new Guid();
             Name = name;
             Address = address;
             Description = description;
-            StartingWorkingHour = startWorkingHour;
-            EndWorkingHour = endWorkingHour;
+            StartingWorkingHour = new TimeOnly(startWorkingHour.Hour, startWorkingHour.Minute);
+            EndWorkingHour = new TimeOnly(endWorkingHour.Hour, endWorkingHour.Minute);
         }
 
 

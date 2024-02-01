@@ -27,7 +27,7 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         _httpClientService = httpClientService;
     }
 
-    public async Task AddAsync(string name, TimeOnly startWorkingHour, TimeOnly endWorkingHour, string description,string country, string city,string street, int number)
+    public async Task AddAsync(string name, DateTime startWorkingHour, DateTime endWorkingHour, string description,string country, string city,string street, int number)
     {
         
 
