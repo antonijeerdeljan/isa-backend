@@ -1,20 +1,13 @@
 ﻿namespace ISA.Core.Domain.UseCases.Reservation;
 
 using AutoMapper;
-using ceTe.DynamicPDF;
 using ISA.Application.API.Models.Requests;
 using ISA.Core.Domain.Contracts.Repositories;
 using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
-using ISA.Core.Domain.Dtos.Company;
-using ISA.Core.Domain.Entities.Company;
 using ISA.Core.Domain.Entities.Reservation;
-using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.Company;
 using ISA.Core.Domain.UseCases.User;
-using Nest;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel.Design;
 
 public class ReservationService
 {
@@ -182,6 +175,7 @@ public class ReservationService
         
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
         await _httpClientService.SendPickUpConfirmation(customer.User.Email, "Pick up confirmation", customer.User.Firstname, appointment.StartingDateTime.ToString(), company.Name);
+
     }
 
     public async Task<IEnumerable<ReservationDto>> GetAllCompanyReservations(Guid adminId)

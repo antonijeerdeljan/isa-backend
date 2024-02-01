@@ -9,15 +9,19 @@ public class DeliveryService
 
     private readonly ContractService _contractService;
     private readonly IHttpClientService _httpClientService;
+    private readonly IISAUnitOfWork _unitOfWork;
 
-    public DeliveryService(ContractService contractService, IHttpClientService httpClientService)
+    public DeliveryService(ContractService contractService, IHttpClientService httpClientService, IISAUnitOfWork unitOfWork)
     {
         _contractService = contractService;
         _httpClientService = httpClientService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Delivery()
     {
+
+
         var todaysContracts = await _contractService.GetTodaysContract();
 
         if(todaysContracts != null)
@@ -43,9 +47,14 @@ public class DeliveryService
                         companyCord = new Coordinate(45.259832216479296, 19.807517841677335); //just in case of failure
                     }
 
-                    Point companyPoint = new Point(companyCord); 
+                    Point companyPoint = new Point(companyCord);
+
+                    await _unitOfWork.StartTransactionAsync();
+
                     await _httpClientService.CreateDelivery(companyPoint, contract.Company.Id);
                     await _contractService.UpdateDeliveryTime(contract.Id);
+
+                    await _unitOfWork.SaveAndCommitChangesAsync();
                 }
             }
         }

@@ -6,7 +6,7 @@ public class Contract : Entity<Guid>
     public List<ContractEquipment> Equipments { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime DeliveryDate { get; set; }
-    public DateTime DeliveredAt { get; set; }
+    public DateTime DeliveredAt { get; set; } = DateTime.UtcNow.AddDays(-3);
 
     public Contract()
     {
