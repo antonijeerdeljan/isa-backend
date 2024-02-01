@@ -211,7 +211,7 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid adminId, int page)
     {
         var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
-        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.CompanyId, page);
+        return await _companyAdminRepository.GetAllCompanyAdmins(compAdmin.CompanyId);
     }
 
     public async Task<IEnumerable<CustomerProfileDto>> GetAllCompanyCustomers(Guid adminId)
@@ -219,9 +219,8 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
         var compAdmin = await _companyAdminRepository.GetByIdAsync(adminId);
         var reservations = await _reservationRepository.GetAllCompanyCustomers(compAdmin.CompanyId);
         List<Customer> customers = reservations.Select(obj => obj.Customer).ToList();
-        //var customers =  _customerRepository.GetAllCompanyCustomers(idList);
         var customerProfiles = customers.Select(customer => _mapper.Map<CustomerProfileDto>(customer));
-        return (IEnumerable<CustomerProfileDto>)customerProfiles;
+        return customerProfiles;
     }
 
     public async Task GivePenaltyPoints(Guid id,int points)
