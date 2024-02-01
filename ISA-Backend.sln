@@ -17,15 +17,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{B3C429
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{BD5AC643-8DD5-43D3-BB9B-6362FCF86A20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISA.Application.API", "ISA.Application.API\ISA.Application.API.csproj", "{CFA10C95-1B8F-49C1-812E-E6A7787B7234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISA.Application.API", "ISA.Application.API\ISA.Application.API.csproj", "{CFA10C95-1B8F-49C1-812E-E6A7787B7234}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISA.Core.Domain", "ISA.Core.Domain\ISA.Core.Domain.csproj", "{07E467AA-F7F4-412C-A826-D918D912FC3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISA.Core.Domain", "ISA.Core.Domain\ISA.Core.Domain.csproj", "{07E467AA-F7F4-412C-A826-D918D912FC3D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{CECB9886-AEC9-49FC-8474-53324F877AEC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{848C6100-EA1A-4FE8-B7C3-B586B614CF06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISA.Core.Infrastructure.Persistence.PostgreSQL", "ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj", "{18421B2F-B6DD-45FB-9D2C-CF84C8EDEEC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISA.Core.Infrastructure.Persistence.PostgreSQL", "ISA.Core.Infrastructure.Persistence.PostgreSQL\ISA.Core.Infrastructure.Persistence.PostgreSQL.csproj", "{18421B2F-B6DD-45FB-9D2C-CF84C8EDEEC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
