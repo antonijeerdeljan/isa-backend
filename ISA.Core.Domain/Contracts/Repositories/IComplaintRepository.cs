@@ -1,4 +1,5 @@
-﻿using ISA.Core.Domain.Entities.Complaint;
+﻿using ISA.Core.Domain.Entities;
+using ISA.Core.Domain.Entities.Complaint;
 using ISA.Core.Domain.Entities.LoyaltyProgram;
 
 namespace ISA.Core.Domain.Contracts.Repositories;
@@ -9,6 +10,8 @@ public interface IComplaintRepository
     Task<Complaint?> GetByIdAsync(Guid id);
     void UpdateAndSaveChanges(Complaint complaint);
     void Update(Complaint complaint);
+
+    Task AddAndSaveChangesAsync(Complaint? entity);
 
     Task<List<Complaint>> GetAllCompanyComplaints(Guid companyId, int page);
 

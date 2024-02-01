@@ -36,7 +36,7 @@ public class ComplaintController : ControllerBase
     public async Task AddCompanyComplaint([FromBody] AddComplaintModel complaint)
     {
         Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
-        await _complaintService.CreateAdminComplaint(userId, complaint.ComplaintObjectId, complaint.Title, complaint.Description);
+        await _complaintService.CreateCompanyComplaint(userId, complaint.ComplaintObjectId, complaint.Title, complaint.Description);
     }
 
 
@@ -142,7 +142,7 @@ public class ComplaintController : ControllerBase
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("answer-complaint")]
+    [HttpPost("answer-complaint")]
     [Authorize(Policy = "corpAdminPolicy")]
     public async Task ComplaintAnswer(ComplaintAnswerRequest complaintAnswer)
     {

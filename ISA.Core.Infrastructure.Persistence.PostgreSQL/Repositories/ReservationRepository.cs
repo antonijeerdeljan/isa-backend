@@ -49,7 +49,7 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
     public async Task<List<Reservation>> GetAllCustomerReservations(Guid userId)
     {
         return await _dbSet.Include(r => r.Appointment.Company)
-                           .Include(r => r.Appointment.CompanyAdmin) 
+                           .Include(r => r.Appointment.CompanyAdmin.User) 
                            .Include(r => r.Equipments)
                            .ThenInclude(e => e.Equipment)
                            .Where(r => r.Customer.UserId == userId)
@@ -90,16 +90,19 @@ public class ReservationRepository : GenericRepository<Reservation, Guid>, IRese
 
     public async Task<bool> UserHasAtleastOneReservationWithCompany(Guid userId, Guid companyId)
     {
-        return (await _dbSet.Include(c => c.Customer)
-                            .Include(r => r.Appointment.Company)
-                            .Where(a => a.Customer.UserId == userId && a.Appointment.Company.Id == companyId).FirstOrDefaultAsync() == null) ? false : true;
+        return await _dbSet.Include(c => c.Customer)
+                           .Include(r => r.Appointment.Company)
+                           .Where(a => a.Customer.UserId == userId && a.Appointment.Company.Id == companyId)
+                           .FirstOrDefaultAsync() != null;
     }
 
     public async Task<bool> UserHasAtleastOneReservationWithAdmin(Guid userId, Guid adminId)
     {
-        return (await _dbSet.Include(c => c.Customer)
-                            .Include(r => r.Appointment.CompanyAdmin)
-                            .Where(a => a.Customer.UserId == userId && a.Appointment.CompanyAdmin.UserId == adminId).FirstOrDefaultAsync() == null) ? false : true;
+        return await _dbSet.Include(c => c.Customer)
+                           .Include(r => r.Appointment.CompanyAdmin)
+                           .Where(a => a.Customer.UserId == userId && a.Appointment.CompanyAdmin.UserId == adminId)
+                           .FirstOrDefaultAsync() != null;
     }
+
 
 }

@@ -76,8 +76,7 @@ public static class ComplaintSender
             message.Body = htmlBody;
             message.IsBodyHtml = true;
 
-            SmtpClient smtpClient = new SmtpClient();
-            smtpClient.Send(message);
+            SmtpMailClient.Send(message);
 
             return new OkObjectResult(true);
         }

@@ -67,7 +67,8 @@ public class ComplaintRepository : GenericRepository<Complaint, Guid>, IComplain
 
     public override async Task<Complaint?> GetByIdAsync(Guid id)
     {
-        return await _dbSet.Include(c => c.Customer).Include(c => c.AnsweredBy.User).Where(c => c.Id == id).FirstOrDefaultAsync();
+        return await _dbSet.Include(c => c.Customer.User)
+                           .Include(c => c.AnsweredBy.User).Where(c => c.Id == id).FirstOrDefaultAsync();
     }
 
 

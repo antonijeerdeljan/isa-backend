@@ -7,6 +7,7 @@ using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using ISA.Core.Domain.Entities.Reservation;
 using ISA.Core.Domain.Entities.Complaint;
+using ISA.Core.Domain.Entities.User;
 
 namespace ISA.Core.Infrastructure.HttpClients;
 
@@ -100,7 +101,7 @@ public class HttpClientService : IHttpClientService
     }
 
 
-    public async Task ComplaintSender(Complaint complaint, string answer)
+    public async Task ComplaintSender(Complaint complaint, string answer, CompanyAdmin companyAdmin)
     {
         var payload = new ComplaintPayload
         {
@@ -108,7 +109,7 @@ public class HttpClientService : IHttpClientService
             Title = complaint.Title,
             Description = complaint.Description,
             Answer = complaint.Answer,
-            AdminName = complaint.AnsweredBy.User.Firstname 
+            AdminName = companyAdmin.User.Firstname
         };
 
         var json = JsonConvert.SerializeObject(payload);
@@ -119,12 +120,12 @@ public class HttpClientService : IHttpClientService
             var response = await _emailHttpClient.PostAsync("Function5", content);
             if (!response.IsSuccessStatusCode)
             {
-                throw new ArgumentException("Registration failed with status code: " + response.StatusCode);
+                throw new ArgumentException("Complaint not sent!: " + response.StatusCode);
             }
         }
         catch (Exception ex)
         {
-            throw new ArgumentException("Registration failed");
+            throw new ArgumentException("Complaint not sent!");
         }
     }
 

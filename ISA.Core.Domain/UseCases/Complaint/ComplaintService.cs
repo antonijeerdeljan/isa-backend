@@ -81,7 +81,8 @@ public class ComplaintService
     {
         //api zastita za customerea
         var customer = await _userService.GetCustomerById(userId);
-        if(await _reservationService.UserHasAtleastOneReservationWithCompany(userId,companyId) != true)
+        var result = await _reservationService.UserHasAtleastOneReservationWithCompany(userId, companyId);
+        if (result != true)
         {
             throw new ArgumentException();
         }
@@ -94,13 +95,13 @@ public class ComplaintService
     {
         //api zastita za customerea
         var customer = await _userService.GetCustomerById(userId);
-        if (await _reservationService.UserHasAtleastOneReservationWithAdmin(userId, adminId) != true)
+        var result = await _reservationService.UserHasAtleastOneReservationWithAdmin(userId, adminId);
+        if (result != true)
         {
             throw new ArgumentException();
         }
         Entities.Complaint.Complaint complaint = new Entities.Complaint.Complaint(ComplaintType.Admin, title, customer, description, adminId);
-        await _complaintRepository.AddAsync(complaint);
-        _complaintRepository.UpdateAndSaveChanges(complaint);
+        await _complaintRepository.AddAndSaveChangesAsync(complaint);
     }
 
 
@@ -200,7 +201,9 @@ public class ComplaintService
         await _unitOfWork.StartTransactionAsync();
 
         _complaintRepository.Update(complaint);
-        await _httpClientService.ComplaintSender(complaint, answer);
+        complaint = await _complaintRepository.GetByIdAsync(complaintId) ?? throw new KeyNotFoundException();
+
+        await _httpClientService.ComplaintSender(complaint, answer, compnayAdmin);
 
         await _unitOfWork.SaveAndCommitChangesAsync();
     }
