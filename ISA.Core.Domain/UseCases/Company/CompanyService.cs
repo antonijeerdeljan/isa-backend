@@ -61,17 +61,14 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
 
     public async Task UpdateAsync(Guid id, string name, string city, string country, string street, int number, string description)
     {
-
+        await _isaUnitOfWork.StartTransactionAsync();
         var updatedCompany = await GetCompanyByAdminIdAsync(id);
-
         updatedCompany.Address.City = city;
         updatedCompany.Address.Country = country;
         updatedCompany.Address.Street= street;
         updatedCompany.Address.Number = number;
         updatedCompany.Name = name;
         updatedCompany.Description = description;
-
-        await _isaUnitOfWork.StartTransactionAsync();
         _companyRepository.Update(updatedCompany);
         await _isaUnitOfWork.SaveAndCommitChangesAsync();
     }

@@ -31,13 +31,13 @@ public class AppointmentService
 
     public async Task AddAsync(AppointmentRequestModel appointment, Guid userId)
     {
-        var compAdmin = await _companyAdminRepository.GetByIdAsync(userId);
-        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, compAdmin.CompanyId) is false)  throw new ArgumentException();
-        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, compAdmin.CompanyId) is false) throw new ArgumentException();   
         await _isaUnitOfWork.StartTransactionAsync();
-        if (await CheckCompanyAvailability(compAdmin.CompanyId, appointment) is false) throw new ArgumentException();
-        var company = await _companyService.GetCompanyAsync(compAdmin.CompanyId);
-        var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
+        var companyAdmin = await _companyAdminRepository.GetByIdAsync(userId);
+        if (await _userService.IsUserIdInCompanyAdmins(appointment.AdminId, companyAdmin.CompanyId) is false)  throw new ArgumentException();
+        if (await _companyService.IsAppointmentInWorkingHours(appointment.StartingDateTime, appointment.EndingDateTime, companyAdmin.CompanyId) is false) throw new ArgumentException();   
+        if (await CheckCompanyAvailability(companyAdmin.CompanyId, appointment) is false) throw new ArgumentException();
+        var company = await _companyService.GetCompanyAsync(companyAdmin.CompanyId);
+        //var companyAdmin = await _companyAdminRepository.GetByIdAsync(appointment.AdminId);
         Appointment newAppointment = new Appointment(company, companyAdmin, appointment.StartingDateTime, appointment.EndingDateTime);
         try
         {
