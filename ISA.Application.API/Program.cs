@@ -46,7 +46,7 @@ builder.Services.AddAuthorization();
 builder.Services.MapperConfig();
 builder.Services.AddHostedService<ReservationOverdueService>();
 builder.Services.AddHostedService<DeliverySimulationService>();
-builder.Services.AddHostedService<PenaltyPointsRemoveService>();
+builder.Services.AddHostedService<PenaltyPointsRemoveService>(); // ???
 builder.Services.AddSignalR();
 builder.Services.AddCorsConfig();
 
@@ -76,7 +76,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("frontend-policy");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

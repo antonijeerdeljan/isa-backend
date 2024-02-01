@@ -28,7 +28,7 @@ namespace EmailClient
             try
             {
                 var token = WebUtility.UrlEncode(body);
-                string baseString = "https://localhost:7109/Users/VerifyEmail?email=" + email + "&token=" + token;
+                string baseString = "http://172.206.250.97:5001//Users/VerifyEmail?email=" + email + "&token=" + token;
 
                 MailMessage message = new MailMessage();
                 message.Subject = "Thank You for Registering!";
