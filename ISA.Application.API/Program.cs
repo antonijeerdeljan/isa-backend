@@ -61,11 +61,11 @@ using (var scope = app.Services.CreateScope())
     var userService = serviceProvider.GetRequiredService<UserService>();
     await userService.CheckForSystemAdmin();
 
-    //var IsaDbContext = serviceProvider.GetRequiredService<IsaDbContext>();
-    //var IdentityDbContext = serviceProvider.GetRequiredService<IdentityDbContext>();
+    var IsaDbContext = serviceProvider.GetRequiredService<IsaDbContext>();
+    var IdentityDbContext = serviceProvider.GetRequiredService<IdentityDbContext>();
 
-    //IsaDbContext.Database.Migrate();
-    //IdentityDbContext.Database.Migrate();
+    IsaDbContext.Database.Migrate();
+    IdentityDbContext.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
