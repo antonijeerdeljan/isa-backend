@@ -108,6 +108,15 @@ public class UsersController : ControllerBase
         await _userService.AddNewCorpAdmin(corpAdmin);
     }
 
+    [HttpGet("GetUserProfile")]
+    [Authorize(Policy ="customerPolicy")]
+    public async Task<UserProfileDto> GetUserProfile()
+    {
+        Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        var userProfile = await _userService.GetUserProfile(userId);
+        return userProfile;
+    }
+
 
     [HttpGet("CompanyAdmins")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -127,7 +136,7 @@ public class UsersController : ControllerBase
         return await _userService.GetAllCompanyCustomers(adminId);
     }
 
-    [HttpGet("GetCustomerPoints/{companyId}")]
+    [HttpGet("GetCustomerPoints")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = "customerPolicy")]
     public async Task<int> GetCustomerPoints()
@@ -136,7 +145,7 @@ public class UsersController : ControllerBase
         return await _userService.GetUserPoints(id);
     }
 
-    [HttpGet("GetCustomerPenaltyPoints/{companyId}")]
+    [HttpGet("GetCustomerPenaltyPoints")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = "customerPolicy")]
     public async Task<int> GetCustomerPenaltyPoints()

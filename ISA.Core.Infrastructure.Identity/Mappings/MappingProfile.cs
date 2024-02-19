@@ -5,10 +5,12 @@
     using ISA.Core.Domain.Dtos.Company;
     using ISA.Core.Domain.Dtos.Complaint;
     using ISA.Core.Domain.Dtos.Customer;
+    using ISA.Core.Domain.Dtos.User;
     using ISA.Core.Domain.Entities.Company;
     using ISA.Core.Domain.Entities.Complaint;
     using ISA.Core.Domain.Entities.Reservation;
     using ISA.Core.Domain.Entities.User;
+    using Microsoft.AspNet.Identity;
     using System;
 
     public class MappingProfile : Profile
@@ -16,6 +18,7 @@
         public MappingProfile()
         {
             CreateMap<Company, CompanyUpdateDto>().ReverseMap();
+            CreateMap<User,UserDto>().ReverseMap();
             CreateMap<Company, CompanyProfileDto>().ReverseMap();
             CreateMap<Company, CompanyBasicInfoDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
