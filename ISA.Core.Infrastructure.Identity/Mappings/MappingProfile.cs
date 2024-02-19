@@ -20,6 +20,7 @@
             CreateMap<Company, CompanyUpdateDto>().ReverseMap();
             CreateMap<User,UserDto>().ReverseMap();
             CreateMap<Company, CompanyProfileDto>().ReverseMap();
+            CreateMap<Company, CompanyProfilesDto>().ReverseMap();
             CreateMap<Company, CompanyBasicInfoDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Equipment, EquipmentDto>().ReverseMap();
