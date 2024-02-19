@@ -25,7 +25,7 @@ public class CompanyRepository : GenericRepository<Company, Guid>, ICompanyRepos
 
     new public async Task<Company?> GetByIdAsync(Guid Id)
     {
-        return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).Include(t => t.Equipment.Where(e => !e.IsDeleted)).FirstOrDefaultAsync(); ;
+        return await _dbSet.Where(t => t.Id == Id).Include(t => t.Address).Include(t => t.Admins).Include(t => t.Equipment.Where(e => !e.IsDeleted)).Include(t => t.Appointments).FirstOrDefaultAsync(); ;
     }
 
 

@@ -56,9 +56,11 @@ public class CompanyController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet]
     [Authorize(Policy = "corpAdminPolicy")]
-    public ActionResult<Company> GetCompany([FromQuery] Guid id)
+    public async Task<Company> GetCompany()
     {
-        return _companyService.GetCompanyAsync(id).Result;
+        Guid id = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+        var company = await _companyService.GetCompanyByAdminIdAsync(id);
+        return await _companyService.GetCompanyAsync(company.Id);
     }
 
     [HttpGet("Profile/{id}")]
