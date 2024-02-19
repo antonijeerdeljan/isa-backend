@@ -85,6 +85,13 @@ public class CompanyService : BaseService<CompanyUpdateDto, Company>, ICompanySe
         return companyProfiles;
     }
 
+    public async Task<IEnumerable<CompanyProfilesDto>> GetAllCompaniesForUnauthorized(int page)
+    {
+        var companies = await _companyRepository.GetAllCompanies(page);
+        var companyProfiles = companies.Select(company => _mapper.Map<CompanyProfilesDto>(company));
+        return companyProfiles;
+    }
+
 
     public async Task<PolylineEncoder.Net.Models.GeoCoordinate> GetComapnyCoordinate(Guid companyId)
     {

@@ -68,10 +68,18 @@ public class CompanyController : ControllerBase
         return _companyService.GetCompanyProfile(id).Result;
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("{page}")]
+    [Authorize(Policy = "allowAllPolicy")]
     public async Task<IEnumerable<CompanyProfileDto>> GettAllCompanies(int page)
     {
         return await _companyService.GetAllCompanies(page);
+    }
+
+    [HttpGet("unauthorized/{page}")]
+    public async Task<IEnumerable<CompanyProfilesDto>> GetAllCompaniesForUnauthorizied(int page)
+    {
+        return await _companyService.GetAllCompaniesForUnauthorized(page);
     }
 
     [HttpGet("getCompanyLocation/{companyId}")]
