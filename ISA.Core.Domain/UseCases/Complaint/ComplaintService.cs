@@ -89,7 +89,7 @@ public class ComplaintService
         }
         Entities.Complaint.Complaint complaint = new Entities.Complaint.Complaint(ComplaintType.Compnay,title,customer,description,companyId);
         await _complaintRepository.AddAsync(complaint);
-        _complaintRepository.UpdateAndSaveChanges(complaint);
+        await _complaintRepository.AddAndSaveChangesAsync(complaint);
     }
 
     public async Task CreateAdminComplaint(Guid userId, Guid adminId, string title, string description)
