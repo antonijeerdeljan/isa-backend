@@ -109,7 +109,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("GetUserProfile")]
-    [Authorize(Policy ="customerPolicy")]
+    [Authorize(Policy = "allowAllPolicy")]
     public async Task<UserProfileDto> GetUserProfile()
     {
         Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
