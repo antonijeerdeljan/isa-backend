@@ -44,7 +44,7 @@ public class CompanyRepository : GenericRepository<Company, Guid>, ICompanyRepos
 
     public async Task<Company> GetCompanyByAdminIdAsync(Guid adminId)
     {
-        return await _dbSet.FirstOrDefaultAsync(c => c.Admins.Any(a => a.UserId == adminId)) ?? throw new KeyNotFoundException();
+        return await _dbSet.Include(c => c.Address).FirstOrDefaultAsync(c => c.Admins.Any(a => a.UserId == adminId)) ?? throw new KeyNotFoundException();
     }
 
 
