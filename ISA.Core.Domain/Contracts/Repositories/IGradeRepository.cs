@@ -16,6 +16,7 @@
         void Update(Grade companyAdmin);
 
         Task<IEnumerable<Grade>> GetAllCompanyGrades(Guid companyId);
+        Task<IEnumerable<Grade>> GetAllCustomerGrades(Guid userId);
 
         Task<bool> CheckIfAlreadyExist(Guid userId, Guid companyId);
     }

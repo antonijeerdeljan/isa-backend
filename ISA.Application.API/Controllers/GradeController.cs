@@ -34,6 +34,16 @@
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("AllCustomerGrades")]
+        [Authorize(Policy = "customerPolicy")]
+        public async Task<IEnumerable<Grade>> GetAllCustomerGrades()
+        {
+            Guid userId = Guid.Parse(User.Claims.First(x => x.Type == "id").Value);
+            return await _gradeService.GetAllCustomerGrades(userId);
+
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
         [Authorize(Policy = "customerPolicy")]
         public async Task UpdateGrade([FromBody] UpdateGradeRequest grade)
