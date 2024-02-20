@@ -233,8 +233,7 @@ public class AppointmentService
     public async Task<Appointment> CheckAndSetNewCompanyAppointment(Guid companyId, DateTime start, DateTime end)
     {
         var companyAppointments = await _appointmentRepository.GetAllCompanyAppointments(companyId);
-        companyAppointments.Where(a => a.EndingDateTime >= start || a.StartingDateTime <= end);
-        if (companyAppointments.Count() != 0) return null;
+        if (companyAppointments.Where(a => a.EndingDateTime >= start && a.StartingDateTime <= end).Count() != 0) return null;
         var company = await _companyService.GetCompanyAsync(companyId);
         var admins = await _companyAdminRepository.GetAllCompanyAdmins(companyId);
         Random random = new Random();
