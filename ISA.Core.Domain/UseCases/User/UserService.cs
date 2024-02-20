@@ -4,6 +4,7 @@ using ISA.Core.Domain.Contracts.Services;
 using ISA.Core.Domain.Dtos;
 using ISA.Core.Domain.Dtos.Company;
 using ISA.Core.Domain.Dtos.Customer;
+using ISA.Core.Domain.Dtos.User;
 using ISA.Core.Domain.Entities.Token;
 using ISA.Core.Domain.Entities.User;
 using ISA.Core.Domain.UseCases.PasswordGenerators;
@@ -206,6 +207,14 @@ public class UserService : BaseService<UserProfileDto, Entities.User.User>
     public async Task<bool> IsUserIdInCompanyAdmins(Guid userId, Guid companyId)
     {
         return await _companyAdminRepository.CheckIfAdmin(companyId, userId);
+    }
+
+
+    public async Task<UserProfileDto> GetUserProfile(Guid userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException();
+        var userDto = _mapper.Map<UserProfileDto>(user);
+        return userDto;
     }
 
     public async Task<IEnumerable<CompanyAdmin>> GetAllCompanyAdmins(Guid adminId, int page)
