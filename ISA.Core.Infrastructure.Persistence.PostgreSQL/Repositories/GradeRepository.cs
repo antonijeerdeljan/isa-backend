@@ -29,5 +29,10 @@
         {
             return await _dbSet.Where(t => t.CompanyId == companyId).ToListAsync();
         }
+
+        public async Task<IEnumerable<Grade>> GetAllCustomerGrades(Guid userId)
+        {
+            return await _dbSet.Where(t => t.CustomerUserId == userId).ToListAsync();
+        }
     }
 }

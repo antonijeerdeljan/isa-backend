@@ -75,6 +75,11 @@
             return gradesDto;
         }
 
+        public async Task<IEnumerable<Grade>> GetAllCustomerGrades(Guid userId)
+        {
+            return await _gradeRepository.GetAllCustomerGrades(userId);
+        }
+
         public async Task<Grade?> GetByIdAsync(Guid id)
         {
             return await _gradeRepository.GetByIdAsync(id);
@@ -87,7 +92,7 @@
             if (rate < 1 || rate > 10) throw new KeyNotFoundException();
             await _isaUnitOfWork.StartTransactionAsync();
             grade.Rate = rate; grade.Text = text; grade.Reason = reason;
-            _gradeRepository.UpdateAndSaveChanges(grade);
+            _gradeRepository.Update(grade);
             await _isaUnitOfWork.SaveAndCommitChangesAsync();
         }
 
